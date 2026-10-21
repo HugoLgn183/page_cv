@@ -20,19 +20,25 @@ page_cv/
 ## Technologies
 
 - **HTML5 sémantique** : `header`, `main`, `nav`, `section`, `footer`, un seul `h1` et une hiérarchie `h2` / `h3`.
-- **CSS3** sans framework : variables CSS, Flexbox, `clamp()`, media queries (mobile ≤ 640 px, impression).
-- **JavaScript** natif, sans bibliothèque : ouverture et fermeture des livres.
+- **CSS3** sans framework : variables CSS, Flexbox, `clamp()`, animations 3D, media queries (mobile ≤ 640 px, impression).
+- **JavaScript** natif, sans bibliothèque : ouverture des livres, sommaire, pages qui tournent, dessin de la bibliothèque du fond dans un `<canvas>`.
+- **Polices système** à l'allure de livre (Palatino, Book Antiqua), sans téléchargement.
 - **GitHub Pages** pour l'hébergement.
 
-Aucune image, police externe ou dépendance : la page entière pèse environ 50 Ko (13 Ko une fois compressée par GitHub Pages).
+Aucune image, police externe ou dépendance : la page entière pèse environ 66 Ko (18 Ko une fois compressée par GitHub Pages).
 
 ## Fonctionnalités
 
-- **Décor entièrement en CSS** : étagères de livres en arrière-plan, bougie animée, rivets de la plaque, livre ouvert qui reprend la couleur du livre choisi avec son signet, icône gravée et chiffre romain pour chaque rubrique.
+- **Livre ouvert** :
+  - sommaire des 7 chapitres sur la page de gauche, chaque ligne mène au chapitre ;
+  - boutons « chapitre précédent / suivant » et flèches ← → du clavier, avec une page qui tourne en 3D ;
+  - couverture et signet de la couleur du livre choisi.
+- **Décor** : bibliothèque complète en arrière-plan, dessinée une seule fois dans un `<canvas>` et volontairement floue (des étagères en CSS la remplacent sans JavaScript) ; bougie animée, plaque en métal brossé, pages au grain de papier, icône gravée et chiffre romain pour chaque rubrique.
 - **Responsive** : sur mobile, le livre ouvert n'affiche que la page de texte, en pleine largeur.
 - **Accessibilité** :
   - navigation complète au clavier, lien d'évitement et focus visible ;
-  - le livre ouvert se comporte comme une fenêtre modale : focus gardé à l'intérieur, fermeture avec Échap, retour sur le livre d'origine ;
+  - le livre ouvert se comporte comme une fenêtre modale : focus gardé à l'intérieur, fermeture avec Échap, retour sur le livre du chapitre affiché ;
+  - changement de chapitre annoncé aux lecteurs d'écran ;
   - contrastes vérifiés (au moins 4,5:1 pour le texte) ;
   - animations réduites si le système le demande (`prefers-reduced-motion`).
 - **Fonctionne sans JavaScript** : tout le CV est écrit dans le HTML et s'affiche sous forme de page classique. C'est aussi ce que lisent les moteurs de recherche.
