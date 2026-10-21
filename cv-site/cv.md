@@ -1,6 +1,10 @@
 # Hugo LARGERON
 
-Ancien militaire et coach sportif de 26 ans, je me reconvertis actuellement dans le domaine informatique, afin d'intégrer, par la suite, un cursus dans la cybersécurité. Je suis actuellement en BTS SIO SISR au CFAI de Saint-Étienne, et en alternance dans l'entreprise \*\*\*\*\*\*\*\*\*.
+Ancien militaire et coach sportif de 26 ans, je me reconvertis dans l'informatique. Je suis actuellement en BTS SIO SISR en alternance au CFAI de Saint-Étienne, dans l'entreprise \*\*\*\*\*\*\*\*\*.
+
+**Mon objectif :** poursuivre après le BTS vers un cursus en cybersécurité, pour travailler sur la protection des systèmes et des réseaux.
+
+**Ce que j'apporte :** la rigueur et l'esprit d'équipe acquis à l'armée (chef d'équipe, systèmes de transmission), et le sens de la pédagogie développé comme coach.
 
 
 
