@@ -16,7 +16,7 @@
 <script>document.documentElement.className = 'js';</script>
 <style>
 :root{
-  --serif:Georgia,'Times New Roman',Times,serif;
+  --serif:'Palatino Linotype','Book Antiqua',Palatino,'Iowan Old Style','URW Palladio L',Georgia,serif;
   --sans:'Segoe UI',system-ui,Arial,sans-serif;
   --gold:#c9a227;
   --gold-2:#ecce6c;
@@ -26,6 +26,8 @@
   --paper-2:#e8d9b4;
   --line:rgba(120,84,44,.4);
   --walnut-1:#3a2411;
+  /* Grain de papier : bruit SVG généré par le navigateur (aucune image à charger) */
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .3 0 0 0 0 .14 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -101,6 +103,16 @@ a{color:inherit;}
   background:linear-gradient(180deg,rgba(10,5,1,.55),transparent 30%,transparent 70%,rgba(10,5,1,.6));
 }
 .backshelf-1{top:9%;}
+/* Bibliothèque complète dessinée en JS dans un canvas ; remplace les étagères CSS une fois prête */
+.bookcase{
+  position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;
+  opacity:0;transition:opacity .8s ease;
+  filter:blur(1.4px) saturate(.8); /* profondeur de champ : le fond reste flou */
+  -webkit-mask-image:radial-gradient(120% 100% at 50% 30%,#000 50%,transparent 100%);
+  mask-image:radial-gradient(120% 100% at 50% 30%,#000 50%,transparent 100%);
+}
+.has-bookcase .bookcase{opacity:.42;}
+.has-bookcase .backshelf{display:none;}
 .backshelf-2{top:45%;background-position:bottom,37px 0,0 0,91px 0;}
 .arch{
   position:absolute;top:0;left:50%;transform:translateX(-50%);
@@ -147,7 +159,10 @@ a{color:inherit;}
 .plaque{
   position:relative;text-align:center;
   padding:26px 40px 24px;border-radius:10px;
-  background:linear-gradient(180deg,#f6dc8e 0%, #d9b25a 30%, #c1932f 60%, #a67b22 100%);
+  background:
+    linear-gradient(112deg, transparent 28%, rgba(255,250,222,.32) 42%, rgba(255,250,222,.08) 52%, transparent 62%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 1px, transparent 1px 3px, rgba(70,45,5,.05) 3px 4px, transparent 4px 7px),
+    linear-gradient(180deg,#f6dc8e 0%, #d9b25a 30%, #c1932f 60%, #a67b22 100%);
   border:1px solid #5d4412;
   box-shadow:
     inset 0 2px 4px rgba(255,255,255,.55),
@@ -168,7 +183,7 @@ a{color:inherit;}
   background-size:14px 14px;background-repeat:no-repeat;
 }
 .pla-kicker{
-  margin:0 0 4px;font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;
+  margin:0 0 4px;font-family:var(--serif);font-size:.86rem;letter-spacing:.3em;font-variant-caps:all-small-caps;
   color:#5c430f;
 }
 .pla-title{
@@ -181,7 +196,7 @@ a{color:inherit;}
   background:linear-gradient(90deg,transparent,#5c430f,transparent);
 }
 .pla-sub{
-  margin:0 auto;max-width:720px;font-size:clamp(1.02rem,1.7vw,1.18rem);font-style:italic;
+  margin:0 auto;max-width:720px;font-family:var(--serif);font-size:clamp(1.05rem,1.75vw,1.22rem);font-style:italic;
   color:#2c1e08;line-height:1.55;
 }
 .pla-sub p{margin:9px 0 0;}
@@ -402,16 +417,56 @@ a{color:inherit;}
 .leaf-l,.leaf-r{
   position:absolute;top:14px;bottom:14px;width:calc(50% - 24px);z-index:10;
   background:
+    var(--grain),
     radial-gradient(120% 60% at 50% 0%, rgba(176,131,53,.1), transparent 55%),
     linear-gradient(90deg, rgba(120,84,44,.1), transparent 9%, transparent 91%, rgba(120,84,44,.1)),
     var(--paper);
+  box-shadow:inset 0 0 38px rgba(150,104,40,.2), inset 0 0 6px rgba(120,84,44,.25);
   color:var(--ink);
 }
 .leaf-l{left:18px;border-radius:5px 2px 2px 5px;}
 .leaf-r{
-  right:18px;border-radius:2px 5px 5px 2px;overflow:auto;
-  padding:30px 28px 24px;box-shadow:inset 0 0 0 1px rgba(120,84,44,.22);
+  right:18px;border-radius:2px 5px 5px 2px;
+  display:flex;flex-direction:column;
 }
+/* Zone de texte défilante de la page droite */
+.leaf-scroll{flex:1;min-height:0;overflow:auto;padding:30px 28px 12px;}
+.leaf-scroll:focus-visible{outline-offset:-4px;}
+/* Boutons pour tourner les pages */
+.page-turn{
+  display:flex;align-items:center;gap:10px;padding:8px 20px 12px;
+  border-top:1px solid var(--line);
+}
+.turn{
+  appearance:none;cursor:pointer;border:1px solid var(--line);border-radius:20px;background:transparent;
+  padding:4px 14px 5px;font-family:var(--serif);font-size:.95rem;letter-spacing:.06em;
+  font-variant-caps:all-small-caps;color:#6e5018;transition:background .2s;
+}
+.turn:hover,.turn:focus-visible{background:rgba(201,162,39,.16);}
+.turn-next{margin-left:auto;}
+.swap-next{animation:swapNext .35s ease-out;}
+.swap-prev{animation:swapPrev .35s ease-out;}
+@keyframes swapNext{from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:none;}}
+@keyframes swapPrev{from{opacity:0;transform:translateX(-24px);}to{opacity:1;transform:none;}}
+
+/* Page qui tourne : recto = ancienne page, verso = papier */
+.flip{
+  position:absolute;top:14px;bottom:14px;width:calc(50% - 24px);z-index:36;
+  display:none;pointer-events:none;transform-style:preserve-3d;
+}
+.flip-next{display:block;left:calc(50% + 6px);transform-origin:left center;animation:turnNext .7s cubic-bezier(.45,.05,.35,1) forwards;}
+.flip-prev{display:block;right:calc(50% + 6px);transform-origin:right center;animation:turnPrev .7s cubic-bezier(.45,.05,.35,1) forwards;}
+@keyframes turnNext{from{transform:perspective(2400px) rotateY(0);}to{transform:perspective(2400px) rotateY(-180deg);}}
+@keyframes turnPrev{from{transform:perspective(2400px) rotateY(0);}to{transform:perspective(2400px) rotateY(180deg);}}
+.flip-face,.flip-back{
+  position:absolute;inset:0;overflow:hidden;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  background:var(--grain),var(--paper);color:var(--ink);font-family:var(--serif);
+  box-shadow:inset 0 0 38px rgba(150,104,40,.2);
+}
+.flip-back{transform:rotateY(180deg);background:linear-gradient(90deg,rgba(60,45,25,.18),transparent 40%),var(--grain),var(--paper);}
+.flip-r{padding:30px 28px 12px;}
+.flip-l{padding:24px;height:100%;}
 
 .gutter{
   position:absolute;top:10px;bottom:10px;left:50%;width:50px;transform:translateX(-50%);
@@ -470,17 +525,19 @@ a{color:inherit;}
 @keyframes closeCoverL{0%{transform:rotateY(-172deg);}100%{transform:rotateY(0);}}
 @keyframes closeCoverR{0%{transform:rotateY(172deg);}100%{transform:rotateY(0);}}
 
-.openbook .leaf-l{padding:24px;}
+.openbook .leaf-l{padding:24px;overflow:auto;}
 .ll-inner{
   height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:14px;text-align:center;
 }
+.ll-head{display:flex;align-items:center;gap:18px;}
+.ll-titles{display:flex;flex-direction:column;align-items:flex-start;gap:6px;}
 .ll-num{
-  font-family:var(--serif);font-size:clamp(2.4rem,7vh,4rem);line-height:1;
+  font-family:var(--serif);font-size:clamp(2.2rem,6vh,3.2rem);line-height:1;
   color:#6a4a12;text-shadow:0 1px 0 rgba(255,255,255,.4);
 }
 .ll-label{
-  font-family:var(--serif);font-size:.86rem;letter-spacing:.24em;text-transform:uppercase;
+  font-family:var(--serif);font-size:1.02rem;letter-spacing:.2em;font-variant-caps:all-small-caps;
   color:var(--ink);opacity:.75;
 }
 .vs-ornament{display:block;width:44px;height:1px;background:var(--gold);}
@@ -495,7 +552,24 @@ a{color:inherit;}
   float:left;font-family:var(--serif);font-size:3.1em;line-height:.82;
   padding:5px 8px 0 0;color:#6e5018;
 }
-.ll-folio{margin-top:10px;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:#7a5a1e;}
+/* Sommaire de la page gauche */
+.toc{width:100%;max-width:310px;}
+.toc-title{
+  margin:0 0 6px;text-align:center;font-family:var(--serif);font-size:1.02rem;
+  letter-spacing:.2em;font-variant-caps:all-small-caps;color:#6e5018;
+}
+.toc ol{list-style:none;margin:0;padding:0;}
+.toc-item{
+  display:flex;align-items:baseline;gap:8px;width:100%;padding:4px 8px;
+  appearance:none;border:0;border-radius:4px;background:none;cursor:pointer;text-align:left;
+  font-family:var(--serif);font-size:.98rem;color:#3c2c16;transition:background .2s;
+}
+.toc-item:hover,.toc-item:focus-visible{background:rgba(201,162,39,.14);}
+.toc-item[aria-current="true"]{background:rgba(201,162,39,.2);color:#241608;font-weight:700;}
+.toc-num{min-width:2.2em;text-align:right;color:#6e5018;}
+.toc-dots{flex:1;border-bottom:1px dotted rgba(110,80,24,.6);transform:translateY(-4px);}
+.toc-page{color:#5c4a30;}
+.ll-folio{margin-top:4px;font-family:var(--serif);font-size:.86rem;letter-spacing:.18em;font-variant-caps:all-small-caps;color:#7a5a1e;}
 
 .viewer-close{
   appearance:none;position:absolute;top:-14px;right:-10px;z-index:60;
@@ -510,29 +584,30 @@ a{color:inherit;}
 /* ================= CONTENU MANUSCRIT (page droite) ================= */
 .page-head{margin:0 0 20px;}
 .head-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;}
-.rub-num{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:#6e5018;font-weight:700;}
+.rub-num{font-family:var(--serif);font-size:.92rem;letter-spacing:.2em;font-variant-caps:all-small-caps;color:#6e5018;font-weight:700;}
 .folio{font-family:var(--serif);font-size:.78rem;color:#5c4a30;}
 .page-head h2{font-family:var(--serif);font-size:clamp(1.35rem,3.4vh,1.8rem);margin:8px 0 0;line-height:1.18;color:#241608;overflow-wrap:break-word;hyphens:auto;}
 .head-rule{width:52px;height:3px;background:var(--gold);border-radius:2px;margin-top:12px;}
-.lead{font-size:.94rem;color:#3c2c16;}
+.lead{font-size:1rem;color:#3c2c16;}
 .lead strong{color:#241608;}
+.leaf-r,.cv-text{font-family:var(--serif);}
 .goal{margin-top:16px;padding:12px 16px;background:var(--paper-2);border-left:3px solid var(--gold);border-radius:4px;font-size:.9rem;color:#3c2c16;}
 .goal p{margin:0;}
 .goal p+p{margin-top:8px;}
 .goal strong{color:#241608;}
 .sub-block+.sub-block{margin-top:18px;}
 .block-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:2px;}
-.block-date{font-size:.75rem;font-weight:700;letter-spacing:.06em;color:#6e5018;white-space:nowrap;}
+.block-date{font-size:.82rem;font-weight:700;letter-spacing:.06em;color:#6e5018;white-space:nowrap;}
 .block-title{font-family:var(--serif);font-size:1rem;font-weight:700;margin:0;line-height:1.3;color:#241608;}
 .block-sub{font-size:.82rem;color:#5c4a30;font-style:italic;margin-bottom:4px;}
-.block-list{margin:5px 0 0;padding:0 0 0 18px;font-size:.86rem;color:#3c2c16;}
+.block-list{margin:5px 0 0;padding:0 0 0 18px;font-size:.92rem;color:#3c2c16;}
 .block-list li{margin-bottom:3px;}
 .block-list li::marker{color:var(--gold);}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
-.chip{background:var(--paper-2);border:1px solid var(--line);border-radius:22px;padding:6px 12px;font-size:.82rem;color:#3c2c16;}
+.chip{background:var(--paper-2);border:1px solid var(--line);border-radius:22px;padding:6px 12px;font-size:.88rem;color:#3c2c16;}
 .chip strong{color:#7a5a1e;}
 .kv{list-style:none;margin:6px 0 0;padding:0;}
-.kv li{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.88rem;color:#3c2c16;}
+.kv li{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.94rem;color:#3c2c16;}
 .kv li:last-child{border-bottom:0;}
 .kv .k{font-weight:600;color:#241608;}
 .kv .v{color:#5c4a30;text-align:right;}
@@ -547,8 +622,10 @@ a{color:inherit;}
 /* ================= PIED ================= */
 .lib-foot{
   position:relative;z-index:3;text-align:center;
-  padding:6px 16px 26px;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+  padding:26px 16px 26px;font-family:var(--serif);font-size:.95rem;letter-spacing:.16em;font-variant-caps:all-small-caps;
   color:#d9bd6a;
+  /* Bande sombre pour rester lisible devant les bibliothèques du fond */
+  background:linear-gradient(180deg,transparent,rgba(12,6,2,.85) 45%);
 }
 .pdf-btn{
   appearance:none;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit;
@@ -561,19 +638,22 @@ a{color:inherit;}
 @media (max-width:640px){
   .plaque-wrap{padding:30px 10px 0;}
   .plaque{padding:20px 20px 18px;}
-  .pla-kicker{letter-spacing:.18em;font-size:.6rem;}
+  .pla-kicker{letter-spacing:.16em;font-size:.8rem;}
   .pla-sub{font-size:.86rem;}
   .library{padding:26px 6px 14px;}
   .books-row{gap:12px;padding:0 10px;}
   .bookend{margin:0 -14px 0 0;}
   .bookend:last-of-type{margin:0 0 0 -14px;}
   .sconce{width:110px;height:110px;top:40px;}
-  .lib-foot{font-size:.66rem;}
+  .lib-foot{font-size:.86rem;}
   .shelf-decor{display:none;}
   .openbook{width:98vw;height:min(82vh,640px);}
   /* Sur mobile : une seule page, toute la largeur pour le texte */
   .openbook .leaf-l,.gutter,.spine-fold{display:none;}
-  .leaf-r{left:11px;right:11px;width:auto;padding:22px 18px 18px;}
+  .leaf-r{left:11px;right:11px;width:auto;}
+  .leaf-scroll{padding:22px 18px 10px;}
+  .page-turn{padding:8px 10px 10px;}
+  .turn{font-size:.88rem;padding:4px 10px 5px;}
   .viewer-close{right:2px;}
   .book{width:36px;height:175px;padding:8px 0 6px;}
   .bookend{width:14px;}
@@ -592,7 +672,7 @@ a{color:inherit;}
 .cv-text{
   position:relative;z-index:3;
   width:min(760px,calc(100% - 32px));margin:8px auto 28px;padding:28px 28px 20px;
-  background:var(--paper);color:var(--ink);border-radius:10px;
+  background:var(--grain),var(--paper);color:var(--ink);border-radius:10px;
   box-shadow:0 20px 40px -16px rgba(0,0,0,.7);
 }
 .rub+.rub{margin-top:30px;padding-top:24px;border-top:1px solid var(--line);}
@@ -604,7 +684,7 @@ a{color:inherit;}
 /* ================= IMPRESSION ================= */
 @media print{
   body{background:#fff;color:#000;}
-  .wall,.arch,.pillar,.sconce,.mote,.viewer,.library,.lib-foot,.skip-link,.pla-sub p:last-child{display:none!important;}
+  .wall,.bookcase,.backshelf,.arch,.pillar,.sconce,.mote,.viewer,.library,.lib-foot,.skip-link,.pla-sub p:last-child{display:none!important;}
   .lib{display:block;min-height:0;overflow:visible;}
   .plaque-wrap{padding:0 0 12px;}
   .plaque{background:none;border:0;box-shadow:none;padding:0;text-shadow:none;}
@@ -621,6 +701,7 @@ a{color:inherit;}
 
 <main class="lib">
   <div class="wall" aria-hidden="true"></div>
+  <canvas class="bookcase" id="bookcase" aria-hidden="true"></canvas>
   <div class="backshelf backshelf-1" aria-hidden="true"></div>
   <div class="backshelf backshelf-2" aria-hidden="true"></div>
   <div class="arch" aria-hidden="true"></div>
@@ -893,8 +974,15 @@ a{color:inherit;}
     <div class="openbook" id="openbook" role="dialog" aria-label="Livre ouvert" aria-modal="true" tabindex="-1">
       <div class="book-base">
         <div class="boards" aria-hidden="true"></div>
-        <div class="leaf-l" id="leafL" aria-hidden="true"></div>
-        <div class="leaf-r" id="leafR" tabindex="0" role="region" aria-label="Contenu de la rubrique"></div>
+        <div class="leaf-l" id="leafL"></div>
+        <div class="leaf-r">
+          <div class="leaf-scroll" id="leafR" tabindex="0" role="region" aria-label="Contenu de la rubrique"></div>
+          <div class="page-turn">
+            <button class="turn" id="prevBtn" type="button"><span aria-hidden="true">‹</span> <span class="sr-only">Chapitre précédent : </span><span class="turn-label"></span></button>
+            <button class="turn turn-next" id="nextBtn" type="button"><span class="sr-only">Chapitre suivant : </span><span class="turn-label"></span> <span aria-hidden="true">›</span></button>
+          </div>
+        </div>
+        <div class="flip" id="flip" aria-hidden="true" inert></div>
         <div class="gutter" aria-hidden="true"></div>
         <div class="spine-fold" aria-hidden="true"></div>
         <div class="cover-l" aria-hidden="true"></div>
@@ -941,41 +1029,74 @@ a{color:inherit;}
   };
 
   var RUBS = {
-    profil:    { num:'I',   chap:'Chapitre I',    folio:'p. 1', title:'Profil' },
-    experience:{ num:'II',  chap:'Chapitre II',   folio:'p. 2', title:'Parcours' },
-    competences:{num:'III', chap:'Chapitre III',  folio:'p. 3', title:"Compétences techniques en cours d'acquisition" },
-    formation: { num:'IV',  chap:'Chapitre IV',   folio:'p. 4', title:'Formations' },
-    langues:   { num:'V',   chap:'Chapitre V',    folio:'p. 5', title:'Langues' },
-    permis:    { num:'VI',  chap:'Chapitre VI',   folio:'p. 6', title:'Permis & CACES' },
-    contact:   { num:'VII', chap:'Chapitre VII',  folio:'p. 7', title:'Contact' }
+    profil:    { num:'I',   chap:'Chapitre I',    page:1, title:'Profil',         short:'Profil' },
+    experience:{ num:'II',  chap:'Chapitre II',   page:2, title:'Parcours',       short:'Parcours' },
+    competences:{num:'III', chap:'Chapitre III',  page:3, title:"Compétences techniques en cours d'acquisition", short:'Compétences' },
+    formation: { num:'IV',  chap:'Chapitre IV',   page:4, title:'Formations',     short:'Formations' },
+    langues:   { num:'V',   chap:'Chapitre V',    page:5, title:'Langues',        short:'Langues' },
+    permis:    { num:'VI',  chap:'Chapitre VI',   page:6, title:'Permis & CACES', short:'Permis & CACES' },
+    contact:   { num:'VII', chap:'Chapitre VII',  page:7, title:'Contact',        short:'Contact' }
   };
+  var ORDER = Object.keys(RUBS);
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var flip = document.getElementById('flip');
+  var narrow = window.matchMedia('(max-width: 640px)');
+  var turning = false;
+  var turnTimer = 0;
 
   var openRub = null;
   var lastBook = null;
 
-  function openViewer(rub, btn){
-    lastBook = btn;
-    openRub = rub;
-    var cfg = RUBS[rub];
-    var src = document.getElementById('rub-' + rub);
+  function bookFor(rub){
+    return document.querySelector('.book[data-rub="' + rub + '"]');
+  }
 
-    // Copie de la rubrique (sans ses id, pour éviter les doublons dans la page)
-    leafR.innerHTML = src.innerHTML;
+  // Page gauche : numéro, icône et sommaire cliquable
+  function renderLeft(rub){
+    var cfg = RUBS[rub];
+    var toc = ORDER.map(function(id){
+      var c = RUBS[id];
+      return '<li><button type="button" class="toc-item" data-rub="' + id + '"' + (id === rub ? ' aria-current="true"' : '') + '>' +
+        '<span class="toc-num">' + c.num + '</span><span class="toc-name">' + c.short + '</span>' +
+        '<span class="toc-dots" aria-hidden="true"></span><span class="toc-page">' + c.page + '</span></button></li>';
+    }).join('');
+    leafL.innerHTML =
+      '<div class="ll-inner">' +
+        '<div class="ll-head" aria-hidden="true">' +
+          '<span class="ll-seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + ICONS[rub] + '</svg></span>' +
+          '<span class="ll-titles"><span class="ll-num">' + cfg.num + '</span><span class="ll-label">' + cfg.short + '</span></span>' +
+        '</div>' +
+        '<span class="vs-ornament" aria-hidden="true"></span>' +
+        '<nav class="toc" aria-label="Sommaire"><p class="toc-title">Sommaire</p><ol>' + toc + '</ol></nav>' +
+        '<span class="ll-folio" aria-hidden="true">' + cfg.chap + ' · p. ' + cfg.page + '</span>' +
+      '</div>';
+  }
+
+  // Page droite : copie de la rubrique (sans ses id, pour éviter les doublons dans la page)
+  function renderRight(rub){
+    leafR.innerHTML = document.getElementById('rub-' + rub).innerHTML;
     Array.prototype.forEach.call(leafR.querySelectorAll('[id]'), function(el){
       el.removeAttribute('id');
     });
-    leafL.innerHTML =
-      '<div class="ll-inner">' +
-        '<span class="ll-num">' + cfg.num + '</span>' +
-        '<span class="ll-label">' + cfg.title + '</span>' +
-        '<span class="vs-ornament" aria-hidden="true"></span>' +
-        '<span class="ll-seal" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + ICONS[rub] + '</svg></span>' +
-        '<span class="ll-folio">' + cfg.chap + ' · ' + cfg.folio + '</span>' +
-      '</div>';
+    leafR.scrollTop = 0;
+  }
 
+  function setTurnButton(btn, rub){
+    btn.hidden = !rub;
+    if (!rub) return;
+    btn.setAttribute('data-rub', rub);
+    btn.querySelector('.turn-label').textContent = RUBS[rub].num + ' · ' + RUBS[rub].short;
+  }
+
+  // Ce qui suit le chapitre affiché : couleur du livre, livre allumé, boutons
+  function applyChapter(rub){
+    var cfg = RUBS[rub], btn = bookFor(rub), i = ORDER.indexOf(rub);
+    openRub = rub;
+    lastBook = btn;
     openbook.setAttribute('aria-label', 'Livre ouvert — ' + cfg.chap + ' : ' + cfg.title);
 
-    // Le livre ouvert reprend la couleur du cuir du livre cliqué
+    // Le livre ouvert reprend la couleur du cuir du livre correspondant
     var spine = window.getComputedStyle(btn);
     openbook.style.setProperty('--cover', spine.getPropertyValue('--leath').trim());
     openbook.style.setProperty('--cover-hi', spine.getPropertyValue('--leath-hi').trim());
@@ -983,12 +1104,18 @@ a{color:inherit;}
     books.forEach(function(b){
       b.classList.toggle('lit', b === btn);
     });
+    setTurnButton(prevBtn, ORDER[i - 1]);
+    setTurnButton(nextBtn, ORDER[i + 1]);
+  }
 
-    statusEl.textContent = 'Livre ouvert : ' + cfg.title;
+  function openViewer(rub){
+    applyChapter(rub);
+    renderLeft(rub);
+    renderRight(rub);
+    statusEl.textContent = 'Livre ouvert : ' + RUBS[rub].title;
 
     viewer.hidden = false;
     setBackgroundInert(true);
-    leafR.scrollTop = 0;
     openbook.classList.remove('open', 'closing');
     void viewer.offsetWidth;
     viewer.classList.add('active');
@@ -996,9 +1123,60 @@ a{color:inherit;}
     leafR.focus({preventScroll:true});
   }
 
+  // Tourner les pages jusqu'à un autre chapitre
+  function turnTo(rub, fromToc){
+    if (!openRub || turning || !RUBS[rub] || rub === openRub) return;
+    var forward = ORDER.indexOf(rub) > ORDER.indexOf(openRub);
+    applyChapter(rub);
+    statusEl.textContent = RUBS[rub].chap + ' : ' + RUBS[rub].title;
+
+    function finish(){
+      turning = false;
+      var active = document.activeElement;
+      if (!openbook.contains(active) || active.hidden) {
+        var target = fromToc ? leafL.querySelector('.toc-item[aria-current]') : null;
+        (target || leafR).focus({preventScroll:true});
+      }
+    }
+
+    // Mouvement réduit ou petit écran (une seule page) : simple glissement
+    if (reduce || narrow.matches) {
+      renderLeft(rub);
+      renderRight(rub);
+      if (!reduce) {
+        leafR.classList.remove('swap-next', 'swap-prev');
+        void leafR.offsetWidth;
+        leafR.classList.add(forward ? 'swap-next' : 'swap-prev');
+      }
+      finish();
+      return;
+    }
+
+    // La page qui tourne porte l'ancien contenu au recto ; le nouveau est déjà dessous
+    turning = true;
+    var oldPage = forward ? leafR : leafL;
+    flip.innerHTML =
+      '<div class="flip-face"><div class="' + (forward ? 'flip-r' : 'flip-l') + '" style="margin-top:' + (-oldPage.scrollTop) + 'px">' +
+        oldPage.innerHTML + '</div></div><div class="flip-back"></div>';
+    flip.className = 'flip ' + (forward ? 'flip-next' : 'flip-prev');
+    if (forward) renderRight(rub); else renderLeft(rub);
+
+    turnTimer = window.setTimeout(function(){
+      if (forward) renderLeft(rub); else renderRight(rub);
+      flip.className = 'flip';
+      flip.innerHTML = '';
+      finish();
+    }, 700);
+  }
+
   function closeViewer(){
     if (!openRub) return;
     openRub = null;
+    // Interrompt une page en train de tourner
+    window.clearTimeout(turnTimer);
+    turning = false;
+    flip.className = 'flip';
+    flip.innerHTML = '';
     books.forEach(function(b){
       b.classList.remove('lit');
     });
@@ -1016,8 +1194,15 @@ a{color:inherit;}
 
   books.forEach(function(btn){
     btn.addEventListener('click', function(){
-      openViewer(btn.getAttribute('data-rub'), btn);
+      openViewer(btn.getAttribute('data-rub'));
     });
+  });
+
+  prevBtn.addEventListener('click', function(){ turnTo(prevBtn.getAttribute('data-rub')); });
+  nextBtn.addEventListener('click', function(){ turnTo(nextBtn.getAttribute('data-rub')); });
+  leafL.addEventListener('click', function(ev){
+    var item = ev.target.closest('.toc-item');
+    if (item) turnTo(item.getAttribute('data-rub'), true);
   });
 
   backdrop.addEventListener('click', closeViewer);
@@ -1029,11 +1214,19 @@ a{color:inherit;}
   document.addEventListener('keydown', function(ev){
     if (viewer.hidden) return;
     if (ev.key === 'Escape') { closeViewer(); return; }
+    // Flèches gauche / droite : chapitre précédent / suivant
+    if ((ev.key === 'ArrowRight' || ev.key === 'ArrowLeft') && !ev.altKey && !ev.ctrlKey && !ev.metaKey) {
+      var turnBtn = ev.key === 'ArrowRight' ? nextBtn : prevBtn;
+      if (!turnBtn.hidden) { ev.preventDefault(); turnTo(turnBtn.getAttribute('data-rub')); }
+      return;
+    }
     // Garde le focus clavier à l'intérieur du livre ouvert
     if (ev.key === 'Tab') {
       var focusables = Array.prototype.slice.call(
         openbook.querySelectorAll('a[href], button, [tabindex="0"]')
-      );
+      ).filter(function(el){
+        return !el.hidden && el.offsetParent !== null; // ignore les boutons masqués (et la page gauche sur mobile)
+      });
       if (!focusables.length) return;
       var first = focusables[0];
       var last = focusables[focusables.length - 1];
@@ -1047,6 +1240,124 @@ a{color:inherit;}
   });
 
   document.getElementById('pdfBtn').addEventListener('click', function(){ window.print(); });
+
+  // --- Bibliothèques du fond : dessinées une seule fois dans un canvas ---
+  var lib = document.querySelector('.lib');
+  var bookcase = document.getElementById('bookcase');
+  var bcx = bookcase.getContext && bookcase.getContext('2d');
+  var LEATHERS = ['#4a1f23','#2f4659','#4a4a22','#5c2118','#3d2342','#2f4a2f','#4a3320','#6e3338',
+                  '#5b3a2b','#233a3f','#5a4a2a','#3b2a1a','#702d24','#2b3550'];
+  var drawnW = 0, drawnH = 0;
+
+  // Générateur pseudo-aléatoire à graine fixe : la bibliothèque est toujours la même
+  function seeded(seed){
+    return function(){
+      seed = seed + 0x6D2B79F5 | 0;
+      var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function shade(hex, f){
+    var n = parseInt(hex.slice(1), 16);
+    return 'rgb(' + Math.min(255, (n >> 16) * f | 0) + ',' + Math.min(255, (n >> 8 & 255) * f | 0) + ',' + Math.min(255, (n & 255) * f | 0) + ')';
+  }
+  function drawSpine(x, y, w, h, col, f, rand){
+    var g = bcx.createLinearGradient(x, 0, x + w, 0);
+    g.addColorStop(0, shade(col, f * .45));
+    g.addColorStop(.35, shade(col, f * 1.2));
+    g.addColorStop(.65, shade(col, f));
+    g.addColorStop(1, shade(col, f * .4));
+    bcx.fillStyle = g;
+    bcx.fillRect(x, y, w, h);
+    bcx.fillStyle = 'rgba(236,206,108,' + (.25 + rand() * .35).toFixed(2) + ')';
+    bcx.fillRect(x + 1, y + h * (.07 + rand() * .05), w - 2, 1.5);
+    bcx.fillRect(x + 1, y + h * (.86 + rand() * .05), w - 2, 1.5);
+    if (rand() < .3) {                                  // étiquette de titre
+      bcx.fillStyle = 'rgba(236,206,108,.16)';
+      bcx.fillRect(x + w * .22, y + h * .3, w * .56, h * .22);
+    }
+  }
+  function drawBookcase(){
+    var W = lib.clientWidth, H = lib.clientHeight;
+    if (Math.abs(W - drawnW) < 30 && Math.abs(H - drawnH) < 80) return;
+    drawnW = W; drawnH = H;
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    bookcase.width = Math.round(W * dpr);
+    bookcase.height = Math.round(H * dpr);
+    bcx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    var rand = seeded(7);
+    var rowH = Math.max(140, Math.min(190, H / 5));
+    var sections = Math.max(2, Math.round(W / 300));
+    var secW = W / sections, post = 16, plank = 12;
+
+    for (var top = 16; top < H; top += rowH) {
+      var floor = top + rowH - plank;
+      var back = bcx.createLinearGradient(0, top, 0, floor);  // fond de la niche
+      back.addColorStop(0, '#070301');
+      back.addColorStop(.3, '#1b0f07');
+      back.addColorStop(1, '#26160a');
+      bcx.fillStyle = back;
+      bcx.fillRect(0, top, W, rowH - plank);
+
+      for (var s = 0; s < sections; s++) {
+        var x = s * secW + post / 2 + 3, end = (s + 1) * secW - post / 2 - 3;
+        while (x < end - 8) {
+          var r = rand();
+          if (r < .05) { x += 10 + rand() * 24; continue; }   // espace vide
+          var w = 9 + rand() * 12, h = (rowH - plank - 16) * (.6 + rand() * .36);
+          var col = LEATHERS[rand() * LEATHERS.length | 0], f = .75 + rand() * .45;
+          if (r > .965 && x + w + h * .25 < end) {             // livre penché
+            bcx.save();
+            bcx.translate(x, floor);
+            bcx.rotate(.2);
+            drawSpine(0, -h, w, h, col, f, rand);
+            bcx.restore();
+            x += w + h * .2 + 1;
+            continue;
+          }
+          if (x + w > end) break;
+          drawSpine(x, floor - h, w, h, col, f, rand);
+          x += w + (rand() < .3 ? 1 : 0);
+        }
+      }
+      var shadow = bcx.createLinearGradient(0, top, 0, top + 42); // ombre de la planche du dessus
+      shadow.addColorStop(0, 'rgba(0,0,0,.7)');
+      shadow.addColorStop(1, 'rgba(0,0,0,0)');
+      bcx.fillStyle = shadow;
+      bcx.fillRect(0, top, W, 42);
+      var board = bcx.createLinearGradient(0, floor, 0, floor + plank);
+      board.addColorStop(0, '#7a5028');
+      board.addColorStop(.25, '#4a2f16');
+      board.addColorStop(1, '#1f1209');
+      bcx.fillStyle = board;
+      bcx.fillRect(0, floor, W, plank);
+    }
+    for (var p = 0; p <= sections; p++) {                       // montants verticaux
+      var px = p * secW - post / 2, wood = bcx.createLinearGradient(px, 0, px + post, 0);
+      wood.addColorStop(0, '#160c05');
+      wood.addColorStop(.5, '#553719');
+      wood.addColorStop(1, '#160c05');
+      bcx.fillStyle = wood;
+      bcx.fillRect(px, 0, post, H);
+    }
+    var dark = bcx.createRadialGradient(W / 2, H * .38, Math.min(W, H) * .2, W / 2, H * .38, Math.max(W, H) * .8);
+    dark.addColorStop(0, 'rgba(0,0,0,0)');
+    dark.addColorStop(1, 'rgba(0,0,0,.6)');
+    bcx.fillStyle = dark;
+    bcx.fillRect(0, 0, W, H);
+    document.documentElement.classList.add('has-bookcase');
+  }
+  if (bcx) {
+    // Dessin hors du chemin critique, puis seulement si la taille change vraiment
+    (window.requestIdleCallback || function(cb){ return window.setTimeout(cb, 200); })(drawBookcase);
+    var pending = 0;
+    window.addEventListener('resize', function(){
+      window.cancelAnimationFrame(pending);
+      pending = window.requestAnimationFrame(drawBookcase);
+    });
+  }
 
 })();
 </script>
