@@ -6,8 +6,8 @@ Ancien militaire et coach sportif de 26 ans, je me reconvertis actuellement dans
 
 ## Contact
 
-* **Téléphone :** 06 \*\* \*\* \*\* \*\*
-* **Email :** mail@gmail.com
+* **Téléphone :** \*\* \*\* \*\* \*\* \*\*
+* **Email :** \*\*\*\*\*@\*\*\*\*\*.\*\*\*
 * **Github :** [HugoLgn183](https://github.com/HugoLgn183)
 * **Localisation :** Saint-Étienne
 * 
