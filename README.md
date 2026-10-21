@@ -24,10 +24,11 @@ page_cv/
 - **JavaScript** natif, sans bibliothèque : ouverture et fermeture des livres.
 - **GitHub Pages** pour l'hébergement.
 
-Aucune image, police externe ou dépendance : la page entière pèse environ 42 Ko.
+Aucune image, police externe ou dépendance : la page entière pèse environ 50 Ko (13 Ko une fois compressée par GitHub Pages).
 
 ## Fonctionnalités
 
+- **Décor entièrement en CSS** : étagères de livres en arrière-plan, bougie animée, rivets de la plaque, livre ouvert qui reprend la couleur du livre choisi avec son signet, icône gravée et chiffre romain pour chaque rubrique.
 - **Responsive** : sur mobile, le livre ouvert n'affiche que la page de texte, en pleine largeur.
 - **Accessibilité** :
   - navigation complète au clavier, lien d'évitement et focus visible ;
@@ -44,7 +45,7 @@ Aucune image, police externe ou dépendance : la page entière pèse environ 42 
 |---|---|
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement |
 | Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 99 / 100 / 96 / 100 |
-| Lighthouse ordinateur | 100 / 100 / 100 / 100 |
+| Lighthouse ordinateur | 100 / 100 / 96 / 100 |
 
 Le détail des mesures, le journal des corrections de la V1 à la version finale et l'auto-évaluation sont dans [AUTOEVALUATION.md](AUTOEVALUATION.md).
 

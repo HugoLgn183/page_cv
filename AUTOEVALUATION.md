@@ -11,7 +11,7 @@ Mesures réalisées le 21/10/2026 sur la version en ligne.
 | V1 | 16/09/2026 | CV classique en deux colonnes (barre latérale + contenu), avec `css/style.css` et `js/app.js` séparés. |
 | V2 | 23/09/2026 | Refonte : le CV devient un livre qu'on feuillette. CSS et JS regroupés dans `index.html`. |
 | V3 | 23/09/2026 | Nouvelle direction artistique : une bibliothèque, chaque rubrique est un livre sur une étagère. |
-| Finale | 21/10/2026 | V3 corrigée : contenu, accessibilité, confidentialité, SEO, documentation (voir le journal). |
+| Finale | 21/10/2026 | V3 corrigée et enrichie : contenu, accessibilité, confidentialité, SEO, documentation, décor (voir le journal). |
 
 ## 2. Résultats des outils (version finale)
 
@@ -20,18 +20,18 @@ Mesures réalisées le 21/10/2026 sur la version en ligne.
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement | — |
 | Lighthouse — Performance | 99 | 100 |
 | Lighthouse — Accessibilité | 100 | 100 |
-| Lighthouse — Bonnes pratiques | 96 | 100 |
+| Lighthouse — Bonnes pratiques | 96 | 96 |
 | Lighthouse — SEO | 100 | 100 |
 | Outiref (structure des titres) | *à compléter* | — |
 
 Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en local (Lighthouse 12.6.1) car l'API PageSpeed était saturée ce jour-là.
 
-**Indicateurs mobile :** affichage du premier contenu en 1,6 s, du plus grand élément en 1,7 s, temps de blocage 10 ms, aucun décalage de mise en page (CLS = 0).
+**Indicateurs mobile :** affichage du premier contenu en 1,5 s, du plus grand élément en 1,6 s, temps de blocage 0 ms, aucun décalage de mise en page (CLS = 0).
 
-**Poids :** une seule page HTML de 42 Ko (11 Ko compressée par GitHub Pages), sans image, police externe ni bibliothèque.
+**Poids :** une seule page HTML de 50 Ko (13 Ko compressée par GitHub Pages), sans image, police externe ni bibliothèque.
 
 **Remarques sur les mesures :**
-- Le score « Bonnes pratiques » mobile (96) vient d'une erreur 404 sur `favicon.ico` : le site n'a pas d'icône d'onglet.
+- Les scores sont ceux d'une première visite. Le score « Bonnes pratiques » (96) vient d'une erreur 404 sur `favicon.ico` : le site n'a pas d'icône d'onglet. Lors d'une seconde mesure, une fois l'erreur en cache, tous les scores atteignent 100.
 - Lighthouse a relevé quelques requêtes supplémentaires (environ 100 Ko) qui n'existent pas dans le code source du site. Elles viennent de l'environnement de test et non de la page.
 
 ## 3. Journal des corrections (V1 → finale)
@@ -55,11 +55,14 @@ Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en l
 | 21/10 | Export PDF de 7 pages | Un saut de page imposé après chaque rubrique | Impression directe des sections, sans saut forcé | 7 → 4 pages |
 | 21/10 | Pas d'objectif professionnel dans le CV | Profil limité à la présentation | Bloc « Mon objectif » et « Ce que j'apporte » dans le Profil | CV orienté vers la suite du parcours |
 | 21/10 | Dépôt sans documentation | Pas de README | Ajout de `README.md` et de ce document | Dépôt compréhensible sans ouvrir le code |
+| 21/10 | Scène vide : une seule étagère dans une grande pièce sombre | Décor limité à l'étagère principale | Deux étagères de livres en arrière-plan, bougie animée et pile de livres couchés, dessinées en CSS (sans image) | Page 42 → 50 Ko ; Lighthouse Performance mobile toujours 99, temps de blocage 0 ms |
+| 21/10 | Livre ouvert toujours marron, quel que soit le livre choisi | Couleur de couverture fixe dans le CSS | La couverture reprend la couleur du cuir du livre cliqué, avec un signet assorti | Lien visuel entre l'étagère et le livre ouvert |
+| 21/10 | Page de gauche du livre ouvert peu remplie, tranches sans repère | Décor des pages minimal | Icône gravée par rubrique, chiffre romain sur chaque tranche, lettrine sur le premier paragraphe, rivets sur la plaque | W3C toujours sans erreur ; chiffres romains lisibles (contraste ≥ 4,7:1) |
 
 ## 4. Analyse
 
 - **D'où venaient la plupart des problèmes :** j'ai d'abord travaillé l'apparence (le décor de bibliothèque), puis vérifié le reste. Les couleurs dorées ont été choisies à l'œil, d'où les contrastes insuffisants. Le contenu rangé dans des `<template>` facilitait le JavaScript mais rendait le CV invisible pour les moteurs de recherche.
-- **Ce qui a bien fonctionné :** le choix d'un fichier unique sans dépendance donne d'excellentes performances (99–100) sans effort particulier. Le HTML a été valide dès la V1.
+- **Ce qui a bien fonctionné :** le choix d'un fichier unique sans dépendance donne d'excellentes performances (99–100) sans effort particulier. Le HTML a été valide dès la V1. Le décor ajouté en dernier (étagères, bougie, signet) est entièrement en CSS : il n'ajoute que 8 Ko et ne dégrade pas les performances.
 - **Ce que j'en retiens :** vérifier les contrastes et tester au clavier et sur mobile dès le début, et non à la fin. Garder le contenu dans le HTML et réserver le JavaScript à l'animation (amélioration progressive).
 
 ## 5. Auto-évaluation selon la grille
@@ -71,7 +74,7 @@ Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en l
 | C3 Responsive | 4 | 15 | 60 | Pas de défilement horizontal, lecture pleine largeur sur mobile, typographie fluide |
 | C4 UX & accessibilité | 4 | 15 | 60 | Lighthouse 100, contrastes ≥ 4,5:1, navigation clavier complète, mouvement réduit |
 | C5 SEO | 4 | 10 | 40 | Lighthouse 100, titre et description pertinents, contenu indexable |
-| C6 Performance | 4 | 10 | 40 | Lighthouse 99–100, 42 Ko, aucune dépendance |
+| C6 Performance | 4 | 10 | 40 | Lighthouse 99–100, 50 Ko, aucune dépendance |
 | C7 Validation & corrections | 3 | 10 | 30 | W3C sans erreur, Lighthouse, journal ci-dessus ; Outiref reste à passer |
 | C8 Publication | 4 | 5 | 20 | En ligne, testé sur mobile, corrigé après publication |
 | C9 Auto-évaluation | 4 | 5 | 20 | Résultats, causes et impact mesuré (ce document) |
