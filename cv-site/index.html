@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" class="no-js">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hugo Largeron — CV à la bibliothèque</title>
-<meta name="description" content="CV de Hugo Largeron, BTS SIO SISR, présenté comme une bibliothèque ancienne : chaque rubrique est un livre à ouvrir.">
+<title>Hugo Largeron — CV BTS SIO SISR en alternance, Saint-Étienne</title>
+<meta name="description" content="CV de Hugo Largeron, étudiant en BTS SIO SISR en alternance à Saint-Étienne : parcours, compétences réseaux, systèmes et cybersécurité, formations et contact.">
+<meta name="author" content="Hugo Largeron">
+<link rel="canonical" href="https://hugolgn183.github.io/page_cv/cv-site/">
+<meta property="og:type" content="profile">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="Hugo Largeron — CV BTS SIO SISR">
+<meta property="og:description" content="Étudiant en BTS SIO SISR en alternance à Saint-Étienne, en reconversion vers l'informatique et la cybersécurité.">
+<meta property="og:url" content="https://hugolgn183.github.io/page_cv/cv-site/">
 <meta name="theme-color" content="#2c1a0a">
+<script>document.documentElement.className = 'js';</script>
 <style>
 :root{
   --serif:Georgia,'Times New Roman',Times,serif;
@@ -459,26 +467,30 @@ a{color:inherit;}
   .btitle{font-size:.72rem;letter-spacing:.12em;}
 }
 
+/* ================= CONTENU DU CV (sans JS / impression) ================= */
+.cv-text{
+  position:relative;z-index:3;
+  width:min(760px,calc(100% - 32px));margin:8px auto 28px;padding:28px 28px 20px;
+  background:var(--paper);color:var(--ink);border-radius:10px;
+  box-shadow:0 20px 40px -16px rgba(0,0,0,.7);
+}
+.rub+.rub{margin-top:30px;padding-top:24px;border-top:1px solid var(--line);}
+/* Avec JavaScript, le contenu est lu dans le livre ouvert */
+.js .cv-text{display:none;}
+/* Sans JavaScript, les livres (boutons) ne servent à rien */
+.no-js .library,.no-js .viewer,.no-js .skip-link,.no-js .pdf-btn,.no-js .pla-sub p:last-child{display:none;}
+
 /* ================= IMPRESSION ================= */
-.print-area{display:none;}
 @media print{
   body{background:#fff;color:#000;}
-  .wall,.arch,.pillar,.sconce,.mote,.viewer,.plaque-wrap,.library,.lib-foot,.skip-link{display:none!important;}
-  .lib{display:block;min-height:0;}
-  .print-area{display:block;}
-  .print-rub{
-    page-break-after:always;color:#000;
-    font-size:.9rem;max-width:900px;margin:0 auto;padding:18px 22px;
-  }
-  .print-rub .leaf-head{
-    text-align:center;margin-bottom:10px;
-    font-family:var(--serif);letter-spacing:.1em;
-  }
-  .print-rub h2{font-size:1.5rem;margin:2px 0;}
+  .wall,.arch,.pillar,.sconce,.mote,.viewer,.library,.lib-foot,.skip-link,.pla-sub p:last-child{display:none!important;}
+  .lib{display:block;min-height:0;overflow:visible;}
+  .plaque-wrap{padding:0 0 12px;}
+  .plaque{background:none;border:0;box-shadow:none;padding:0;text-shadow:none;}
+  .plaque::before,.pla-rule{display:none;}
+  .js .cv-text,.cv-text{display:block;width:auto;margin:0;padding:0;background:none;box-shadow:none;font-size:.9rem;}
+  .rub{break-inside:avoid;}
 }
-
-/* ================= SANS JAVASCRIPT ================= */
-html.no-js .viewer{display:none;}
 </style>
 </head>
 <body>
@@ -551,9 +563,199 @@ html.no-js .viewer{display:none;}
 
   </section>
 
+  <!-- ===================== CONTENUS DES RUBRIQUES =====================
+       Contenu réel du CV, lisible sans JavaScript et indexable.
+       Avec JavaScript, il est masqué et affiché dans le livre ouvert. -->
+  <div class="cv-text" id="cv-text">
+
+    <section class="rub" id="rub-profil" aria-labelledby="t-profil">
+      <div class="page-head">
+        <div class="head-top"><span class="rub-num">Chapitre I</span><span class="folio">p. 1</span></div>
+        <h2 id="t-profil">Profil</h2>
+        <div class="head-rule" aria-hidden="true"></div>
+      </div>
+      <p class="lead">Ancien militaire et coach sportif de 26 ans, je me reconvertis actuellement dans le domaine <strong>informatique</strong>, afin d'intégrer, par la suite, un cursus dans la <strong>cybersécurité</strong>. Je suis actuellement en <strong>BTS SIO SISR</strong> au CFAI de Saint-Étienne, et en alternance dans une entreprise.</p>
+    </section>
+
+    <section class="rub" id="rub-experience" aria-labelledby="t-experience">
+      <div class="page-head">
+        <div class="head-top"><span class="rub-num">Chapitre II</span><span class="folio">p. 2</span></div>
+        <h2 id="t-experience">Expériences professionnelles</h2>
+        <div class="head-rule" aria-hidden="true"></div>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">2025 — 2026</span><h3 class="block-title">Stage en milieu hospitalier</h3></div>
+        <p class="block-sub">CHU Saint-Étienne, 42</p>
+        <ul class="block-list">
+          <li>Recherches sur la maigreur constitutionnelle</li>
+          <li>Encadrement des patientes sur leur protocole d'activité physique sur 2 mois</li>
+        </ul>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">2025</span><h3 class="block-title">Coach sportif</h3></div>
+        <p class="block-sub">Espace Cardio, Saint-Étienne, 42</p>
+        <ul class="block-list"><li>Cours collectif type bodysculpt, aquabike</li></ul>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">2022 — 2025</span><h3 class="block-title">Stage au sein de clubs de natation</h3></div>
+        <p class="block-sub">SEAM et ASPTT, Saint-Étienne, 42</p>
+        <ul class="block-list">
+          <li>Intervention en aisance aquatique</li>
+          <li>Entraînement supervisé du groupe ado loisir</li>
+          <li>Interventions pédagogiques sur la préparation physique de l'équipe 1 / sport-étude</li>
+          <li>Entraînements en autonomie de préparation physique de l'équipe 1 / sport-étude</li>
+        </ul>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">Été 2024 — 2025</span><h3 class="block-title">Secouriste aquatique</h3></div>
+        <p class="block-sub">Piscine municipale, Saint-Étienne, 42</p>
+        <ul class="block-list"><li>Poste de BNSSA</li></ul>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">Été 2025</span><h3 class="block-title">Chauffeur-livreur</h3></div>
+        <p class="block-sub">Rouzès, Saint-Étienne, 42</p>
+        <ul class="block-list">
+          <li>Transport de matériel de BTP</li>
+          <li>Opération de manutention</li>
+        </ul>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">2021 — 2022 &amp; été 2023</span><h3 class="block-title">Manutentionnaire</h3></div>
+        <p class="block-sub">Easydis, 42</p>
+        <ul class="block-list">
+          <li>Préparateur de commande</li>
+          <li>Rouleur sur transpalette à conducteur auto-porté</li>
+        </ul>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">2018 — 2021</span><h3 class="block-title">Soldat</h3></div>
+        <p class="block-sub">21e Régiment d'Infanterie de Marine, Fréjus, 83</p>
+        <ul class="block-list">
+          <li>Formation de soldat — combattant infanterie</li>
+          <li>Formation en système de transmission et système de communication</li>
+          <li>Formation de chef d'équipe</li>
+          <li>2 déploiements</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="rub" id="rub-competences" aria-labelledby="t-competences">
+      <div class="page-head">
+        <div class="head-top"><span class="rub-num">Chapitre III</span><span class="folio">p. 3</span></div>
+        <h2 id="t-competences">Compétences techniques en cours d'acquisition</h2>
+        <div class="head-rule" aria-hidden="true"></div>
+      </div>
+      <p class="lead">Réseaux, systèmes, programmation et sécurité : les bases que je consolide chaque jour.</p>
+      <div class="chips">
+        <span class="chip">Gestion de réseaux <strong>Windows / Linux (Ubuntu)</strong> en machine virtuelle</span>
+        <span class="chip">Bases des réseaux — modèle <strong>OSI</strong>, <strong>TCP/IP</strong></span>
+        <span class="chip">Commandes de base <strong>Bash</strong></span>
+        <span class="chip">Programmation — <strong>Python</strong>, <strong>C++</strong>, <strong>C#</strong></span>
+        <span class="chip">Cybersécurité — <strong>Hack The Box</strong>, <strong>TryHackMe</strong></span>
+      </div>
+    </section>
+
+    <section class="rub" id="rub-formation" aria-labelledby="t-formation">
+      <div class="page-head">
+        <div class="head-top"><span class="rub-num">Chapitre IV</span><span class="folio">p. 4</span></div>
+        <h2 id="t-formation">Formations &amp; diplômes</h2>
+        <div class="head-rule" aria-hidden="true"></div>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">2022 — 2025</span><h3 class="block-title">Licence STAPS ES — supplément AFF, option haltérophilie</h3></div>
+        <p class="block-sub">Université Jean Monnet, Saint-Étienne</p>
+        <ul class="block-list"><li>Licence obtenue</li></ul>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">2025 — 2026</span><h3 class="block-title">Licence STAPS APAS</h3></div>
+        <p class="block-sub">Université Jean Monnet, Saint-Étienne</p>
+        <ul class="block-list"><li>Licence obtenue — Activité physique adaptée et santé</li></ul>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">2024</span><h3 class="block-title">BNSSA</h3></div>
+        <p class="block-sub">Union Départementale des Sapeurs-Pompiers de la Loire (UDSPL)</p>
+        <ul class="block-list"><li>Brevet national de sécurité et de sauvetage aquatique</li></ul>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">2024</span><h3 class="block-title">PSE1</h3></div>
+        <p class="block-sub">Union Départementale des Sapeurs-Pompiers de la Loire (UDSPL)</p>
+        <ul class="block-list"><li>Premiers secours en équipe de niveau 1</li></ul>
+      </div>
+
+      <div class="sub-block">
+        <div class="block-head"><span class="block-date">2018</span><h3 class="block-title">Baccalauréat S</h3></div>
+        <p class="block-sub">Lycée Simone Weil, Saint-Priest-en-Jarez</p>
+        <ul class="block-list"><li>Obtention du baccalauréat scientifique, spécialité SVT</li></ul>
+      </div>
+    </section>
+
+    <section class="rub" id="rub-langues" aria-labelledby="t-langues">
+      <div class="page-head">
+        <div class="head-top"><span class="rub-num">Chapitre V</span><span class="folio">p. 5</span></div>
+        <h2 id="t-langues">Langues</h2>
+        <div class="head-rule" aria-hidden="true"></div>
+      </div>
+      <ul class="kv">
+        <li><span class="k">Français</span><span class="v">Langue maternelle</span></li>
+        <li><span class="k">Anglais</span><span class="v">B2 – C1</span></li>
+      </ul>
+    </section>
+
+    <section class="rub" id="rub-permis" aria-labelledby="t-permis">
+      <div class="page-head">
+        <div class="head-top"><span class="rub-num">Chapitre VI</span><span class="folio">p. 6</span></div>
+        <h2 id="t-permis">Permis &amp; CACES</h2>
+        <div class="head-rule" aria-hidden="true"></div>
+      </div>
+      <ul class="kv">
+        <li><span class="k">Permis B</span><span class="v">Véhiculé</span></li>
+        <li><span class="k">Permis A1</span><span class="v">Moto légère</span></li>
+        <li><span class="k">CACES 1A</span><span class="v">Engins de chantier</span></li>
+      </ul>
+    </section>
+
+    <section class="rub" id="rub-contact" aria-labelledby="t-contact">
+      <div class="page-head">
+        <div class="head-top"><span class="rub-num">Chapitre VII</span><span class="folio">p. 7</span></div>
+        <h2 id="t-contact">Contact</h2>
+        <div class="head-rule" aria-hidden="true"></div>
+      </div>
+      <p class="lead">Actuellement en <strong>alternance</strong> en BTS SIO SISR, je reste disponible pour échanger sur mon parcours et mes projets. N'hésitez pas à me contacter.</p>
+      <ul class="contact-list">
+        <li>
+          <span class="ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+          <span><span aria-hidden="true">** ** ** ** **</span><span class="sr-only">Téléphone masqué</span></span>
+        </li>
+        <li>
+          <span class="ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
+          <span><span aria-hidden="true">*****@*****.***</span><span class="sr-only">E-mail masqué</span></span>
+        </li>
+        <li>
+          <span class="ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-4 1.5-4-2.5-6-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></span>
+          <span><a href="https://github.com/HugoLgn183" target="_blank" rel="noopener noreferrer">HugoLgn183 <span class="note">github.com · nouvelle fenêtre</span></a></span>
+        </li>
+        <li>
+          <span class="ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          <span>Saint-Étienne, France</span>
+        </li>
+      </ul>
+    </section>
+  </div>
+
   <footer class="lib-foot">
     Édition 2026 · Saint-Étienne
-    <button class="pdf-btn" type="button" onclick="window.print()">Exporter en PDF</button>
+    <button class="pdf-btn" id="pdfBtn" type="button">Exporter en PDF</button>
   </footer>
 
   <!-- Visionneuse : livre ouvert -->
@@ -573,17 +775,6 @@ html.no-js .viewer{display:none;}
     </div>
   </div>
 </main>
-
-<div class="print-area" id="printArea" aria-hidden="true"></div>
-
-<noscript>
-  <div style="max-width:760px;margin:24px auto;padding:24px;background:#f4ead0;color:#241a10;border-radius:10px;line-height:1.7">
-    <h2>Hugo Largeron — BTS SIO SISR</h2>
-    <p>Ancien militaire et coach sportif de 26 ans, en reconversion vers l'informatique (cybersécurité).</p>
-    <p>Pour me contacter : <span aria-hidden="true">*****@*****.***</span><span class="sr-only">E-mail masqué</span> · Saint-Étienne · <a href="https://github.com/HugoLgn183" target="_blank" rel="noopener noreferrer">github.com/HugoLgn183</a></p>
-    <p style="opacity:.7">Activez JavaScript pour parcourir la bibliothèque.</p>
-  </div>
-</noscript>
 
 <script>
 (function(){
@@ -625,9 +816,13 @@ html.no-js .viewer{display:none;}
     lastBook = btn;
     openRub = rub;
     var cfg = RUBS[rub];
-    var tpl = document.getElementById('rub-' + rub);
+    var src = document.getElementById('rub-' + rub);
 
-    leafR.innerHTML = tpl.innerHTML;
+    // Copie de la rubrique (sans ses id, pour éviter les doublons dans la page)
+    leafR.innerHTML = src.innerHTML;
+    Array.prototype.forEach.call(leafR.querySelectorAll('[id]'), function(el){
+      el.removeAttribute('id');
+    });
     leafL.innerHTML =
       '<div class="ll-inner">' +
         '<span class="ll-num">' + cfg.num + '</span>' +
@@ -705,212 +900,10 @@ html.no-js .viewer{display:none;}
     }
   });
 
-  // --- Impression : remplit une zone statique ---
-  var printArea = document.getElementById('printArea');
-  function fillPrintArea(){
-    printArea.innerHTML = '';
-    Object.keys(RUBS).forEach(function(id){
-      var cfg = RUBS[id];
-      var tpl = document.getElementById('rub-' + id);
-      var sec = document.createElement('section');
-      sec.className = 'print-rub';
-      sec.innerHTML =
-        '<div class="leaf-head"><span>' + cfg.chap + ' · ' + cfg.folio + '</span></div>' +
-        tpl.innerHTML;
-      printArea.appendChild(sec);
-    });
-  }
-  window.addEventListener('beforeprint', fillPrintArea);
-  window.addEventListener('afterprint', function(){ printArea.innerHTML = ''; });
+  document.getElementById('pdfBtn').addEventListener('click', function(){ window.print(); });
 
 })();
 </script>
-
-<!-- ===================== CONTENUS DES RUBRIQUES ===================== -->
-
-<template id="rub-profil">
-  <div class="page-head">
-    <div class="head-top"><span class="rub-num">Chapitre I</span><span class="folio">p. 1</span></div>
-    <h2>Profil</h2>
-    <div class="head-rule" aria-hidden="true"></div>
-  </div>
-  <p class="lead">Ancien militaire et coach sportif de 26 ans, je me reconvertis actuellement dans le domaine <strong>informatique</strong>, afin d'intégrer, par la suite, un cursus dans la <strong>cybersécurité</strong>. Je suis actuellement en <strong>BTS SIO SISR</strong> au CFAI de Saint-Étienne, et en alternance dans une entreprise.</p>
-</template>
-
-<template id="rub-experience">
-  <div class="page-head">
-    <div class="head-top"><span class="rub-num">Chapitre II</span><span class="folio">p. 2</span></div>
-    <h2>Expériences professionnelles</h2>
-    <div class="head-rule" aria-hidden="true"></div>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">2025 — 2026</span><h3 class="block-title">Stage en milieu hospitalier</h3></div>
-    <p class="block-sub">CHU Saint-Étienne, 42</p>
-    <ul class="block-list">
-      <li>Recherches sur la maigreur constitutionnelle</li>
-      <li>Encadrement des patientes sur leur protocole d'activité physique sur 2 mois</li>
-    </ul>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">2025</span><h3 class="block-title">Coach sportif</h3></div>
-    <p class="block-sub">Espace Cardio, Saint-Étienne, 42</p>
-    <ul class="block-list"><li>Cours collectif type bodysculpt, aquabike</li></ul>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">2022 — 2025</span><h3 class="block-title">Stage au sein de clubs de natation</h3></div>
-    <p class="block-sub">SEAM et ASPTT, Saint-Étienne, 42</p>
-    <ul class="block-list">
-      <li>Intervention en aisance aquatique</li>
-      <li>Entraînement supervisé du groupe ado loisir</li>
-      <li>Interventions pédagogiques sur la préparation physique de l'équipe 1 / sport-étude</li>
-      <li>Entraînements en autonomie de préparation physique de l'équipe 1 / sport-étude</li>
-    </ul>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">Été 2024 — 2025</span><h3 class="block-title">Secouriste aquatique</h3></div>
-    <p class="block-sub">Piscine municipale, Saint-Étienne, 42</p>
-    <ul class="block-list"><li>Poste de BNSSA</li></ul>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">Été 2025</span><h3 class="block-title">Chauffeur-livreur</h3></div>
-    <p class="block-sub">Rouzès, Saint-Étienne, 42</p>
-    <ul class="block-list">
-      <li>Transport de matériel de BTP</li>
-      <li>Opération de manutention</li>
-    </ul>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">2021 — 2022 &amp; été 2023</span><h3 class="block-title">Manutentionnaire</h3></div>
-    <p class="block-sub">Easydis, 42</p>
-    <ul class="block-list">
-      <li>Préparateur de commande</li>
-      <li>Rouleur sur transpalette à conducteur auto-porté</li>
-    </ul>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">2018 — 2021</span><h3 class="block-title">Soldat</h3></div>
-    <p class="block-sub">21e Régiment d'Infanterie de Marine, Fréjus, 83</p>
-    <ul class="block-list">
-      <li>Formation de soldat — combattant infanterie</li>
-      <li>Formation en système de transmission et système de communication</li>
-      <li>Formation de chef d'équipe</li>
-      <li>2 déploiements</li>
-    </ul>
-  </div>
-</template>
-
-<template id="rub-competences">
-  <div class="page-head">
-    <div class="head-top"><span class="rub-num">Chapitre III</span><span class="folio">p. 3</span></div>
-    <h2>Compétences techniques en cours d'acquisition</h2>
-    <div class="head-rule" aria-hidden="true"></div>
-  </div>
-  <p class="lead">Réseaux, systèmes, programmation et sécurité : les bases que je consolide chaque jour.</p>
-  <div class="chips">
-    <span class="chip">Gestion de réseaux <strong>Windows / Linux (Ubuntu)</strong> en machine virtuelle</span>
-    <span class="chip">Bases des réseaux — modèle <strong>OSI</strong>, <strong>TCP/IP</strong></span>
-    <span class="chip">Commandes de base <strong>Bash</strong></span>
-    <span class="chip">Programmation — <strong>Python</strong>, <strong>C++</strong>, <strong>C#</strong></span>
-    <span class="chip">Cybersécurité — <strong>Hack The Box</strong>, <strong>TryHackMe</strong></span>
-  </div>
-</template>
-
-<template id="rub-formation">
-  <div class="page-head">
-    <div class="head-top"><span class="rub-num">Chapitre IV</span><span class="folio">p. 4</span></div>
-    <h2>Formations &amp; diplômes</h2>
-    <div class="head-rule" aria-hidden="true"></div>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">2022 — 2025</span><h3 class="block-title">Licence STAPS ES — supplément AFF, option haltérophilie</h3></div>
-    <p class="block-sub">Université Jean Monnet, Saint-Étienne</p>
-    <ul class="block-list"><li>Licence obtenue</li></ul>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">2025 — 2026</span><h3 class="block-title">Licence STAPS APAS</h3></div>
-    <p class="block-sub">Université Jean Monnet, Saint-Étienne</p>
-    <ul class="block-list"><li>Licence obtenue — Activité physique adaptée et santé</li></ul>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">2024</span><h3 class="block-title">BNSSA</h3></div>
-    <p class="block-sub">Union Départementale des Sapeurs-Pompiers de la Loire (UDSPL)</p>
-    <ul class="block-list"><li>Brevet national de sécurité et de sauvetage aquatique</li></ul>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">2024</span><h3 class="block-title">PSE1</h3></div>
-    <p class="block-sub">Union Départementale des Sapeurs-Pompiers de la Loire (UDSPL)</p>
-    <ul class="block-list"><li>Premiers secours en équipe de niveau 1</li></ul>
-  </div>
-
-  <div class="sub-block">
-    <div class="block-head"><span class="block-date">2018</span><h3 class="block-title">Baccalauréat S</h3></div>
-    <p class="block-sub">Lycée Simone Weil, Saint-Priest-en-Jarez</p>
-    <ul class="block-list"><li>Obtention du baccalauréat scientifique, spécialité SVT</li></ul>
-  </div>
-</template>
-
-<template id="rub-langues">
-  <div class="page-head">
-    <div class="head-top"><span class="rub-num">Chapitre V</span><span class="folio">p. 5</span></div>
-    <h2>Langues</h2>
-    <div class="head-rule" aria-hidden="true"></div>
-  </div>
-  <ul class="kv">
-    <li><span class="k">Français</span><span class="v">Langue maternelle</span></li>
-    <li><span class="k">Anglais</span><span class="v">B2 – C1</span></li>
-  </ul>
-</template>
-
-<template id="rub-permis">
-  <div class="page-head">
-    <div class="head-top"><span class="rub-num">Chapitre VI</span><span class="folio">p. 6</span></div>
-    <h2>Permis &amp; CACES</h2>
-    <div class="head-rule" aria-hidden="true"></div>
-  </div>
-  <ul class="kv">
-    <li><span class="k">Permis B</span><span class="v">Véhiculé</span></li>
-    <li><span class="k">Permis A1</span><span class="v">Moto légère</span></li>
-    <li><span class="k">CACES 1A</span><span class="v">Engins de chantier</span></li>
-  </ul>
-</template>
-
-<template id="rub-contact">
-  <div class="page-head">
-    <div class="head-top"><span class="rub-num">Chapitre VII</span><span class="folio">p. 7</span></div>
-    <h2>Contact</h2>
-    <div class="head-rule" aria-hidden="true"></div>
-  </div>
-  <p class="lead">Actuellement en <strong>alternance</strong> en BTS SIO SISR, je reste disponible pour échanger sur mon parcours et mes projets. N'hésitez pas à me contacter.</p>
-  <ul class="contact-list">
-    <li>
-      <span class="ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
-      <span><span aria-hidden="true">** ** ** ** **</span><span class="sr-only">Téléphone masqué</span></span>
-    </li>
-    <li>
-      <span class="ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
-      <span><span aria-hidden="true">*****@*****.***</span><span class="sr-only">E-mail masqué</span></span>
-    </li>
-    <li>
-      <span class="ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-4 1.5-4-2.5-6-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg></span>
-      <span><a href="https://github.com/HugoLgn183" target="_blank" rel="noopener noreferrer">HugoLgn183 <span class="note">github.com · nouvelle fenêtre</span></a></span>
-    </li>
-    <li>
-      <span class="ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
-      <span>Saint-Étienne, France</span>
-    </li>
-  </ul>
-</template>
 
 </body>
 </html>
