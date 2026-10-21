@@ -74,6 +74,34 @@ a{color:inherit;}
   content:"";position:absolute;inset:0;
   background:radial-gradient(90% 70% at 50% 38%, transparent 55%, rgba(8,4,1,.55) 100%);
 }
+/* Étagères décoratives du fond : livres dessinés en dégradés, sans image */
+.backshelf{
+  position:absolute;left:max(9vw,70px);right:max(9vw,70px);height:132px;z-index:0;pointer-events:none;
+  contain:paint;opacity:.42;filter:saturate(.75);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+  background:
+    /* planche */
+    linear-gradient(180deg,#5a3a1c,#2a190a) bottom/100% 12px no-repeat,
+    /* hauts de livres irréguliers */
+    repeating-linear-gradient(90deg,#1c1108 0 23px,transparent 23px 61px,#1c1108 61px 79px,transparent 79px 139px,#1c1108 139px 152px,transparent 152px 203px) top/100% 24px no-repeat,
+    /* filets dorés */
+    repeating-linear-gradient(180deg,transparent 0 30px,rgba(236,206,108,.28) 30px 32px,transparent 32px 88px,rgba(236,206,108,.2) 88px 90px,transparent 90px 132px),
+    /* tranches */
+    repeating-linear-gradient(90deg,
+      #4a1f23 0 14px,#100903 14px 16px,#2f4659 16px 31px,#100903 31px 33px,#4a4a22 33px 45px,#100903 45px 47px,
+      #5c2118 47px 63px,#100903 63px 65px,#3d2342 65px 77px,#100903 77px 79px,#2f4a2f 79px 96px,#100903 96px 98px,
+      #4a3320 98px 112px,#100903 112px 114px,#6e3338 114px 126px,#100903 126px 128px,#2f4659 128px 141px,#100903 141px 143px,
+      #5b3a2b 143px 160px,#100903 160px 162px,#4a4a22 162px 176px,#100903 176px 178px,#3d2342 178px 194px,#100903 194px 196px,
+      #5c2118 196px 210px,#100903 210px 212px)
+      top/100% calc(100% - 12px) no-repeat;
+}
+.backshelf::after{
+  content:"";position:absolute;inset:0 0 12px;
+  background:linear-gradient(180deg,rgba(10,5,1,.55),transparent 30%,transparent 70%,rgba(10,5,1,.6));
+}
+.backshelf-1{top:9%;}
+.backshelf-2{top:45%;background-position:bottom,37px 0,0 0,91px 0;}
 .arch{
   position:absolute;top:0;left:50%;transform:translateX(-50%);
   width:74vw;max-width:800px;height:130px;
@@ -128,10 +156,16 @@ a{color:inherit;}
   color:#2c1e08;text-shadow:0 1px 0 rgba(255,240,200,.55);
 }
 .plaque::before{
-  content:"";position:absolute;inset:8px;border-radius:6px;
+  content:"";position:absolute;inset:13px;border-radius:6px;
   border:1.5px solid rgba(70,45,5,.55);
   box-shadow:0 0 0 1px rgba(255,240,200,.28), inset 0 0 12px rgba(70,45,5,.35);
   pointer-events:none;
+}
+.plaque::after{ /* rivets dans les coins */
+  --rivet:radial-gradient(circle at 7px 7px,#fff2c0 0 1px,#d4a646 1.6px,#6b4c12 3.6px,#3a2806 4.3px,transparent 4.9px);
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:var(--rivet) left top,var(--rivet) right top,var(--rivet) left bottom,var(--rivet) right bottom;
+  background-size:14px 14px;background-repeat:no-repeat;
 }
 .pla-kicker{
   margin:0 0 4px;font-size:.66rem;letter-spacing:.34em;text-transform:uppercase;
@@ -205,9 +239,15 @@ a{color:inherit;}
   box-shadow:0 0 5px rgba(240,208,120,.55);
 }
 .btitle{
+  margin:auto 0; /* reste centré entre le filet du haut et le chiffre romain */
   writing-mode:vertical-rl;text-orientation:mixed;
   font-family:var(--serif);font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;
   color:var(--gold-2);text-shadow:0 0 6px rgba(236,206,108,.55),0 0 14px rgba(236,206,108,.3);
+}
+.bnum{
+  display:block;margin:0 0 6px;padding-top:5px;min-width:60%;text-align:center;
+  border-top:1px solid rgba(240,208,120,.45);
+  font-family:var(--serif);font-size:.7rem;letter-spacing:.06em;color:var(--gold-2);
 }
 .book:hover,.book:focus-visible{
   transform:translateY(-7px);
@@ -260,6 +300,51 @@ a{color:inherit;}
   background:linear-gradient(90deg,transparent, rgba(255,210,140,.22), transparent);
 }
 
+/* --- Objets posés sur l'étagère (décoratifs) --- */
+.shelf-decor{position:absolute;bottom:24px;z-index:1;pointer-events:none;}
+.candle{left:max(4%,calc(50% - 330px));width:26px;height:72px;}
+.candle::before{ /* cire */
+  content:"";position:absolute;bottom:7px;left:5px;width:16px;height:50px;border-radius:4px 4px 2px 2px;
+  background:linear-gradient(90deg,#bfae84,#f3e9cc 42%,#d8c9a0 70%,#a8966c);
+  box-shadow:inset 0 3px 2px rgba(255,255,255,.35);
+}
+.candle::after{ /* bougeoir en laiton */
+  content:"";position:absolute;bottom:0;left:-9px;width:44px;height:10px;border-radius:50%;
+  background:radial-gradient(60% 80% at 50% 30%,#f0d078,#a67b22 60%,#5d4412);
+  box-shadow:0 4px 6px rgba(0,0,0,.55);
+}
+.flame{
+  position:absolute;bottom:56px;left:50%;width:10px;height:20px;margin-left:-5px;
+  border-radius:50% 50% 45% 45% / 62% 62% 38% 38%;
+  background:radial-gradient(ellipse at 50% 72%,#fffbe6 0 18%,#ffd76e 38%,rgba(255,150,40,.9) 62%,transparent 74%);
+  transform-origin:50% 100%;animation:flicker 2.6s ease-in-out infinite;
+}
+.flame::before{ /* mèche */
+  content:"";position:absolute;bottom:-3px;left:4px;width:2px;height:6px;background:#2a1b08;border-radius:1px;
+}
+.flame::after{ /* halo */
+  content:"";position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,206,120,.26),rgba(255,206,120,.08) 45%,transparent 70%);
+}
+@keyframes flicker{
+  0%,100%{transform:scale(1,1) rotate(0);opacity:1;}
+  25%{transform:scale(.94,1.06) rotate(-2deg);opacity:.92;}
+  50%{transform:scale(1.04,.95) rotate(1.5deg);opacity:1;}
+  75%{transform:scale(.97,1.03) rotate(-1deg);opacity:.95;}
+}
+.stack{right:max(4%,calc(50% - 360px));width:100px;}
+.stack span{
+  display:block;position:relative;height:15px;margin-top:1px;border-radius:2px;
+  background:
+    linear-gradient(90deg,transparent 7px,rgba(240,208,120,.65) 7px 9px,transparent 9px calc(100% - 9px),rgba(240,208,120,.65) calc(100% - 9px) calc(100% - 7px),transparent calc(100% - 7px)),
+    linear-gradient(180deg,rgba(255,230,170,.18),transparent 40%,rgba(0,0,0,.4)),
+    var(--c);
+  box-shadow:0 3px 5px rgba(0,0,0,.5);
+}
+.stack span:nth-child(1){--c:#3d2342;width:84px;margin-left:10px;}
+.stack span:nth-child(2){--c:#2f4659;width:96px;margin-left:2px;}
+.stack span:nth-child(3){--c:#5c2118;width:100px;height:17px;}
+
 /* --- Pied du meuble --- */
 .shelf-leg{
   margin:0 auto;width:64%;height:12px;
@@ -297,9 +382,13 @@ a{color:inherit;}
   position:absolute;inset:0;
   transform-style:preserve-3d;
 }
+/* --cover / --cover-hi : couleur du cuir du livre cliqué (définies en JS) */
+.openbook{--cover:#33200f;--cover-hi:#4a3320;}
 .boards{
   position:absolute;inset:0;z-index:2;border-radius:7px;
-  background:linear-gradient(165deg,#33200f,#1d1209);
+  background:
+    linear-gradient(165deg, rgba(0,0,0,.1), rgba(0,0,0,.5)),
+    linear-gradient(165deg,var(--cover-hi),var(--cover));
   box-shadow:
     inset 0 0 34px rgba(7,3,0,.7),
     0 30px 70px -18px rgba(0,0,0,.85),
@@ -339,8 +428,28 @@ a{color:inherit;}
 .cover-l,.cover-r{
   position:absolute;top:0;bottom:0;width:50%;z-index:40;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  background:linear-gradient(170deg,#241305,#120a04);
+  background:
+    linear-gradient(170deg, rgba(0,0,0,.05), rgba(0,0,0,.55)),
+    linear-gradient(170deg,var(--cover-hi),var(--cover));
   box-shadow:inset 0 0 44px rgba(0,0,0,.55);
+}
+
+/* --- Signet en tissu, de la couleur du livre --- */
+.ribbon{
+  position:absolute;right:72px;bottom:-46px;width:20px;height:66px;z-index:30;pointer-events:none;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.28), rgba(255,255,255,.14) 45%, rgba(0,0,0,.22)),
+    var(--cover-hi);
+  clip-path:polygon(0 0,100% 0,100% 100%,50% 84%,0 100%);
+  filter:drop-shadow(0 4px 4px rgba(0,0,0,.45));
+  transform-origin:top center;
+  opacity:0;
+}
+.openbook.open .ribbon{animation:ribbonDrop .5s ease-out .75s forwards;}
+@keyframes ribbonDrop{
+  0%{opacity:0;transform:scaleY(.2);}
+  70%{opacity:1;transform:scaleY(1.06);}
+  100%{opacity:1;transform:scaleY(1);}
 }
 .cover-l{left:0;border-radius:6px 2px 2px 6px;transform:rotateY(0);transform-origin:right center;}
 .cover-r{right:0;border-radius:2px 6px 6px 2px;transform:rotateY(0);transform-origin:left center;}
@@ -376,9 +485,15 @@ a{color:inherit;}
 }
 .vs-ornament{display:block;width:44px;height:1px;background:var(--gold);}
 .ll-seal{
-  width:58px;height:58px;border-radius:50%;border:1.5px solid var(--gold);
-  display:grid;place-items:center;font-family:var(--serif);color:#7a5a1e;font-size:1rem;
-  box-shadow:0 0 0 4px rgba(122,90,30,.12);
+  width:76px;height:76px;border-radius:50%;border:1.5px solid var(--gold);
+  display:grid;place-items:center;color:#6e5018;
+  box-shadow:0 0 0 5px rgba(122,90,30,.1), inset 0 0 0 4px var(--paper), inset 0 0 0 5px rgba(201,162,39,.55);
+}
+.ll-seal svg{width:32px;height:32px;}
+/* Lettrine sur le premier paragraphe d'une rubrique */
+.page-head + .lead::first-letter{
+  float:left;font-family:var(--serif);font-size:3.1em;line-height:.82;
+  padding:5px 8px 0 0;color:#6e5018;
 }
 .ll-folio{margin-top:10px;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:#7a5a1e;}
 
@@ -445,7 +560,7 @@ a{color:inherit;}
 /* ================= RESPONSIVE ================= */
 @media (max-width:640px){
   .plaque-wrap{padding:30px 10px 0;}
-  .plaque{padding:18px 14px 16px;}
+  .plaque{padding:20px 20px 18px;}
   .pla-kicker{letter-spacing:.18em;font-size:.6rem;}
   .pla-sub{font-size:.86rem;}
   .library{padding:26px 6px 14px;}
@@ -454,6 +569,7 @@ a{color:inherit;}
   .bookend:last-of-type{margin:0 0 0 -14px;}
   .sconce{width:110px;height:110px;top:40px;}
   .lib-foot{font-size:.66rem;}
+  .shelf-decor{display:none;}
   .openbook{width:98vw;height:min(82vh,640px);}
   /* Sur mobile : une seule page, toute la largeur pour le texte */
   .openbook .leaf-l,.gutter,.spine-fold{display:none;}
@@ -469,6 +585,7 @@ a{color:inherit;}
   .b6{height:146px;width:35px;}
   .b7{height:175px;width:30px;}
   .btitle{font-size:.72rem;letter-spacing:.12em;}
+  .bnum{display:none;}
 }
 
 /* ================= CONTENU DU CV (sans JS / impression) ================= */
@@ -491,7 +608,7 @@ a{color:inherit;}
   .lib{display:block;min-height:0;overflow:visible;}
   .plaque-wrap{padding:0 0 12px;}
   .plaque{background:none;border:0;box-shadow:none;padding:0;text-shadow:none;}
-  .plaque::before,.pla-rule{display:none;}
+  .plaque::before,.plaque::after,.pla-rule{display:none;}
   .js .cv-text,.cv-text{display:block;width:auto;margin:0;padding:0;background:none;box-shadow:none;font-size:.9rem;}
   .rub{break-inside:avoid;}
 }
@@ -504,6 +621,8 @@ a{color:inherit;}
 
 <main class="lib">
   <div class="wall" aria-hidden="true"></div>
+  <div class="backshelf backshelf-1" aria-hidden="true"></div>
+  <div class="backshelf backshelf-2" aria-hidden="true"></div>
   <div class="arch" aria-hidden="true"></div>
   <div class="pillar pillar-l" aria-hidden="true"></div>
   <div class="pillar pillar-r" aria-hidden="true"></div>
@@ -534,29 +653,31 @@ a{color:inherit;}
     <h2 class="sr-only" id="shelf-title">Rubriques du CV</h2>
 
     <div class="shelf-zone">
+      <div class="shelf-decor candle" aria-hidden="true"><span class="flame"></span></div>
+      <div class="shelf-decor stack" aria-hidden="true"><span></span><span></span><span></span></div>
       <nav class="books-row" aria-label="Rubriques du curriculum vitae">
         <span class="bookend" aria-hidden="true"></span>
 
         <button class="book b1" type="button" data-rub="profil" aria-haspopup="dialog">
-          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Profil</span><i class="band" aria-hidden="true"></i></span>
+          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Profil</span><span class="bnum" aria-hidden="true">I</span><i class="band" aria-hidden="true"></i></span>
         </button>
         <button class="book b2" type="button" data-rub="experience" aria-label="Parcours : expériences professionnelles" aria-haspopup="dialog">
-          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Parcours</span><i class="band" aria-hidden="true"></i></span>
+          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Parcours</span><span class="bnum" aria-hidden="true">II</span><i class="band" aria-hidden="true"></i></span>
         </button>
         <button class="book b3" type="button" data-rub="competences" aria-label="Compétences techniques en cours d'acquisition" aria-haspopup="dialog">
-          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Compétences</span><i class="band" aria-hidden="true"></i></span>
+          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Compétences</span><span class="bnum" aria-hidden="true">III</span><i class="band" aria-hidden="true"></i></span>
         </button>
         <button class="book b4" type="button" data-rub="formation" aria-label="Formations et diplômes" aria-haspopup="dialog">
-          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Formations</span><i class="band" aria-hidden="true"></i></span>
+          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Formations</span><span class="bnum" aria-hidden="true">IV</span><i class="band" aria-hidden="true"></i></span>
         </button>
         <button class="book b5" type="button" data-rub="langues" aria-haspopup="dialog">
-          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Langues</span><i class="band" aria-hidden="true"></i></span>
+          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Langues</span><span class="bnum" aria-hidden="true">V</span><i class="band" aria-hidden="true"></i></span>
         </button>
         <button class="book b6" type="button" data-rub="permis" aria-label="Permis et CACES" aria-haspopup="dialog">
-          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Permis</span><i class="band" aria-hidden="true"></i></span>
+          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Permis</span><span class="bnum" aria-hidden="true">VI</span><i class="band" aria-hidden="true"></i></span>
         </button>
         <button class="book b7" type="button" data-rub="contact" aria-haspopup="dialog">
-          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Contact</span><i class="band" aria-hidden="true"></i></span>
+          <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Contact</span><span class="bnum" aria-hidden="true">VII</span><i class="band" aria-hidden="true"></i></span>
         </button>
 
         <span class="bookend" aria-hidden="true"></span>
@@ -778,6 +899,7 @@ a{color:inherit;}
         <div class="spine-fold" aria-hidden="true"></div>
         <div class="cover-l" aria-hidden="true"></div>
         <div class="cover-r" aria-hidden="true"></div>
+        <div class="ribbon" aria-hidden="true"></div>
       </div>
       <button class="viewer-close" id="viewerClose" type="button" aria-label="Fermer le livre">×</button>
     </div>
@@ -806,6 +928,17 @@ a{color:inherit;}
       else { el.removeAttribute('inert'); el.removeAttribute('aria-hidden'); }
     });
   }
+
+  // Icônes gravées de la page de gauche (tracés SVG 24×24)
+  var ICONS = {
+    profil:'<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+    experience:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+    competences:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m6 9 4 3-4 3"/><path d="M12 15h6"/>',
+    formation:'<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+    langues:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+    permis:'<path d="M5 17H3v-5l2-5h14l2 5v5h-2"/><path d="M3 12h18"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M9.5 17h5"/>',
+    contact:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>'
+  };
 
   var RUBS = {
     profil:    { num:'I',   chap:'Chapitre I',    folio:'p. 1', title:'Profil' },
@@ -836,11 +969,16 @@ a{color:inherit;}
         '<span class="ll-num">' + cfg.num + '</span>' +
         '<span class="ll-label">' + cfg.title + '</span>' +
         '<span class="vs-ornament" aria-hidden="true"></span>' +
-        '<span class="ll-seal" aria-hidden="true">HL</span>' +
+        '<span class="ll-seal" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + ICONS[rub] + '</svg></span>' +
         '<span class="ll-folio">' + cfg.chap + ' · ' + cfg.folio + '</span>' +
       '</div>';
 
     openbook.setAttribute('aria-label', 'Livre ouvert — ' + cfg.chap + ' : ' + cfg.title);
+
+    // Le livre ouvert reprend la couleur du cuir du livre cliqué
+    var spine = window.getComputedStyle(btn);
+    openbook.style.setProperty('--cover', spine.getPropertyValue('--leath').trim());
+    openbook.style.setProperty('--cover-hi', spine.getPropertyValue('--leath-hi').trim());
 
     books.forEach(function(b){
       b.classList.toggle('lit', b === btn);
