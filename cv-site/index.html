@@ -34,7 +34,8 @@ a{color:inherit;}
 
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto;}
-  *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important;}
+  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important;}
+  .mote{display:none;}
 }
 
 .skip-link{
@@ -179,11 +180,11 @@ a{color:inherit;}
   background:linear-gradient(180deg,#2a1b08,#130b03);
   box-shadow:0 2px 3px rgba(0,0,0,.5);
 }
-.b1{--leath:#2f4659;--leath-hi:#476a82;height:252px;width:48px;}
+.b1{--leath:#2f4659;--leath-hi:#3a5a6f;height:252px;width:48px;}
 .b2{--leath:#4a1f23;--leath-hi:#6e3338;height:228px;width:53px;}
-.b3{--leath:#2f4a2f;--leath-hi:#486b45;height:258px;width:43px;}
+.b3{--leath:#2f4a2f;--leath-hi:#3c5c39;height:258px;width:43px;}
 .b4{--leath:#5c2118;--leath-hi:#80301f;height:216px;width:51px;}
-.b5{--leath:#4a4a22;--leath-hi:#67672f;height:180px;width:35px;}
+.b5{--leath:#4a4a22;--leath-hi:#545427;height:180px;width:35px;}
 .b6{--leath:#4a3320;--leath-hi:#6b4c2e;height:198px;width:47px;}
 .b7{--leath:#3d2342;--leath-hi:#5c365f;height:238px;width:41px;}
 .bspine{
@@ -386,15 +387,15 @@ a{color:inherit;}
 /* ================= CONTENU MANUSCRIT (page droite) ================= */
 .page-head{margin:0 0 20px;}
 .head-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;}
-.rub-num{font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:700;}
-.folio{font-family:var(--serif);font-size:.78rem;color:var(--ink);opacity:.6;}
-.page-head h2{font-family:var(--serif);font-size:clamp(1.35rem,3.4vh,1.8rem);margin:8px 0 0;line-height:1.18;color:#241608;}
+.rub-num{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:#6e5018;font-weight:700;}
+.folio{font-family:var(--serif);font-size:.78rem;color:#5c4a30;}
+.page-head h2{font-family:var(--serif);font-size:clamp(1.35rem,3.4vh,1.8rem);margin:8px 0 0;line-height:1.18;color:#241608;overflow-wrap:break-word;hyphens:auto;}
 .head-rule{width:52px;height:3px;background:var(--gold);border-radius:2px;margin-top:12px;}
 .lead{font-size:.94rem;color:#3c2c16;}
 .lead strong{color:#241608;}
 .sub-block+.sub-block{margin-top:18px;}
 .block-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:2px;}
-.block-date{font-size:.7rem;font-weight:700;letter-spacing:.06em;color:var(--gold);white-space:nowrap;}
+.block-date{font-size:.75rem;font-weight:700;letter-spacing:.06em;color:#6e5018;white-space:nowrap;}
 .block-title{font-family:var(--serif);font-size:1rem;font-weight:700;margin:0;line-height:1.3;color:#241608;}
 .block-sub{font-size:.82rem;color:#5c4a30;font-style:italic;margin-bottom:4px;}
 .block-list{margin:5px 0 0;padding:0 0 0 18px;font-size:.86rem;color:#3c2c16;}
@@ -419,8 +420,8 @@ a{color:inherit;}
 /* ================= PIED ================= */
 .lib-foot{
   position:relative;z-index:3;text-align:center;
-  padding:6px 16px 26px;font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
-  color:rgba(236,206,108,.5);
+  padding:6px 16px 26px;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+  color:#d9bd6a;
 }
 .pdf-btn{
   appearance:none;cursor:pointer;font:inherit;letter-spacing:inherit;text-transform:inherit;
@@ -440,11 +441,11 @@ a{color:inherit;}
   .bookend{margin:0 -14px 0 0;}
   .bookend:last-of-type{margin:0 0 0 -14px;}
   .sconce{width:110px;height:110px;top:40px;}
-  .lib-foot{font-size:.58rem;}
-  .openbook{width:98vw;}
-  .leaf-l,.leaf-r{width:calc(50% - 16px);}
-  .leaf-l{left:11px;}
-  .leaf-r{right:11px;padding:20px 16px 16px;}
+  .lib-foot{font-size:.66rem;}
+  .openbook{width:98vw;height:min(82vh,640px);}
+  /* Sur mobile : une seule page, toute la largeur pour le texte */
+  .openbook .leaf-l,.gutter,.spine-fold{display:none;}
+  .leaf-r{left:11px;right:11px;width:auto;padding:22px 18px 18px;}
   .viewer-close{right:2px;}
   .book{width:36px;height:175px;padding:8px 0 6px;}
   .bookend{width:14px;}
@@ -455,7 +456,7 @@ a{color:inherit;}
   .b5{height:133px;width:26px;}
   .b6{height:146px;width:35px;}
   .b7{height:175px;width:30px;}
-  .btitle{font-size:.66rem;}
+  .btitle{font-size:.72rem;letter-spacing:.12em;}
 }
 
 /* ================= IMPRESSION ================= */
@@ -520,25 +521,25 @@ html.no-js .viewer{display:none;}
       <nav class="books-row" aria-label="Rubriques du curriculum vitae">
         <span class="bookend" aria-hidden="true"></span>
 
-        <button class="book b1" type="button" data-rub="profil" aria-label="Rubrique : Profil">
+        <button class="book b1" type="button" data-rub="profil" aria-haspopup="dialog">
           <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Profil</span><i class="band" aria-hidden="true"></i></span>
         </button>
-        <button class="book b2" type="button" data-rub="experience" aria-label="Rubrique : Expériences professionnelles">
+        <button class="book b2" type="button" data-rub="experience" aria-label="Parcours : expériences professionnelles" aria-haspopup="dialog">
           <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Parcours</span><i class="band" aria-hidden="true"></i></span>
         </button>
-        <button class="book b3" type="button" data-rub="competences" aria-label="Rubrique : Compétences techniques en cours d'acquisition">
+        <button class="book b3" type="button" data-rub="competences" aria-label="Compétences techniques en cours d'acquisition" aria-haspopup="dialog">
           <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Compétences</span><i class="band" aria-hidden="true"></i></span>
         </button>
-        <button class="book b4" type="button" data-rub="formation" aria-label="Rubrique : Formations et diplômes">
+        <button class="book b4" type="button" data-rub="formation" aria-label="Formations et diplômes" aria-haspopup="dialog">
           <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Formations</span><i class="band" aria-hidden="true"></i></span>
         </button>
-        <button class="book b5" type="button" data-rub="langues" aria-label="Rubrique : Langues">
+        <button class="book b5" type="button" data-rub="langues" aria-haspopup="dialog">
           <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Langues</span><i class="band" aria-hidden="true"></i></span>
         </button>
-        <button class="book b6" type="button" data-rub="permis" aria-label="Rubrique : Permis et CACES">
+        <button class="book b6" type="button" data-rub="permis" aria-label="Permis et CACES" aria-haspopup="dialog">
           <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Permis</span><i class="band" aria-hidden="true"></i></span>
         </button>
-        <button class="book b7" type="button" data-rub="contact" aria-label="Rubrique : Contact">
+        <button class="book b7" type="button" data-rub="contact" aria-haspopup="dialog">
           <span class="bspine"><i class="band" aria-hidden="true"></i><span class="btitle">Contact</span><i class="band" aria-hidden="true"></i></span>
         </button>
 
@@ -562,7 +563,7 @@ html.no-js .viewer{display:none;}
       <div class="book-base">
         <div class="boards" aria-hidden="true"></div>
         <div class="leaf-l" id="leafL" aria-hidden="true"></div>
-        <div class="leaf-r" id="leafR"></div>
+        <div class="leaf-r" id="leafR" tabindex="0" role="region" aria-label="Contenu de la rubrique"></div>
         <div class="gutter" aria-hidden="true"></div>
         <div class="spine-fold" aria-hidden="true"></div>
         <div class="cover-l" aria-hidden="true"></div>
@@ -597,6 +598,15 @@ html.no-js .viewer{display:none;}
   var closeBtn = document.getElementById('viewerClose');
   var statusEl = document.getElementById('status');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Éléments rendus inertes pendant la lecture d'un livre (fenêtre modale)
+  var background = Array.prototype.slice.call(document.querySelectorAll('.skip-link, .plaque-wrap, #shelf, .lib-foot'));
+
+  function setBackgroundInert(on){
+    background.forEach(function(el){
+      if (on) { el.setAttribute('inert', ''); el.setAttribute('aria-hidden', 'true'); }
+      else { el.removeAttribute('inert'); el.removeAttribute('aria-hidden'); }
+    });
+  }
 
   var RUBS = {
     profil:    { num:'I',   chap:'Chapitre I',    folio:'p. 1', title:'Profil' },
@@ -630,19 +640,19 @@ html.no-js .viewer{display:none;}
     openbook.setAttribute('aria-label', 'Livre ouvert — ' + cfg.chap + ' : ' + cfg.title);
 
     books.forEach(function(b){
-      var on = b === btn;
-      b.classList.toggle('lit', on);
-      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      b.classList.toggle('lit', b === btn);
     });
 
     statusEl.textContent = 'Livre ouvert : ' + cfg.title;
 
     viewer.hidden = false;
+    setBackgroundInert(true);
+    leafR.scrollTop = 0;
     openbook.classList.remove('open', 'closing');
     void viewer.offsetWidth;
     viewer.classList.add('active');
     openbook.classList.add('open');
-    openbook.focus({preventScroll:true});
+    leafR.focus({preventScroll:true});
   }
 
   function closeViewer(){
@@ -650,8 +660,8 @@ html.no-js .viewer{display:none;}
     openRub = null;
     books.forEach(function(b){
       b.classList.remove('lit');
-      b.setAttribute('aria-pressed', 'false');
     });
+    setBackgroundInert(false);
     statusEl.textContent = 'Livre refermé';
     openbook.classList.remove('open');
     openbook.classList.add('closing');
@@ -676,7 +686,23 @@ html.no-js .viewer{display:none;}
   leafR.addEventListener('click', function(ev){ ev.stopPropagation(); });
 
   document.addEventListener('keydown', function(ev){
-    if (ev.key === 'Escape' && !viewer.hidden) closeViewer();
+    if (viewer.hidden) return;
+    if (ev.key === 'Escape') { closeViewer(); return; }
+    // Garde le focus clavier à l'intérieur du livre ouvert
+    if (ev.key === 'Tab') {
+      var focusables = Array.prototype.slice.call(
+        openbook.querySelectorAll('a[href], button, [tabindex="0"]')
+      );
+      if (!focusables.length) return;
+      var first = focusables[0];
+      var last = focusables[focusables.length - 1];
+      var inside = openbook.contains(document.activeElement);
+      if (ev.shiftKey && (document.activeElement === first || !inside)) {
+        ev.preventDefault(); last.focus();
+      } else if (!ev.shiftKey && (document.activeElement === last || !inside)) {
+        ev.preventDefault(); first.focus();
+      }
+    }
   });
 
   // --- Impression : remplit une zone statique ---
@@ -719,7 +745,7 @@ html.no-js .viewer{display:none;}
   </div>
 
   <div class="sub-block">
-    <div class="block-head"><span class="block-date">2025 — 2026</span><span class="block-title">Stage en milieu hospitalier</span></div>
+    <div class="block-head"><span class="block-date">2025 — 2026</span><h3 class="block-title">Stage en milieu hospitalier</h3></div>
     <p class="block-sub">CHU Saint-Étienne, 42</p>
     <ul class="block-list">
       <li>Recherches sur la maigreur constitutionnelle</li>
@@ -728,13 +754,13 @@ html.no-js .viewer{display:none;}
   </div>
 
   <div class="sub-block">
-    <div class="block-head"><span class="block-date">2025</span><span class="block-title">Coach sportif</span></div>
+    <div class="block-head"><span class="block-date">2025</span><h3 class="block-title">Coach sportif</h3></div>
     <p class="block-sub">Espace Cardio, Saint-Étienne, 42</p>
     <ul class="block-list"><li>Cours collectif type bodysculpt, aquabike</li></ul>
   </div>
 
   <div class="sub-block">
-    <div class="block-head"><span class="block-date">2022 — 2025</span><span class="block-title">Stage au sein de clubs de natation</span></div>
+    <div class="block-head"><span class="block-date">2022 — 2025</span><h3 class="block-title">Stage au sein de clubs de natation</h3></div>
     <p class="block-sub">SEAM et ASPTT, Saint-Étienne, 42</p>
     <ul class="block-list">
       <li>Intervention en aisance aquatique</li>
@@ -745,13 +771,13 @@ html.no-js .viewer{display:none;}
   </div>
 
   <div class="sub-block">
-    <div class="block-head"><span class="block-date">Été 2024 — 2025</span><span class="block-title">Secouriste aquatique</span></div>
+    <div class="block-head"><span class="block-date">Été 2024 — 2025</span><h3 class="block-title">Secouriste aquatique</h3></div>
     <p class="block-sub">Piscine municipale, Saint-Étienne, 42</p>
     <ul class="block-list"><li>Poste de BNSSA</li></ul>
   </div>
 
   <div class="sub-block">
-    <div class="block-head"><span class="block-date">Été 2025</span><span class="block-title">Chauffeur-livreur</span></div>
+    <div class="block-head"><span class="block-date">Été 2025</span><h3 class="block-title">Chauffeur-livreur</h3></div>
     <p class="block-sub">Rouzès, Saint-Étienne, 42</p>
     <ul class="block-list">
       <li>Transport de matériel de BTP</li>
@@ -760,7 +786,7 @@ html.no-js .viewer{display:none;}
   </div>
 
   <div class="sub-block">
-    <div class="block-head"><span class="block-date">2021 — 2022 &amp; été 2023</span><span class="block-title">Manutentionnaire</span></div>
+    <div class="block-head"><span class="block-date">2021 — 2022 &amp; été 2023</span><h3 class="block-title">Manutentionnaire</h3></div>
     <p class="block-sub">Easydis, 42</p>
     <ul class="block-list">
       <li>Préparateur de commande</li>
@@ -769,7 +795,7 @@ html.no-js .viewer{display:none;}
   </div>
 
   <div class="sub-block">
-    <div class="block-head"><span class="block-date">2018 — 2021</span><span class="block-title">Soldat</span></div>
+    <div class="block-head"><span class="block-date">2018 — 2021</span><h3 class="block-title">Soldat</h3></div>
     <p class="block-sub">21e Régiment d'Infanterie de Marine, Fréjus, 83</p>
     <ul class="block-list">
       <li>Formation de soldat — combattant infanterie</li>
@@ -804,25 +830,31 @@ html.no-js .viewer{display:none;}
   </div>
 
   <div class="sub-block">
-    <div class="block-head"><span class="block-date">2022 — 2025</span><span class="block-title">Licence STAPS ES — supplément AFF, option haltérophilie</span></div>
+    <div class="block-head"><span class="block-date">2022 — 2025</span><h3 class="block-title">Licence STAPS ES — supplément AFF, option haltérophilie</h3></div>
     <p class="block-sub">Université Jean Monnet, Saint-Étienne</p>
-    <ul class="block-list"><li>3ᵉ année de Licence STAPS APAS en cours</li></ul>
+    <ul class="block-list"><li>Licence obtenue</li></ul>
   </div>
 
   <div class="sub-block">
-    <div class="block-head"><span class="block-date">2024</span><span class="block-title">BNSSA</span></div>
+    <div class="block-head"><span class="block-date">2025 — 2026</span><h3 class="block-title">Licence STAPS APAS</h3></div>
+    <p class="block-sub">Université Jean Monnet, Saint-Étienne</p>
+    <ul class="block-list"><li>Licence obtenue — Activité physique adaptée et santé</li></ul>
+  </div>
+
+  <div class="sub-block">
+    <div class="block-head"><span class="block-date">2024</span><h3 class="block-title">BNSSA</h3></div>
     <p class="block-sub">Union Départementale des Sapeurs-Pompiers de la Loire (UDSPL)</p>
     <ul class="block-list"><li>Brevet national de sécurité et de sauvetage aquatique</li></ul>
   </div>
 
   <div class="sub-block">
-    <div class="block-head"><span class="block-date">2024</span><span class="block-title">PSE1</span></div>
+    <div class="block-head"><span class="block-date">2024</span><h3 class="block-title">PSE1</h3></div>
     <p class="block-sub">Union Départementale des Sapeurs-Pompiers de la Loire (UDSPL)</p>
     <ul class="block-list"><li>Premiers secours en équipe de niveau 1</li></ul>
   </div>
 
   <div class="sub-block">
-    <div class="block-head"><span class="block-date">2018</span><span class="block-title">Baccalauréat S</span></div>
+    <div class="block-head"><span class="block-date">2018</span><h3 class="block-title">Baccalauréat S</h3></div>
     <p class="block-sub">Lycée Simone Weil, Saint-Priest-en-Jarez</p>
     <ul class="block-list"><li>Obtention du baccalauréat scientifique, spécialité SVT</li></ul>
   </div>
@@ -859,7 +891,7 @@ html.no-js .viewer{display:none;}
     <h2>Contact</h2>
     <div class="head-rule" aria-hidden="true"></div>
   </div>
-  <p class="lead">Je suis à la recherche d'une <strong>alternance</strong> pour développer mes compétences. N'hésitez pas à me contacter.</p>
+  <p class="lead">Actuellement en <strong>alternance</strong> en BTS SIO SISR, je reste disponible pour échanger sur mon parcours et mes projets. N'hésitez pas à me contacter.</p>
   <ul class="contact-list">
     <li>
       <span class="ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>

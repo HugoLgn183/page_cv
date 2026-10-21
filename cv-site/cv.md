@@ -99,7 +99,15 @@ Ancien militaire et coach sportif de 26 ans, je me reconvertis actuellement dans
 
 **Université Jean Monnet, Saint-Étienne**
 
-* 3ᵉ année de Licence STAPS APAS en cours
+* Licence obtenue
+
+
+
+### 2025-2026 — Licence STAPS APAS
+
+**Université Jean Monnet, Saint-Étienne**
+
+* Licence obtenue
 
 
 
