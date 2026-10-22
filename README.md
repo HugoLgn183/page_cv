@@ -67,10 +67,10 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko u
 | Outil | Résultat |
 |---|---|
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement |
-| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 98 / 100 / 96 / 100 |
-| Lighthouse ordinateur | 100 / 100 / 96 / 100 |
+| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 98 / 100 / 100 / 100 |
+| Lighthouse ordinateur | 100 / 100 / 100 / 100 |
 
-Scores Lighthouse : médiane de 3 mesures sur le site en ligne, avec les « petits plaisirs » 1 à 9 (22/10/2026). « Bonnes pratiques » était à 96 parce que le site n'avait pas d'icône d'onglet (`favicon.ico` introuvable, erreur 404) ; une icône a été ajoutée depuis (100 en local, à confirmer en ligne).
+Scores Lighthouse : médiane de 3 mesures sur le site en ligne, avec les « petits plaisirs » 1 à 9 et l'icône d'onglet (22/10/2026). Sans icône, « Bonnes pratiques » tombait à 96 (`favicon.ico` introuvable, erreur 404).
 
 Le détail des mesures, le journal des corrections de la V1 à la version finale et l'auto-évaluation sont dans [AUTOEVALUATION.md](AUTOEVALUATION.md).
 
