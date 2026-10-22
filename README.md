@@ -16,6 +16,8 @@ page_cv/
     ├── index.html     Le site : HTML et CSS du premier affichage (tout le contenu du CV est ici)
     ├── book.css       Styles du livre ouvert, chargés après l'affichage
     ├── print.css      Mise en page de l'export PDF (CV d'une page)
+    ├── extras.css     Styles des petits plaisirs interactifs, chargés après la page
+    ├── extras.js      Petits plaisirs interactifs (lumière de la bougie…), chargés après la page
     ├── app.js         JavaScript du livre ouvert et du décor, chargé en defer
     └── cv.md          Contenu du CV au format texte (source de référence)
 ```
@@ -28,7 +30,7 @@ page_cv/
 - **Polices système** à l'allure de livre (Palatino, Book Antiqua), sans téléchargement.
 - **GitHub Pages** pour l'hébergement.
 
-Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko une fois compressée par GitHub Pages) et ne contient que ce qui sert au premier affichage. `app.js` (27 Ko, 8,6 Ko compressé) est chargé avec `defer`, et c'est lui qui charge ensuite `book.css` (12 Ko, 4 Ko compressé) ; `print.css` (3 Ko) n'est utilisé qu'à l'impression : aucun ne retarde le premier affichage.
+Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko une fois compressée par GitHub Pages) et ne contient que ce qui sert au premier affichage. `app.js` (27 Ko, 8,6 Ko compressé) est chargé avec `defer`, et c'est lui qui charge ensuite `book.css` (12 Ko, 4 Ko compressé) ; `print.css` (3 Ko) n'est utilisé qu'à l'impression ; `extras.css` et `extras.js` (6 Ko, moins de 3 Ko compressés) ne sont chargés qu'une fois la page entièrement affichée : aucun ne retarde le premier affichage.
 
 ## Fonctionnalités
 
@@ -39,6 +41,7 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko u
   - couverture et signet de la couleur du livre choisi.
 - **Décor** : bibliothèque complète en arrière-plan, dessinée une seule fois dans un `<canvas>` et volontairement floue (des étagères en CSS la remplacent sans JavaScript) ; plaque en métal brossé, pages au grain de papier, icône gravée et chiffre romain pour chaque rubrique.
 - **Bougie interactive** : la flamme s'agite au survol et ploie sous le « souffle » de la souris quand celle-ci passe à proximité, puis oscille avant de se redresser ; on peut prendre la bougie (clic maintenu à la souris, appui long au doigt) et la déplacer dans toute la pièce, son halo lumineux avec elle, la flamme penchant selon le mouvement ; une fois lâchée, elle regagne d'elle-même sa place sur l'étagère.
+- **Explorer à la lueur de la bougie** : un interrupteur en laiton, sur la colonne de gauche, éteint la pièce ; seul le halo de la bougie éclaire encore, et en la promenant on découvre des titres écrits à l'« encre secrète » sur les étagères du fond (Linux, Python, Bash, TCP/IP, Hack The Box, BNSSA…). L'interrupteur s'utilise aussi au clavier, et les livres restent cliquables dans le noir.
 - **Responsive** : sur téléphone en portrait, le livre ouvert n'affiche que la page de texte, en pleine largeur et sur toute la hauteur visible ; en paysage, il affiche les deux pages dans une version compacte, comme sur ordinateur.
 - **Accessibilité** :
   - navigation complète au clavier, lien d'évitement et focus visible ;

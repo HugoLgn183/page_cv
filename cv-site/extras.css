@@ -1,0 +1,45 @@
+/* CV « bibliothèque » : petits plaisirs chargés après la page (voir extras.js).
+   Rien ici n'est indispensable : le CV reste lisible et utilisable sans ce fichier. */
+
+/* ================= 1. EXPLORER À LA LUEUR DE LA BOUGIE ================= */
+/* Interrupteur en laiton, fixé sur la colonne de gauche */
+.light-switch{
+  appearance:none;position:absolute;z-index:6;cursor:pointer;
+  left:calc(max(9vw,70px) / 2 - 15px);top:46%;width:30px;height:46px;padding:0;
+  border:1px solid #5d4412;border-radius:6px;
+  background:linear-gradient(160deg,#f3d989,#c79a3a 55%,#8a6418);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.55),0 4px 10px rgba(0,0,0,.55);
+  transition:box-shadow .4s ease;
+}
+.light-switch::before{ /* vis du haut et du bas */
+  content:"";position:absolute;left:50%;top:4px;bottom:4px;width:4px;margin-left:-2px;
+  background:radial-gradient(circle,#5d4412 1.3px,transparent 1.8px) top/4px 4px no-repeat,
+             radial-gradient(circle,#5d4412 1.3px,transparent 1.8px) bottom/4px 4px no-repeat;
+}
+.light-switch .lever{
+  position:absolute;left:50%;top:11px;width:10px;height:16px;margin-left:-5px;border-radius:3px;
+  background:linear-gradient(180deg,#fffaf0,#d9cfb4);box-shadow:0 2px 3px rgba(0,0,0,.45);
+  transition:transform .2s ease;
+}
+.lights-off .light-switch{box-shadow:inset 0 1px 2px rgba(255,255,255,.55),0 0 14px rgba(236,206,108,.45);}
+.lights-off .light-switch .lever{transform:translateY(10px);}
+
+/* Obscurité : percée par le halo de la bougie (--lx, --ly, --lr suivis en JS) */
+.night{
+  position:absolute;inset:0;z-index:4;pointer-events:none;
+  opacity:0;visibility:hidden;transition:opacity .7s ease,visibility 0s linear .7s;
+  background:radial-gradient(circle var(--lr,230px) at var(--lx,50%) var(--ly,50%),
+    rgba(255,196,110,.08),rgba(8,4,1,.18) 32%,rgba(5,2,0,.82) 72%,rgba(3,1,0,.95));
+}
+.lights-off .night{opacity:1;visibility:visible;transition:opacity .7s ease;}
+.lights-off .sconce{opacity:0;}
+.sconce{transition:opacity .7s ease;}
+
+/* Encre secrète : des titres dorés qui n'apparaissent qu'à la lueur de la bougie */
+.secret-ink{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .7s ease;}
+.lights-off .secret-ink{opacity:1;}
+.secret-ink span{
+  position:absolute;transform:translate(-50%,-50%);writing-mode:vertical-rl;white-space:nowrap;
+  font-family:var(--serif);font-size:1rem;letter-spacing:.18em;font-variant-caps:all-small-caps;
+  color:#f3d77e;text-shadow:0 0 6px rgba(243,215,126,.9),0 0 18px rgba(255,190,90,.6);
+}

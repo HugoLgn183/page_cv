@@ -598,4 +598,20 @@
     });
   }
 
+  // Petits plaisirs (lumière de la bougie, …) : chargés une fois la page entièrement affichée,
+  // le script seulement après ses styles pour éviter tout élément sans mise en forme
+  function loadExtras(){
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = 'extras.css';
+    css.addEventListener('load', function(){
+      var script = document.createElement('script');
+      script.src = 'extras.js';
+      document.body.appendChild(script);
+    });
+    document.head.appendChild(css);
+  }
+  if (document.readyState === 'complete') loadExtras();
+  else window.addEventListener('load', loadExtras);
+
 })();
