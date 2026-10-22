@@ -1132,34 +1132,96 @@
   // l'haltère de l'ancien coach sportif, le béret de l'ancien militaire (troupes de marine) et l'ordinateur
   // portable branché au réseau de l'alternant technicien informatique.
   // Placés en JavaScript dans la place libre de l'étagère ; masqués s'il n'y en a pas (téléphone).
+  // Petits outils de dessin : dégradés et ombre de contact sur l'étagère
+  function lin(id, stops, horizontal){
+    return '<linearGradient id="' + id + '" x1="0" y1="0" x2="' + (horizontal ? 1 : 0) + '" y2="' + (horizontal ? 0 : 1) + '">' +
+      stops.map(function(s){ return '<stop offset="' + s[0] + '" stop-color="' + s[1] + '"' + (s[2] !== undefined ? ' stop-opacity="' + s[2] + '"' : '') + '/>'; }).join('') +
+      '</linearGradient>';
+  }
+  function contact(id, cx, cy, rx, ry){
+    return '<radialGradient id="' + id + '"><stop offset="0" stop-color="#000" stop-opacity=".6"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>' +
+           '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry + '" fill="url(#' + id + ')"/>';
+  }
+  // Touches du clavier, en perspective (les rangées s'élargissent vers l'avant)
+  function laptopKeys(){
+    var out = '';
+    [[38.3, 16.2, 65.8], [40, 15.3, 66.7], [41.7, 14.4, 67.6]].forEach(function(row){
+      var n = 15, step = (row[2] - row[1]) / n;
+      for (var i = 0; i < n; i++) out += '<rect x="' + (row[1] + i * step + .25).toFixed(2) + '" y="' + row[0] + '" width="' + (step - .5).toFixed(2) + '" height="1.25" rx=".25"/>';
+    });
+    return '<g fill="#2a2e35">' + out + '</g>';
+  }
   var KEEPSAKES = [
-    { cls: 'ks-beret', side: 'left', w: 70, h: 26, tag: 'Ancien militaire',
-      svg: '<path d="M4 20Q6 6 36 5Q66 6 68 18Q60 23 36 23Q12 23 4 20Z" fill="url(#ksBeret)"/>' +
-           '<path d="M7 20.5Q36 25.5 65 19" fill="none" stroke="#2a1a10" stroke-width="3" stroke-linecap="round"/>' +
-           '<path d="M36 5l1.5-3" stroke="#14203a" stroke-width="2" stroke-linecap="round"/>' +
-           '<circle cx="18" cy="14" r="5" fill="#d9b04a" stroke="#7a5a1e" stroke-width=".8"/>' +
-           '<path d="M18 10.5v6.5M16 11.8h4M15.2 15.2q2.8 3.2 5.6 0" fill="none" stroke="#5d4412" stroke-width="1.1" stroke-linecap="round"/>' +
-           '<defs><linearGradient id="ksBeret" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34497a"/><stop offset="1" stop-color="#16213d"/></linearGradient></defs>' },
-    { cls: 'ks-dumbbell', side: 'left', w: 64, h: 26, tag: 'Ancien coach sportif',
-      svg: '<rect x="14" y="11" width="36" height="4" rx="1.5" fill="url(#ksBar)"/>' +
-           '<path d="M26 11v4M29 11v4M32 11v4M35 11v4M38 11v4" stroke="#4d4d4d" stroke-width=".7"/>' +
-           '<rect x="4" y="2" width="9" height="22" rx="2" fill="#2b2b2e"/><rect x="12" y="5" width="4" height="16" rx="1.5" fill="#3b3b40"/>' +
-           '<rect x="51" y="2" width="9" height="22" rx="2" fill="#2b2b2e"/><rect x="48" y="5" width="4" height="16" rx="1.5" fill="#3b3b40"/>' +
-           '<path d="M6 4h5M53 4h5" stroke="rgba(255,255,255,.25)" stroke-width="1.2" stroke-linecap="round"/>' +
-           '<defs><linearGradient id="ksBar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8d8d8"/><stop offset="1" stop-color="#7a7a7a"/></linearGradient></defs>' },
-    { cls: 'ks-laptop', side: 'right', w: 96, h: 50, tag: 'Alternant - technicien informatique',
-      svg: '<rect x="16" y="1" width="50" height="34" rx="2.5" fill="#2c3038"/>' +                       // écran ouvert
-           '<rect x="19" y="4" width="44" height="28" rx="1" fill="url(#ksScreen)"/>' +
-           '<path d="M22 9h9M34 9h14M22 14h20M22 19h7M32 19h18" stroke="#3fd36b" stroke-width="2" opacity=".75"/>' +   // lignes de terminal
-           '<rect class="ks-cursor" x="22" y="23" width="4" height="2.5" fill="#7dffa3"/>' +
-           '<rect x="16" y="35" width="50" height="2" fill="#1b1e24"/>' +
-           '<path d="M15 37H67L71 45Q71 47 69 47H13Q11 47 11 45Z" fill="url(#ksBase)"/>' +                      // clavier
-           '<path d="M17 39.5H65M15 42H67" stroke="#6b717a" stroke-width=".7" stroke-dasharray="2.2 .8"/>' +
-           '<rect x="34" y="43.6" width="14" height="2.4" rx=".8" fill="#a3a9b1"/>' +
-           '<rect x="69" y="40" width="6" height="4.5" rx=".7" fill="rgba(225,238,255,.85)" stroke="#9fb3c8" stroke-width=".6"/>' +   // prise RJ45
-           '<path d="M75 42.2q6 0 6 3.4t6 3.4h4q4 0 4-2.4t-4-2.6h-3q-3 0-3 2.5t4 2.5" fill="none" stroke="#2f7fd1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>' +   // câble réseau enroulé
-           '<defs><linearGradient id="ksScreen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12332a"/><stop offset="1" stop-color="#0a1914"/></linearGradient>' +
-           '<linearGradient id="ksBase" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4d8de"/><stop offset="1" stop-color="#8e949c"/></linearGradient></defs>' }
+    { cls: 'ks-beret', side: 'left', w: 74, h: 30, tag: 'Ancien militaire',
+      svg: '<defs>' +
+             '<radialGradient id="ksBrWool" cx=".36" cy=".25" r=".85"><stop offset="0" stop-color="#5068a8"/><stop offset=".55" stop-color="#26355f"/><stop offset="1" stop-color="#111831"/></radialGradient>' +
+             '<pattern id="ksBrKnit" width="1.6" height="1.6" patternUnits="userSpaceOnUse"><circle cx=".8" cy=".8" r=".38" fill="#fff" fill-opacity=".07"/></pattern>' +
+             lin('ksGold', [[0, '#fff3c2'], [.45, '#e0b24a'], [1, '#7d5a14']]) +
+           '</defs>' +
+           contact('ksBrShade', 37, 27.6, 34, 2.6) +
+           '<path d="M61 21.5q5 1.6 8.4 6.2M62.4 22.4q2.6 2.8 3.4 6.6" fill="none" stroke="#0a0c12" stroke-width="1.5" stroke-linecap="round"/>' +   // rubans du serrage
+           '<path d="M5 21.5Q4.5 8.5 30 5.6Q52 3.8 64 10.6Q71.5 15.4 68.4 20.6Q58 25.4 36 25.4Q14 25.4 5 21.5Z" fill="url(#ksBrWool)"/>' +
+           '<path d="M5 21.5Q4.5 8.5 30 5.6Q52 3.8 64 10.6Q71.5 15.4 68.4 20.6Q58 25.4 36 25.4Q14 25.4 5 21.5Z" fill="url(#ksBrKnit)"/>' +   // grain de la laine
+           '<path d="M38 7.4Q57 8.8 66.4 15.6" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1.3" stroke-linecap="round"/>' +   // pli du drapé
+           '<path d="M14 11.6Q26 6.4 42 6.6" fill="none" stroke="#b9c8ff" stroke-opacity=".28" stroke-width="1.6" stroke-linecap="round"/>' +   // reflet de la lumière
+           '<path d="M30.2 5.7q.4-2.4 1.8-3.4" fill="none" stroke="#111831" stroke-width="1.6" stroke-linecap="round"/>' +   // petite queue au sommet
+           '<path d="M5.6 21.6Q36 27.6 68 20.4" fill="none" stroke="#2a1a10" stroke-width="3.4" stroke-linecap="round"/>' +   // bande de cuir
+           '<path d="M6.6 21.2Q36 26.8 67 20" fill="none" stroke="#7a5534" stroke-width=".5" stroke-dasharray="1.1 1.1"/>' +   // couture
+           '<path d="M6 20.6Q36 26 67.6 19.6" fill="none" stroke="#5a3d24" stroke-width=".7" stroke-opacity=".7"/>' +
+           '<g transform="translate(20.4 14.8)">' +                                              // insigne : ancre de marine dorée
+             '<g fill="none" stroke="#2a1d06" stroke-opacity=".55" stroke-width="1.5" stroke-linecap="round" transform="translate(.45 .5)"><circle cy="-5.6" r="1.1"/><path d="M0-4.4V4.6M-3-3h6M-5.2 1.8Q0 7.4 5.2 1.8"/></g>' +
+             '<g fill="none" stroke="url(#ksGold)" stroke-width="1.35" stroke-linecap="round"><circle cy="-5.6" r="1.1"/><path d="M0-4.4V4.6M-3-3h6M-5.2 1.8Q0 7.4 5.2 1.8"/></g>' +
+             '<path d="M-5.9 .7l.7 1.7 1.6-.5M5.9 .7l-.7 1.7-1.6-.5" fill="none" stroke="#e8bf5a" stroke-width=".9" stroke-linejoin="round"/>' +
+           '</g>' },
+    { cls: 'ks-dumbbell', side: 'left', w: 70, h: 28, tag: 'Ancien coach sportif',
+      svg: '<defs>' +
+             lin('ksDbChrome', [[0, '#5e5e60'], [.28, '#f6f6f6'], [.5, '#bdbdbf'], [.78, '#7a7a7c'], [1, '#4a4a4c']]) +
+             lin('ksDbRubber', [[0, '#55555b'], [.18, '#3a3a3f'], [.6, '#212125'], [1, '#101012']]) +
+             '<pattern id="ksDbKnurl" width="1.4" height="1.4" patternUnits="userSpaceOnUse"><path d="M0 1.4L1.4 0" stroke="#3a3a3a" stroke-width=".35"/><path d="M0 0L1.4 1.4" stroke="#3a3a3a" stroke-width=".35"/></pattern>' +
+           '</defs>' +
+           contact('ksDbShade', 35, 26.4, 33, 2.4) +
+           '<rect x="15" y="11.6" width="40" height="4.8" rx="1.4" fill="url(#ksDbChrome)"/>' +   // poignée chromée
+           '<rect x="24" y="11.6" width="22" height="4.8" fill="url(#ksDbKnurl)" opacity=".7"/>' +   // moletage
+           '<rect x="12.6" y="9.6" width="3.2" height="8.8" rx=".8" fill="url(#ksDbChrome)"/><rect x="54.2" y="9.6" width="3.2" height="8.8" rx=".8" fill="url(#ksDbChrome)"/>' +
+           '<path d="M5 2.6h8.2l1.8 3.4v16l-1.8 3.4H5l-1.8-3.4V6Z" fill="url(#ksDbRubber)"/>' +   // disques hexagonaux en caoutchouc
+           '<path d="M65 2.6h-8.2L55 6v16l1.8 3.4H65l1.8-3.4V6Z" fill="url(#ksDbRubber)"/>' +
+           '<path d="M3.2 6h11.8M3.2 22h11.8M55 6h11.8M55 22h11.8" stroke="#fff" stroke-opacity=".1" stroke-width=".8"/>' +   // arêtes des facettes
+           '<path d="M5.6 3.6h7.4M57.2 3.6h7.4" stroke="#ffe7c0" stroke-opacity=".4" stroke-width="1" stroke-linecap="round"/>' +   // reflet chaud de la bougie
+           '<path d="M5 25.4h8.2M56.8 25.4H65" stroke="#000" stroke-opacity=".5" stroke-width="1"/>' },
+    { cls: 'ks-laptop', side: 'right', w: 96, h: 52, tag: 'Alternant - technicien informatique',
+      svg: '<defs>' +
+             lin('ksLpAlu', [[0, '#7e848c'], [.15, '#c9cdd3'], [.5, '#e4e7eb'], [.85, '#c2c7cd'], [1, '#757b83']], true) +
+             lin('ksLpDeck', [[0, '#e6e9ec'], [1, '#aeb4bc']]) +
+             lin('ksLpLip', [[0, '#a4aab2'], [1, '#585e66']]) +
+             lin('ksScreen', [[0, '#123528'], [1, '#081510']]) +
+             lin('ksGlare', [[0, '#fff', .16], [1, '#fff', 0]], true) +
+             lin('ksCable', [[0, '#5aa2f0'], [1, '#1f5ea8']]) +
+           '</defs>' +
+           contact('ksLpShade', 42, 49.6, 36, 2.6) +
+           '<rect x="15" y="1" width="52" height="36" rx="3" fill="url(#ksLpAlu)"/>' +            // couvercle en aluminium
+           '<rect x="16.6" y="2.6" width="48.8" height="33" rx="2" fill="#141619"/>' +           // bordure noire de l'écran
+           '<circle cx="41" cy="4.3" r=".6" fill="#2f3540"/>' +                                   // caméra
+           '<rect x="19" y="6" width="44" height="27" rx=".6" fill="url(#ksScreen)"/>' +
+           '<g stroke-width="1.5" stroke-linecap="round">' +                                      // terminal
+             '<path d="M21.6 9h2.4" stroke="#3fd36b"/><path d="M25.6 9h12" stroke="#d6f5df" stroke-opacity=".8"/>' +
+             '<path d="M21.6 12.6h16M21.6 15.4h22M21.6 18.2h12" stroke="#8fb39b" stroke-opacity=".55"/>' +
+             '<path d="M21.6 22h2.4" stroke="#3fd36b"/><path d="M25.6 22h9" stroke="#d6f5df" stroke-opacity=".8"/>' +
+             '<path d="M21.6 25.4h2.4" stroke="#3fd36b"/>' +
+           '</g>' +
+           '<rect class="ks-cursor" x="25.4" y="24.5" width="2.6" height="1.9" fill="#7dffa3"/>' +
+           '<path d="M19 6h20L27 33h-8Z" fill="url(#ksGlare)"/>' +                                // reflet sur la dalle
+           '<rect x="15.6" y="36.6" width="50.8" height="1.4" fill="#3a3f47"/>' +                  // charnière
+           '<path d="M15.4 37.8H66.6L71 44.8H11Z" fill="url(#ksLpDeck)"/>' +                      // repose-poignets et clavier
+           laptopKeys() +
+           '<ellipse cx="41" cy="39.6" rx="19" ry="1.8" fill="#4dff9a" fill-opacity=".07"/>' +   // lueur de l'écran sur les touches
+           '<rect x="35" y="43.1" width="12" height="1.5" rx=".5" fill="#cfd4da" stroke="#9aa0a8" stroke-width=".3"/>' +   // pavé tactile
+           '<path d="M11 44.8H71v1.4q0 1.4-1.4 1.4H12.4Q11 47.6 11 46.2Z" fill="url(#ksLpLip)"/>' +   // tranche avant
+           '<path d="M70.4 41.4h5.6v3.6h-5.6Z" fill="#e8eef7" fill-opacity=".9" stroke="#8fa3ba" stroke-width=".4"/>' +   // prise RJ45 transparente
+           '<path d="M71 42.2h4.4" stroke="#d9b04a" stroke-width=".45" stroke-dasharray=".5 .35"/>' +
+           '<path d="M72.4 41.4v-.9h2.2v.9" fill="none" stroke="#8fa3ba" stroke-width=".4"/>' +   // languette
+           '<rect x="76" y="41.8" width="3.2" height="2.8" rx=".6" fill="#2a6db5"/>' +            // manchon
+           '<path d="M79 43.2q6 0 6 3.3t6 2.7h1.2q2.8 0 2.8-2t-2.8-2h-2q-2.6 0-2.6 2.1t3.4 2.1" fill="none" stroke="#163f73" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+           '<path d="M79 43.2q6 0 6 3.3t6 2.7h1.2q2.8 0 2.8-2t-2.8-2h-2q-2.6 0-2.6 2.1t3.4 2.1" fill="none" stroke="url(#ksCable)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>' }
   ];
   var shelfZone = document.querySelector('.shelf-zone');
   var keepsakes = shelfZone ? KEEPSAKES.map(function(k){

@@ -418,7 +418,7 @@
 /* ================= 12. LES SOUVENIRS DU PARCOURS ================= */
 /* Haltère, béret et câble réseau posés sur l'étagère (placés en JS) ; une étiquette au survol */
 .keepsake{z-index:3;pointer-events:auto;cursor:default;   /* comme la bougie : au-dessus de la rangée de livres, qui couvre l'étagère */
-  filter:drop-shadow(0 3px 3px rgba(0,0,0,.55));transition:translate .25s ease;}
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.4));transition:translate .25s ease;}   /* l'ombre de contact est dans chaque dessin */
 .keepsake[hidden]{display:none;}
 .keepsake svg{display:block;width:100%;height:100%;overflow:visible;}
 .keepsake-tag{
