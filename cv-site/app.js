@@ -383,7 +383,7 @@
     }
     // Petit ressort amorti : la flamme ploie sous une poussée, oscille puis se redresse
     function swayStep(){
-      sway.speed += -0.06 * sway.angle - 0.1 * sway.speed;
+      sway.speed += -0.05 * sway.angle - 0.09 * sway.speed;
       sway.angle = Math.max(-35, Math.min(35, sway.angle + sway.speed));
       if (Math.abs(sway.angle) < 0.05 && Math.abs(sway.speed) < 0.05) {
         sway.angle = sway.speed = 0;
@@ -424,7 +424,7 @@
       candle.style.top = pos[1] + 'px';
       // La bougie fend l'air : la flamme part à l'opposé du mouvement
       var now = performance.now(), speed = (x - holding.lastX) / Math.max(8, now - holding.lastT);
-      pushFlame(-speed * 2.2);
+      pushFlame(-speed * 3);
       holding.lastX = x;
       holding.lastT = now;
     }
@@ -449,7 +449,7 @@
         var reach = 170;                                 // portée du souffle, en pixels
         if (dist < reach) {
           var vx = (ev.clientX - lastMouse.x) / Math.max(8, now - lastMouse.t);
-          pushFlame(vx * 1.6 * (1 - dist / reach));
+          pushFlame(vx * 4.5 * (1 - dist / reach));
         }
       }
       lastMouse = { x: ev.clientX, y: ev.clientY, t: now };
