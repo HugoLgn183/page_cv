@@ -159,6 +159,7 @@
     'Sur la page Contact du livre, un tampon vous attend…',
     'Touchez-moi 5 fois de suite : un terminal secret s\u2019ouvrira…',
     "La pièce suit l'heure de votre horloge : rai de soleil le jour, lueur de la bougie la nuit.",
+    "La pendule, en haut à droite, avance l'heure : aube, jour, soir, nuit… Un tour complet la remet à l'heure.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
     'Touchez le bouton rond, sur la colonne de droite, pour entendre la bibliothèque : pages, bougie, hibou…',
     "Besoin d'un CV papier ? Touchez « Exporter en PDF », tout en bas."
@@ -171,6 +172,7 @@
     'Sur la page Contact du livre, un tampon vous attend…',
     'Psst… tapez « sudo » au clavier, n\u2019importe où sur la page.',
     "La pièce suit l'heure de votre horloge : rai de soleil le jour, lueur de la bougie la nuit.",
+    "La pendule, en haut à droite, avance l'heure : aube, jour, soir, nuit… Un tour complet la remet à l'heure.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
     'Cliquez sur le bouton rond, sur la colonne de droite, pour entendre la bibliothèque : pages, bougie, hibou…',
     "Besoin d'un CV papier ? « Exporter en PDF », tout en bas."
@@ -797,6 +799,7 @@
   ambiance.appendChild(beam);
   lib.insertBefore(ambiance, document.querySelector('.plaque-wrap'));
 
+  var clockHour = null;                                     // heure choisie sur la pendule (idée 10), sinon l'heure réelle
   function period(hour){
     if (hour >= 21 || hour < 6) return 'nuit';
     if (hour < 8) return 'aube';
@@ -804,7 +807,7 @@
     return 'soir';
   }
   function setPeriod(){
-    var p = period(new Date().getHours());
+    var p = period(clockHour === null ? new Date().getHours() : clockHour);
     if (lib.getAttribute('data-heure') === p) return;
     lib.setAttribute('data-heure', p);
     nightGlow();
@@ -966,4 +969,64 @@
       crackleLater();
     }, 2500 + Math.random() * 5000);
   })();
+
+  // ===================== 10. La pendule =====================
+  // En haut à droite, une petite pendule donne l'heure réelle du visiteur. Chaque clic l'avance
+  // à la période suivante (aube, jour, soir, nuit) et l'ambiance (idée 8) suit ; le tour complet
+  // la remet à l'heure. Rien n'est mémorisé : à chaque visite, elle est de nouveau à l'heure.
+  var PERIODS = ['aube', 'jour', 'soir', 'nuit'];
+  var PERIOD_HOUR = { aube: 7, jour: 12, soir: 19, nuit: 23 };
+  var PERIOD_NAME = { aube: "l'aube", jour: 'le jour', soir: 'le soir', nuit: 'la nuit' };
+  var clock = document.createElement('button');
+  clock.type = 'button';
+  clock.className = 'clock';
+  var ticks = '';
+  for (var k = 0; k < 12; k++) {
+    ticks += '<line x1="20" y1="' + (k % 3 ? 7 : 6) + '" x2="20" y2="9" transform="rotate(' + k * 30 + ' 20 20)"/>';
+  }
+  clock.innerHTML =
+    '<svg viewBox="0 0 40 58" aria-hidden="true" focusable="false">' +
+      '<g class="clock-pendulum"><line x1="20" y1="34" x2="20" y2="50"/><circle cx="20" cy="51" r="4"/></g>' +
+      '<circle class="clock-rim" cx="20" cy="20" r="18.5"/><circle class="clock-face" cx="20" cy="20" r="15.5"/>' +
+      '<g class="clock-ticks">' + ticks + '</g>' +
+      '<line class="clock-hour" x1="20" y1="21.5" x2="20" y2="11.5"/>' +
+      '<line class="clock-minute" x1="20" y1="22.5" x2="20" y2="7.5"/>' +
+      '<circle class="clock-pin" cx="20" cy="20" r="1.6"/>' +
+    '</svg>';
+  lib.appendChild(clock);
+  SOUNDS.chime = function(){ tone(0, .9, { f0: 1047, gain: .12 }); tone(0, 1.1, { f0: 2094, gain: .04 }); };   // petit tintement
+  var hourHand = clock.querySelector('.clock-hour'), minuteHand = clock.querySelector('.clock-minute');
+  var shownMinutes = null;                                   // minutes depuis minuit, cumulées : les aiguilles avancent toujours
+
+  function spoken(h, m){ return h + ' h' + (m ? ' ' + (m < 10 ? '0' : '') + m : ''); }
+  function showTime(){
+    var now = new Date();
+    var h = clockHour === null ? now.getHours() : clockHour, m = clockHour === null ? now.getMinutes() : 0;
+    var target = h * 60 + m;
+    if (shownMinutes === null) shownMinutes = target;
+    else shownMinutes += ((target - shownMinutes) % 1440 + 1440) % 1440;    // en avant, jamais à reculons
+    hourHand.style.transform = 'rotate(' + (shownMinutes / 2) + 'deg)';      // 360° en 12 h
+    minuteHand.style.transform = 'rotate(' + (shownMinutes * 6) + 'deg)';    // 360° en 1 h
+    var label = 'Pendule : ' + spoken(h, m) + (clockHour === null ? ", l'heure réelle" : ', avancée') +
+                ". Avancer l'heure pour changer l'ambiance";
+    clock.setAttribute('aria-label', label);
+    clock.title = clockHour === null ? "Avancer l'heure (ambiance)" : "Avancer l'heure : un tour complet la remet à l'heure";
+    clock.classList.toggle('set', clockHour !== null);
+    return { h: h, m: m };
+  }
+
+  clock.addEventListener('click', function(){
+    var realPeriod = period(new Date().getHours());
+    var next = PERIODS[(PERIODS.indexOf(lib.getAttribute('data-heure')) + 1) % PERIODS.length];
+    clockHour = next === realPeriod ? null : PERIOD_HOUR[next];   // le tour complet ramène l'heure réelle
+    setPeriod();
+    play('chime');                                          // si les sons sont activés (idée 9)
+    var t = showTime();
+    announce(clockHour === null
+      ? "Pendule remise à l'heure : " + spoken(t.h, t.m) + ", c'est " + PERIOD_NAME[realPeriod] + '.'
+      : 'Pendule avancée à ' + spoken(t.h, 0) + ' : voici ' + PERIOD_NAME[next] + '.');
+  });
+  showTime();
+  window.requestAnimationFrame(function(){ clock.classList.add('ready'); });   // pas d'animation au chargement
+  window.setInterval(showTime, 30000);                     // à l'heure réelle, les aiguilles tournent
 })();

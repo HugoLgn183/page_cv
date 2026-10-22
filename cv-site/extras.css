@@ -326,3 +326,37 @@
 .sound-switch:focus-visible{outline:2px solid #f3d989;outline-offset:3px;}
 /* Sur téléphone, le hibou se perche à cet endroit : le bouton descend sous l'étagère */
 @media (max-width:640px){ .sound-switch{top:auto;bottom:130px;} }
+
+/* ================= 10. LA PENDULE ================= */
+/* Petite pendule en laiton, en haut de la colonne de droite ; un clic avance l'heure de l'ambiance */
+.clock{
+  appearance:none;position:absolute;z-index:6;cursor:pointer;
+  right:calc(max(9vw,70px) / 2 - 22px);top:14px;width:44px;height:64px;padding:0;border:0;background:none;
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,.55));
+}
+.clock svg{display:block;width:100%;height:100%;overflow:visible;}
+.clock-rim{fill:#c79a3a;stroke:#5d4412;stroke-width:1;}
+.clock-face{fill:#f4ead2;}
+.clock-ticks line{stroke:#4a3410;stroke-width:1.2;stroke-linecap:round;}
+.clock-hour,.clock-minute{stroke:#2a1b08;stroke-linecap:round;transform-box:view-box;transform-origin:20px 20px;}
+.clock-hour{stroke-width:2.4;}
+.clock-minute{stroke-width:1.5;}
+.clock.ready .clock-hour,.clock.ready .clock-minute{transition:transform 1.1s cubic-bezier(.4,0,.2,1);}
+.clock-pin{fill:#8a6418;}
+.clock-pendulum{transform-box:view-box;transform-origin:20px 34px;}
+.clock-pendulum line{stroke:#8a6418;stroke-width:1.4;}
+.clock-pendulum circle{fill:#c79a3a;stroke:#5d4412;stroke-width:.8;}
+.clock.set .clock-rim{fill:#e0b64e;}                    /* heure avancée : la pendule brille un peu plus */
+.clock:hover .clock-rim,.clock:focus-visible .clock-rim{fill:#e9c25a;}
+.clock:focus-visible{outline:2px solid #f3d989;outline-offset:3px;border-radius:6px;}
+@media (prefers-reduced-motion:no-preference){
+  .clock-pendulum{animation:pendulum 2s ease-in-out infinite;}
+}
+@keyframes pendulum{0%,100%{rotate:-12deg;}50%{rotate:12deg;}}
+@media (prefers-reduced-motion:reduce){ .clock.ready .clock-hour,.clock.ready .clock-minute{transition:none;} }
+/* Sur téléphone, la plaque occupe presque toute la largeur : pendule plus petite, sans balancier, dans le coin */
+@media (max-width:640px){
+  .clock{right:4px;top:0;width:30px;height:30px;}
+  .clock svg{height:auto;}
+  .clock-pendulum{display:none;}
+}
