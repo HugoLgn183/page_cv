@@ -43,7 +43,7 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko u
 - **Bougie interactive** : la flamme s'agite au survol et ploie sous le « souffle » de la souris quand celle-ci passe à proximité, puis oscille avant de se redresser ; on peut prendre la bougie (clic maintenu à la souris, appui long au doigt) et la déplacer dans toute la pièce, son halo lumineux avec elle, la flamme penchant selon le mouvement ; une fois lâchée, elle regagne d'elle-même sa place sur l'étagère.
 - **Explorer à la lueur de la bougie** : un interrupteur en laiton, sur la colonne de gauche, éteint la pièce ; seul le halo de la bougie éclaire encore, et en la promenant on découvre une cinquantaine de titres écrits à l'« encre secrète » sur la tranche de livres du fond, tous tirés du CV : compétences (Linux, Python, TCP/IP, Hack The Box…), formations (BTS SIO, STAPS, BNSSA…), expériences (CHU, Coach sportif, 21e RIMa, Transmissions…), permis et qualités. L'interrupteur s'utilise aussi au clavier, et les livres restent cliquables dans le noir.
 - **Le hibou bibliothécaire** : perché sur la pile de livres (sur le livre « Contact » sur téléphone), il suit le pointeur des yeux, cligne de temps en temps et, quand on clique dessus, sautille et donne une astuce (livres, bougie, interrupteur, pages, export PDF), adaptée à la souris ou au doigt et annoncée aux lecteurs d'écran. Dans le noir, ses yeux brillent.
-- **Le tampon « Bon pour un entretien »** : sur la page Contact du livre ouvert, un tampon encreur à apposer d'un clic (ou au clavier) ; l'empreinte rouge, un peu de travers et à l'encrage irrégulier, s'imprime dans le cadre « Réservé au recruteur » et reste mémorisée dans le navigateur du visiteur.
+- **Le tampon « Bon pour un entretien »** : sur la page Contact du livre ouvert, un tampon encreur à apposer d'un clic (ou au clavier) ; l'empreinte rouge, un peu de travers et à l'encrage irrégulier, s'imprime dans le cadre « Réservé au recruteur » et reste mémorisée dans le navigateur du visiteur. Le tampon est daté de l'année en cours.
 - **Responsive** : sur téléphone en portrait, le livre ouvert n'affiche que la page de texte, en pleine largeur et sur toute la hauteur visible ; en paysage, il affiche les deux pages dans une version compacte, comme sur ordinateur.
 - **Accessibilité** :
   - navigation complète au clavier, lien d'évitement et focus visible ;
@@ -53,7 +53,7 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko u
   - animations réduites si le système le demande (`prefers-reduced-motion`).
 - **Fonctionne sans JavaScript** : tout le CV est écrit dans le HTML et s'affiche sous forme de page classique. C'est aussi ce que lisent les moteurs de recherche.
 - **SEO** : titre et meta description adaptés, URL canonique, balises Open Graph pour l'aperçu lors d'un partage.
-- **Export PDF** : le bouton « Exporter en PDF » produit un CV classique sur une seule page A4 : en-tête avec le nom, la présentation et le contact, puis deux colonnes (profil, compétences, langues et permis à gauche ; expériences et formations à droite), sans le décor du site, avec le lien GitHub écrit en clair.
+- **Export PDF** : le bouton « Exporter en PDF » produit un CV classique sur une seule page A4 : en-tête avec le nom, la présentation et le contact, puis deux colonnes (profil, compétences, langues et permis à gauche ; expériences et formations à droite), sans le décor du site, avec le lien GitHub écrit en clair et le tampon « Bon pour un entretien » en bas de la colonne de gauche.
 
 ## Validation
 

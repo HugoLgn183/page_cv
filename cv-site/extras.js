@@ -290,7 +290,8 @@
     mark.setAttribute('aria-hidden', 'true');
     mark.style.setProperty('--rot', (-3 - Math.random() * 7).toFixed(1) + 'deg');   // un peu de travers, jamais pareil
     mark.style.setProperty('--dx', (Math.random() * 24 - 12).toFixed(0) + 'px');
-    mark.innerHTML = '<span>Bon pour</span><strong>un entretien</strong><small>H. Largeron · 2026</small>';
+    // Daté de l'année en cours : en 2027, le tampon indiquera 2027
+    mark.innerHTML = '<span>Bon pour</span><strong>un entretien</strong><small>H. Largeron · ' + new Date().getFullYear() + '</small>';
     return mark;
   }
 
@@ -327,4 +328,23 @@
     new MutationObserver(addStampZone).observe(leafR, { childList: true });
     addStampZone();
   }
+
+  // Export PDF : le tampon est imprimé en bas de la colonne de gauche (mise en page dans print.css).
+  // app.js crée les colonnes juste avant (son écouteur est enregistré en premier) et les retire après.
+  window.addEventListener('beforeprint', function(){
+    var side = document.querySelector('.print-side') || document.getElementById('cv-text');
+    if (!side || side.querySelector('.print-stamp')) return;
+    var holder = document.createElement('div');
+    holder.className = 'print-stamp';
+    holder.setAttribute('aria-hidden', 'true');
+    var mark = makeMark(false);
+    mark.style.setProperty('--rot', '-6deg');
+    mark.style.setProperty('--dx', '0px');
+    holder.appendChild(mark);
+    side.appendChild(holder);
+  });
+  window.addEventListener('afterprint', function(){
+    var holder = document.querySelector('.print-stamp');
+    if (holder) holder.parentNode.removeChild(holder);
+  });
 })();
