@@ -19,6 +19,7 @@ page_cv/
     ├── extras.css     Styles des petits plaisirs interactifs, chargés après la page
     ├── extras.js      Petits plaisirs interactifs (lumière de la bougie, hibou, tampon, terminal…), chargés après la page
     ├── app.js         JavaScript du livre ouvert et du décor, chargé en defer
+    ├── favicon.svg    Icône d'onglet (trois livres sur une étagère), 467 octets
     └── cv.md          Contenu du CV au format texte (source de référence)
 ```
 
@@ -30,7 +31,7 @@ page_cv/
 - **Polices système** à l'allure de livre (Palatino, Book Antiqua), sans téléchargement.
 - **GitHub Pages** pour l'hébergement.
 
-Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko une fois compressée par GitHub Pages) et ne contient que ce qui sert au premier affichage. `app.js` (27 Ko, 8,6 Ko compressé) est chargé avec `defer`, et c'est lui qui charge ensuite `book.css` (12 Ko, 4 Ko compressé) ; `print.css` (3 Ko) n'est utilisé qu'à l'impression ; `extras.css` et `extras.js` (69 Ko, 21 Ko compressés) ne sont chargés qu'une fois la page entièrement affichée : aucun ne retarde le premier affichage.
+Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko une fois compressée par GitHub Pages) et ne contient que ce qui sert au premier affichage. `app.js` (29 Ko, 9,4 Ko compressé) est chargé avec `defer`, et c'est lui qui charge ensuite `book.css` (12 Ko, 4 Ko compressé) ; `print.css` (3 Ko) n'est utilisé qu'à l'impression ; `extras.css` et `extras.js` (69 Ko, 21 Ko compressés) ne sont chargés qu'une fois la page entièrement affichée : aucun ne retarde le premier affichage.
 
 ## Fonctionnalités
 
@@ -66,10 +67,10 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko u
 | Outil | Résultat |
 |---|---|
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement |
-| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 98 / 100 / 100 / 100 |
-| Lighthouse ordinateur | 100 / 100 / 100 / 100 |
+| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 98 / 100 / 96 / 100 |
+| Lighthouse ordinateur | 100 / 100 / 96 / 100 |
 
-Scores Lighthouse : médiane de 3 mesures sur le site en ligne (22/10/2026).
+Scores Lighthouse : médiane de 3 mesures sur le site en ligne, avec les « petits plaisirs » 1 à 9 (22/10/2026). « Bonnes pratiques » était à 96 parce que le site n'avait pas d'icône d'onglet (`favicon.ico` introuvable, erreur 404) ; une icône a été ajoutée depuis (100 en local, à confirmer en ligne).
 
 Le détail des mesures, le journal des corrections de la V1 à la version finale et l'auto-évaluation sont dans [AUTOEVALUATION.md](AUTOEVALUATION.md).
 

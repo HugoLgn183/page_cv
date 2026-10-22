@@ -2,7 +2,7 @@
 
 Projet : CV web statique publié sur GitHub Pages — <https://hugolgn183.github.io/page_cv/cv-site/>
 Auteur : Hugo Largeron — BTS SIO SISR, CFAI de Saint-Étienne
-Mesures réalisées le 22/10/2026 sur la version en ligne (bougie déplaçable, HTML allégé).
+Mesures réalisées le 22/10/2026 sur la version en ligne, avec les « petits plaisirs » 1 à 9.
 
 ## 1. Les versions du site
 
@@ -20,18 +20,18 @@ Mesures réalisées le 22/10/2026 sur la version en ligne (bougie déplaçable, 
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement | — |
 | Lighthouse — Performance | 98 | 100 |
 | Lighthouse — Accessibilité | 100 | 100 |
-| Lighthouse — Bonnes pratiques | 100 | 100 |
+| Lighthouse — Bonnes pratiques | 96 | 96 |
 | Lighthouse — SEO | 100 | 100 |
 | Outiref (structure des titres) | *à compléter* | — |
 
 Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en local (Lighthouse 12.6.1) car l'API PageSpeed était saturée. Chaque score est la médiane de 3 mesures.
 
-**Indicateurs mobile (médiane) :** affichage du premier contenu en 1,7 s, du plus grand élément en 2,0 s, temps de blocage 82 ms, aucun décalage de mise en page (CLS = 0). Avant les ajouts du 21/10 (sommaire, fond en canvas, textures), ces valeurs étaient de 1,5 s, 1,6 s et 0 ms, pour un score de 99.
+**Indicateurs mobile (médiane) :** affichage du premier contenu en 1,7 s, du plus grand élément en 2,0 s, temps de blocage 15 ms, aucun décalage de mise en page (CLS = 0). Sur ordinateur : 0,4 s, 0,45 s, 0 ms et CLS = 0. Les neuf « petits plaisirs », chargés après l'affichage, n'ont pas ralenti le premier affichage (déjà 1,7 s et 2,0 s avant eux). Avant les ajouts du 21/10 (sommaire, fond en canvas, textures), ces valeurs étaient de 1,5 s, 1,6 s et 0 ms, pour un score de 99.
 
-**Poids :** une page HTML de 42 Ko (11,4 Ko compressée par GitHub Pages), un script `app.js` de 27 Ko (8,6 Ko compressé) chargé en `defer`, une feuille `book.css` de 12 Ko (3,8 Ko compressée) chargée par ce script après l'affichage une feuille `print.css` de 3 Ko réservée à l'impression, et les fichiers `extras.css` / `extras.js` (69 Ko, 21 Ko compressés) chargés une fois la page entièrement affichée, sans image, police externe ni bibliothèque.
+**Poids :** une page HTML de 42 Ko (11,5 Ko compressée par GitHub Pages), un script `app.js` de 29 Ko (9,4 Ko compressé) chargé en `defer`, une feuille `book.css` de 12 Ko (3,8 Ko compressée) chargée par ce script après l'affichage, une feuille `print.css` de 3 Ko réservée à l'impression, et les fichiers `extras.css` / `extras.js` (69 Ko, 21 Ko compressés) chargés une fois la page entièrement affichée, sans image, police externe ni bibliothèque.
 
 **Remarques sur les mesures :**
-- Les scores varient d'une mesure à l'autre : sur mobile, la performance va de 73 à 99, la première mesure (navigateur de test démarré à froid) étant toujours la plus basse. Lors de cette première visite, « Bonnes pratiques » tombe aussi à 96 à cause d'une erreur 404 sur `favicon.ico` (le site n'a pas d'icône d'onglet).
+- Les scores varient d'une mesure à l'autre : sur mobile, la performance va de 73 à 99, la première mesure (navigateur de test démarré à froid) étant toujours la plus basse. « Bonnes pratiques » est à 96 à cause d'une erreur 404 sur `favicon.ico` : le site n'a pas d'icône d'onglet, et chaque mesure part d'un navigateur neuf, qui la redemande à chaque fois (auparavant, elle ne comptait qu'à la première mesure). Corrigé ensuite par l'ajout d'une icône (voir le journal) : 100 en local, à remesurer en ligne.
 - Avant l'allègement du HTML, la page transitait en 14,5 à 14,8 Ko, juste à la limite d'environ 14 Ko qu'un serveur envoie lors du premier aller-retour réseau, et le premier affichage médian sur mobile était de 1,9 s (score 97). Depuis, elle transite en 12,3 à 12,6 Ko (voir le journal).
 - Lighthouse a relevé quelques requêtes supplémentaires (environ 100 Ko) qui n'existent pas dans le code source du site. Elles viennent de l'environnement de test et non de la page.
 
@@ -83,6 +83,7 @@ Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en l
 | 22/10 | Un visiteur qui revenait devait retrouver seul où il s'était arrêté | Rien n'était retenu d'une visite à l'autre | Idée 7 : marque-page. Le dernier chapitre affiché est enregistré dans le navigateur du visiteur (`localStorage`, protégé par try/catch, oublié après 30 jours) ; un ruban doré dépasse du livre correspondant (décrit aux lecteurs d'écran) et, à la visite suivante, le hibou propose de reprendre la lecture, avec deux boutons. Proposition non bloquante : pas de vol du focus, fermeture par un clic ailleurs, Échap ou au bout de 15 s, rien si un livre est déjà ouvert | Testé sur 6 visites successives à la souris, au doigt et au clavier : aucune proposition à la première visite ; ruban et proposition à la suivante ; « Reprendre la lecture » ouvre le bon chapitre ; « Non merci » et Échap rendent le focus au hibou ; marque-page de plus de 30 jours oublié. Défaut corrigé : le titre du chapitre se coupait après « « » (espaces insécables ajoutés). Export PDF toujours sur 1 page |
 | 22/10 | Même décor à toute heure | Éclairage fixe | Idée 8 : ambiance selon l'heure du visiteur (jour, aube, soir, nuit, revérifiée chaque minute) : rai de soleil avec ombre des croisillons et poussière le jour, soleil bas et orangé à l'aube et le soir, pièce assombrie la nuit avec une lueur qui suit la bougie (et disparaît si on la souffle). Calque placé sous la plaque et les livres pour ne toucher à aucun contraste ; l'interrupteur de l'idée 1 reste prioritaire | Testé avec une heure simulée (7 h, 10 h, 19 h, 23 h) sur ordinateur et téléphone : plaque et livre comparés au pixel près avec 10 h, aucun écart ; la nuit, la lueur suit la bougie déplacée et revient avec elle ; bougie soufflée et interrupteur pris en compte ; export PDF toujours sur 1 page. Premier rai jugé trop discret et caché derrière la plaque : renforcé et déplacé sur la bibliothèque de gauche |
 | 22/10 | Bibliothèque silencieuse | Aucun son | Idée 9 : sons discrets, coupés par défaut, activés par un bouton en laiton (`aria-pressed`, choix mémorisé). Sons fabriqués avec la Web Audio API (aucun fichier) : livre ouvert ou fermé, pages, hibou, tampon, interrupteur, bougie soufflée ou rallumée, crépitement. Aucun contexte audio créé avant un geste du visiteur. Bouton rendu inerte quand un livre est ouvert, comme le reste du décor | Testé en espionnant la Web Audio API (le navigateur de test n'a pas de haut-parleur), à la souris, au doigt et au clavier : sons coupés, aucune action ne joue rien ; activés, chaque action joue son son ; à la visite suivante, choix retenu mais rien avant le premier geste ; coupés au clavier, plus rien. Défauts corrigés : le son du tampon ne partait pas (le livre ouvert arrête la remontée des clics : écoute en phase de capture) ; sur téléphone, le bouton touchait le hibou (déplacé sous l'étagère). Export PDF toujours sur 1 page, mots cachés toujours alignés |
+| 22/10 | « Bonnes pratiques » à 96 sur le site en ligne | Pas d'icône d'onglet : le navigateur demandait `favicon.ico`, introuvable (erreur 404 dans la console) | Icône `favicon.svg` (trois livres sur une étagère, aux couleurs du site, 467 octets) déclarée dans la page ; fichier séparé chargé après le reste, la page compressée ne prend que 18 octets | Lighthouse en local : « Bonnes pratiques » 100, aucune erreur dans la console ; W3C : 0 erreur, 0 avertissement ; icône lisible en 16 px sur onglet clair et sombre |
 
 ## 4. Analyse
 
@@ -99,7 +100,7 @@ Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en l
 | C3 Responsive | 4 | 15 | 60 | Pas de défilement horizontal, une page pleine hauteur en portrait et deux pages en paysage sur téléphone, glissement du doigt pour tourner les pages, typographie fluide |
 | C4 UX & accessibilité | 4 | 15 | 60 | Lighthouse 100, contrastes ≥ 4,5:1, navigation clavier complète, mouvement réduit |
 | C5 SEO | 4 | 10 | 40 | Lighthouse 100, titre et description pertinents, contenu indexable |
-| C6 Performance | 4 | 10 | 40 | Lighthouse 98 (mobile) et 100 (ordinateur) en médiane, HTML de 11,5 Ko compressé, styles du livre et script chargés après l'affichage, aucune dépendance |
+| C6 Performance | 4 | 10 | 40 | Lighthouse 98 (mobile) et 100 (ordinateur) en médiane avec les 9 « petits plaisirs », HTML de 11,5 Ko compressé, styles du livre et script chargés après l'affichage, aucune dépendance |
 | C7 Validation & corrections | 3 | 10 | 30 | W3C sans erreur, Lighthouse, journal ci-dessus ; Outiref reste à passer |
 | C8 Publication | 4 | 5 | 20 | En ligne, testé sur mobile, corrigé après publication |
 | C9 Auto-évaluation | 4 | 5 | 20 | Résultats, causes et impact mesuré (ce document) |
@@ -113,7 +114,6 @@ Calcul : 360 / (4 × 100) × 20 = 18.
 
 - Vérifier le livre sur un vrai iPhone (Safari) : les corrections visent des défauts connus de Safari, mais n'ont été testées qu'en émulation dans Edge.
 - Permettre de déplacer la bougie au clavier (aujourd'hui, cet élément décoratif ne se manipule qu'à la souris ou au doigt).
-- Ajouter une icône d'onglet (favicon) pour supprimer l'erreur 404 et atteindre 100 en « Bonnes pratiques » sur mobile.
 - Passer Outiref et compléter le tableau des résultats.
 - Placer le `footer` en dehors du `main`.
 - Ajouter des réalisations chiffrées dans le parcours et les compétences.
