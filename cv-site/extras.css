@@ -234,3 +234,30 @@
   70%{opacity:.5;}
   100%{opacity:0;transform:translate(var(--dx,0),var(--dy,-60px)) scale(1.1);}
 }
+
+/* ================= 7. LE MARQUE-PAGE ================= */
+/* Un ruban de soie dorée dépasse du haut du dernier livre lu */
+.shelf-ribbon{
+  position:absolute;left:58%;top:-15px;width:8px;height:19px;pointer-events:none;
+  background:
+    linear-gradient(90deg,rgba(0,0,0,.3),rgba(255,255,255,.25) 45%,rgba(0,0,0,.25)),
+    #c79a3e;
+  clip-path:polygon(0 0,50% 22%,100% 0,100% 100%,0 100%);
+  filter:drop-shadow(0 -1px 2px rgba(0,0,0,.5));
+  transform-origin:50% 100%;
+}
+@media (prefers-reduced-motion:no-preference){
+  .shelf-ribbon{animation:ribbonSway 4.5s ease-in-out infinite;}
+}
+@keyframes ribbonSway{0%,100%{rotate:-4deg;}50%{rotate:4deg;}}
+@media (max-width:640px){ .shelf-ribbon{width:6px;height:15px;top:-12px;} }
+/* La proposition du hibou : une bulle avec deux boutons */
+.owl-bubble.offer{pointer-events:auto;max-width:min(270px,calc(100vw - 32px));}
+.offer-text{margin:0 0 8px;}
+.offer-actions{display:flex;flex-wrap:wrap;gap:6px;margin:0;}
+.offer-btn{
+  appearance:none;min-height:32px;padding:4px 10px;border:1px solid #7a5a1e;border-radius:6px;cursor:pointer;
+  background:transparent;color:var(--ink);font:inherit;font-size:.88rem;
+}
+.offer-yes{background:#7a5a1e;color:#fbf3df;}
+.offer-btn:hover,.offer-btn:focus-visible{outline:2px solid #7a5a1e;outline-offset:2px;}

@@ -158,6 +158,7 @@
     'Touchez deux fois la bougie pour la souffler… et encore deux fois pour la rallumer.',
     'Sur la page Contact du livre, un tampon vous attend…',
     'Touchez-moi 5 fois de suite : un terminal secret s\u2019ouvrira…',
+    'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
     "Besoin d'un CV papier ? Touchez « Exporter en PDF », tout en bas."
   ] : [
     'Cliquez sur un livre pour lire mon CV.',
@@ -167,6 +168,7 @@
     'Double-cliquez sur la bougie pour la souffler… et recommencez pour la rallumer.',
     'Sur la page Contact du livre, un tampon vous attend…',
     'Psst… tapez « sudo » au clavier, n\u2019importe où sur la page.',
+    'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
     "Besoin d'un CV papier ? « Exporter en PDF », tout en bas."
   ];
   var OWL_SVG =
@@ -222,6 +224,8 @@
   }
   function say(text, aloud){
     bubble.textContent = text;
+    bubble.classList.remove('offer');                         // simple texte (voir le marque-page, idée 7)
+    bubble.setAttribute('aria-hidden', 'true');
     bubble.classList.add('show');
     placeBubble();
     if (aloud) announce(text);
@@ -240,9 +244,13 @@
     say('Hou hou ! ' + tips[tipIndex], true);
     tipIndex = (tipIndex + 1) % tips.length;
   });
-  // Un clic ailleurs ou Échap referme la bulle
-  window.addEventListener('pointerdown', function(ev){ if (!owl.contains(ev.target)) bubble.classList.remove('show'); });
-  document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape') bubble.classList.remove('show'); });
+  // Un clic ailleurs ou Échap referme la bulle (le focus revient au hibou s'il était dans la bulle)
+  window.addEventListener('pointerdown', function(ev){ if (!owl.contains(ev.target) && !bubble.contains(ev.target)) bubble.classList.remove('show'); });
+  document.addEventListener('keydown', function(ev){
+    if (ev.key !== 'Escape') return;
+    if (bubble.contains(document.activeElement)) owl.focus();
+    bubble.classList.remove('show');
+  });
 
   // Les yeux suivent la souris (ou le dernier endroit touché)
   function aimEyes(){
@@ -674,5 +682,95 @@
       }, 9000 + Math.random() * 9000);
     }
     shiverSoon();
+  }
+
+  // ===================== 7. Le marque-page =====================
+  // Le dernier chapitre lu est retenu dans le navigateur du visiteur (et nulle part ailleurs) :
+  // un ruban dépasse du livre correspondant et, à la visite suivante, le hibou propose de reprendre
+  // la lecture. La proposition est discrète : elle ne prend pas le focus et disparaît d'elle-même.
+  var MARK_KEY = 'cv-marque-page', MARK_DAYS = 30;
+  var markRow = document.querySelector('.books-row');
+  if (markRow) {
+    var ribbon = document.createElement('span');
+    ribbon.className = 'shelf-ribbon';
+    ribbon.setAttribute('aria-hidden', 'true');
+    var ribbonNote = document.createElement('span');          // précisé aux lecteurs d'écran sur le livre marqué
+    ribbonNote.className = 'sr-only';
+    ribbonNote.id = 'marque-page-note';
+    ribbonNote.textContent = 'Marque-page : dernier chapitre lu';
+    lib.appendChild(ribbonNote);
+
+    var readMark = function(){
+      try {
+        var mark = JSON.parse(window.localStorage.getItem(MARK_KEY) || 'null');
+        if (mark && markRow.querySelector('.book[data-rub="' + mark.rub + '"]') &&
+            Date.now() - mark.t < MARK_DAYS * 864e5) return mark;
+        window.localStorage.removeItem(MARK_KEY);             // trop ancien ou invalide : on l'oublie
+      } catch (e) { /* stockage indisponible : pas de marque-page */ }
+      return null;
+    };
+    var placeRibbon = function(book){
+      var old = markRow.querySelector('[aria-describedby="marque-page-note"]');
+      if (old) old.removeAttribute('aria-describedby');
+      book.appendChild(ribbon);
+      book.setAttribute('aria-describedby', 'marque-page-note');
+    };
+    var chapterName = function(book){
+      return 'chapitre ' + book.querySelector('.bnum').textContent + ', « ' + book.querySelector('.btitle').textContent + ' »';   // espaces insécables
+    };
+
+    // Chaque chapitre affiché devient le nouveau marque-page
+    var lastMarked = null;
+    new MutationObserver(function(){
+      var book = markRow.querySelector('.book.lit');
+      if (!book || book === lastMarked) return;
+      lastMarked = book;
+      placeRibbon(book);
+      if (bubble.classList.contains('offer')) bubble.classList.remove('show');   // on lit déjà : proposition inutile
+      try { window.localStorage.setItem(MARK_KEY, JSON.stringify({ rub: book.getAttribute('data-rub'), t: Date.now() })); }
+      catch (e) { /* stockage indisponible : tant pis */ }
+    }).observe(markRow, { subtree: true, attributes: true, attributeFilter: ['class'] });
+
+    // Visite suivante : le ruban est déjà en place, et le hibou propose de reprendre
+    var saved = readMark();
+    if (saved) {
+      var markedBook = markRow.querySelector('.book[data-rub="' + saved.rub + '"]');
+      placeRibbon(markedBook);
+      greeted = true;                                         // pas de présentation : il nous connaît déjà
+      window.setTimeout(function(){
+        if (!document.getElementById('viewer').hidden || document.querySelector('.terminal:not([hidden])')) return;
+        offerToResume(markedBook);
+      }, 1800);
+    }
+  }
+
+  function offerToResume(book){
+    var text = 'Hou hou ! Bon retour parmi nous. Vous lisiez le ' + chapterName(book) + '.';
+    bubble.textContent = '';
+    var p = document.createElement('p');
+    p.className = 'offer-text';
+    p.textContent = text;
+    var yes = document.createElement('button'), no = document.createElement('button');
+    yes.type = no.type = 'button';
+    yes.className = 'offer-btn offer-yes';
+    no.className = 'offer-btn';
+    yes.textContent = 'Reprendre la lecture';
+    no.textContent = 'Non merci';
+    yes.addEventListener('click', function(){ bubble.classList.remove('show'); book.click(); });
+    no.addEventListener('click', function(){ bubble.classList.remove('show'); owl.focus({ preventScroll: true }); });
+    var actions = document.createElement('p');
+    actions.className = 'offer-actions';
+    actions.appendChild(yes);
+    actions.appendChild(no);
+    bubble.appendChild(p);
+    bubble.appendChild(actions);
+    bubble.classList.add('show', 'offer');
+    bubble.removeAttribute('aria-hidden');
+    placeBubble();
+    announce(text + ' Le bouton « Reprendre la lecture » se trouve après le hibou.');
+    window.clearTimeout(bubbleTimer);
+    bubbleTimer = window.setTimeout(function(){
+      if (!bubble.contains(document.activeElement)) bubble.classList.remove('show');
+    }, 15000);
   }
 })();
