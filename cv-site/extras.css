@@ -40,6 +40,6 @@
 .lights-off .secret-ink{opacity:1;}
 .secret-ink span{
   position:absolute;transform:translate(-50%,-50%);writing-mode:vertical-rl;white-space:nowrap;
-  font-family:var(--serif);font-size:1rem;letter-spacing:.18em;font-variant-caps:all-small-caps;
+  font-family:var(--serif);font-size:1rem;line-height:1;letter-spacing:.12em;font-variant-caps:all-small-caps;
   color:#f3d77e;text-shadow:0 0 6px rgba(243,215,126,.9),0 0 18px rgba(255,190,90,.6);
 }

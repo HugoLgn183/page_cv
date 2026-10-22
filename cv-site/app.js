@@ -359,6 +359,7 @@
     var rowH = Math.max(140, Math.min(190, H / 5));
     var sections = Math.max(2, Math.round(W / 300));
     var secW = W / sections, post = 16, plank = 12;
+    var spines = [];                                          // livres debout : position de leur tranche
 
     for (var top = 16; top < H; top += rowH) {
       var floor = top + rowH - plank;
@@ -387,6 +388,7 @@
           }
           if (x + w > end) break;
           drawSpine(x, floor - h, w, h, col, f, rand);
+          spines.push({ x: x, y: floor - h, w: w, h: h });
           x += w + (rand() < .3 ? 1 : 0);
         }
       }
@@ -416,6 +418,18 @@
     bcx.fillStyle = dark;
     bcx.fillRect(0, 0, W, H);
     document.documentElement.classList.add('has-bookcase');
+
+    // Position des tranches et des éléments posés devant la bibliothèque (plaque, livres, colonnes…) :
+    // extras.js s'en sert pour écrire les titres à l'encre secrète sur des tranches visibles
+    var room = lib.getBoundingClientRect();
+    lib.bookSpines = spines;
+    lib.coverRects = Array.prototype.map.call(
+      document.querySelectorAll('.plaque, .book, .bookend, .shelf-board, .shelf-leg, .stack, .candle-home, .pillar, .lib-foot'),
+      function(el){
+        var r = el.getBoundingClientRect();
+        return { l: r.left - room.left - 4, t: r.top - room.top - 4, r: r.right - room.left + 4, b: r.bottom - room.top + 4 };
+      });
+    lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
   }
   if (bcx) {
     // Dessin hors du chemin critique, puis seulement si la taille change vraiment
