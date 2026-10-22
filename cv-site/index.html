@@ -501,19 +501,8 @@ a{color:inherit;}
 .js .cv-text{display:none;}
 /* Sans JavaScript, les livres (boutons) ne servent à rien */
 .no-js .library,.no-js .viewer,.no-js .skip-link,.no-js .pdf-btn,.no-js .pla-sub p:last-child{display:none;}
-
-/* ================= IMPRESSION ================= */
-@media print{
-  body{background:#fff;color:#000;}
-  .wall,.bookcase,.backshelf,.arch,.pillar,.sconce,.mote,.viewer,.library,.lib-foot,.skip-link,.pla-sub p:last-child{display:none!important;}
-  .lib{display:block;min-height:0;overflow:visible;}
-  .plaque-wrap{padding:0 0 12px;}
-  .plaque{background:none;border:0;box-shadow:none;padding:0;text-shadow:none;}
-  .plaque::before,.plaque::after,.pla-rule{display:none;}
-  .js .cv-text,.cv-text{display:block;width:auto;margin:0;padding:0;background:none;box-shadow:none;font-size:.9rem;}
-  .rub{break-inside:avoid;}
-}
 </style>
+<link rel="stylesheet" href="print.css" media="print">
 </head>
 <body>
 
@@ -764,11 +753,11 @@ a{color:inherit;}
       </div>
       <p class="lead">Actuellement en <strong>alternance</strong> en BTS SIO SISR, je reste disponible pour échanger sur mon parcours et mes projets. N'hésitez pas à me contacter.</p>
       <ul class="contact-list">
-        <li>
+        <li class="masked">
           <span class="ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
           <span><span aria-hidden="true">** ** ** ** **</span><span class="sr-only">Téléphone masqué</span></span>
         </li>
-        <li>
+        <li class="masked">
           <span class="ico" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg></span>
           <span><span aria-hidden="true">*****@*****.***</span><span class="sr-only">E-mail masqué</span></span>
         </li>

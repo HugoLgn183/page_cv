@@ -15,6 +15,7 @@ page_cv/
 └── cv-site/
     ├── index.html     Le site : HTML et CSS du premier affichage (tout le contenu du CV est ici)
     ├── book.css       Styles du livre ouvert, chargés après l'affichage
+    ├── print.css      Mise en page de l'export PDF (CV d'une page)
     ├── app.js         JavaScript du livre ouvert et du décor, chargé en defer
     └── cv.md          Contenu du CV au format texte (source de référence)
 ```
@@ -27,7 +28,7 @@ page_cv/
 - **Polices système** à l'allure de livre (Palatino, Book Antiqua), sans téléchargement.
 - **GitHub Pages** pour l'hébergement.
 
-Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko une fois compressée par GitHub Pages) et ne contient que ce qui sert au premier affichage. `app.js` (26 Ko, 8 Ko compressé) est chargé avec `defer`, et c'est lui qui charge ensuite `book.css` (12 Ko, 4 Ko compressé) : aucun des deux ne retarde le premier affichage.
+Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko une fois compressée par GitHub Pages) et ne contient que ce qui sert au premier affichage. `app.js` (27 Ko, 8,6 Ko compressé) est chargé avec `defer`, et c'est lui qui charge ensuite `book.css` (12 Ko, 4 Ko compressé) ; `print.css` (3 Ko) n'est utilisé qu'à l'impression : aucun ne retarde le premier affichage.
 
 ## Fonctionnalités
 
@@ -47,7 +48,7 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko u
   - animations réduites si le système le demande (`prefers-reduced-motion`).
 - **Fonctionne sans JavaScript** : tout le CV est écrit dans le HTML et s'affiche sous forme de page classique. C'est aussi ce que lisent les moteurs de recherche.
 - **SEO** : titre et meta description adaptés, URL canonique, balises Open Graph pour l'aperçu lors d'un partage.
-- **Export PDF** : le bouton « Exporter en PDF » imprime une version épurée du CV.
+- **Export PDF** : le bouton « Exporter en PDF » produit un CV classique sur une seule page A4 : en-tête avec le nom, deux colonnes (profil, compétences, langues, permis et contact à gauche ; expériences et formations à droite), sans le décor du site, avec le lien GitHub écrit en clair.
 
 ## Validation
 

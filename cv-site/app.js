@@ -281,6 +281,33 @@
 
   document.getElementById('pdfBtn').addEventListener('click', function(){ window.print(); });
 
+  // Impression / export PDF : le CV est remis en page sur deux colonnes, puis rétabli
+  var cvText = document.getElementById('cv-text');
+  var printCols = null;
+  window.addEventListener('beforeprint', function(){
+    if (printCols) return;
+    printCols = document.createElement('div');
+    printCols.className = 'print-cols';
+    var side = document.createElement('div'), main = document.createElement('div');
+    side.className = 'print-side';
+    main.className = 'print-main';
+    ['profil', 'competences', 'langues', 'permis', 'contact'].forEach(function(id){
+      side.appendChild(document.getElementById('rub-' + id));
+    });
+    ['experience', 'formation'].forEach(function(id){
+      main.appendChild(document.getElementById('rub-' + id));
+    });
+    printCols.appendChild(side);
+    printCols.appendChild(main);
+    cvText.appendChild(printCols);
+  });
+  window.addEventListener('afterprint', function(){
+    if (!printCols) return;
+    ORDER.forEach(function(id){ cvText.appendChild(document.getElementById('rub-' + id)); });
+    cvText.removeChild(printCols);
+    printCols = null;
+  });
+
   // --- Bibliothèques du fond : dessinées une seule fois dans un canvas ---
   var lib = document.querySelector('.lib');
   var bookcase = document.getElementById('bookcase');
