@@ -2,7 +2,7 @@
 
 Projet : CV web statique publié sur GitHub Pages — <https://hugolgn183.github.io/page_cv/cv-site/>
 Auteur : Hugo Largeron — BTS SIO SISR, CFAI de Saint-Étienne
-Mesures réalisées le 22/10/2026 sur la version en ligne (avec la bougie déplaçable).
+Mesures réalisées le 22/10/2026 sur la version en ligne (bougie déplaçable, HTML allégé).
 
 ## 1. Les versions du site
 
@@ -18,7 +18,7 @@ Mesures réalisées le 22/10/2026 sur la version en ligne (avec la bougie dépla
 | Outil | Mobile | Ordinateur |
 |---|---|---|
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement | — |
-| Lighthouse — Performance | 97 | 100 |
+| Lighthouse — Performance | 98 | 100 |
 | Lighthouse — Accessibilité | 100 | 100 |
 | Lighthouse — Bonnes pratiques | 100 | 100 |
 | Lighthouse — SEO | 100 | 100 |
@@ -26,13 +26,13 @@ Mesures réalisées le 22/10/2026 sur la version en ligne (avec la bougie dépla
 
 Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en local (Lighthouse 12.6.1) car l'API PageSpeed était saturée. Chaque score est la médiane de 3 mesures.
 
-**Indicateurs mobile (médiane) :** affichage du premier contenu en 1,9 s, du plus grand élément en 2,2 s, temps de blocage 47 ms, aucun décalage de mise en page (CLS = 0). Avant les ajouts du 21/10 (sommaire, fond en canvas, textures), ces valeurs étaient de 1,5 s, 1,6 s et 0 ms, pour un score de 99.
+**Indicateurs mobile (médiane) :** affichage du premier contenu en 1,7 s, du plus grand élément en 2,0 s, temps de blocage 82 ms, aucun décalage de mise en page (CLS = 0). Avant les ajouts du 21/10 (sommaire, fond en canvas, textures), ces valeurs étaient de 1,5 s, 1,6 s et 0 ms, pour un score de 99.
 
-**Poids :** une page HTML de 42 Ko (11,5 Ko compressée par GitHub Pages), un script `app.js` de 25 Ko (7,9 Ko compressé) chargé en `defer` et une feuille `book.css` de 10 Ko (3,2 Ko compressée) chargée par ce script après l'affichage, sans image, police externe ni bibliothèque.
+**Poids :** une page HTML de 42 Ko (11,5 Ko compressée par GitHub Pages), un script `app.js` de 26 Ko (8,4 Ko compressé) chargé en `defer` et une feuille `book.css` de 12 Ko (3,8 Ko compressée) chargée par ce script après l'affichage, sans image, police externe ni bibliothèque.
 
 **Remarques sur les mesures :**
-- Les scores varient d'une mesure à l'autre : sur mobile, la performance va de 71 à 99, la première mesure (navigateur de test démarré à froid) étant toujours la plus basse. Lors de cette première visite, « Bonnes pratiques » tombe aussi à 96 à cause d'une erreur 404 sur `favicon.ico` (le site n'a pas d'icône d'onglet).
-- La meilleure mesure mobile (99, premier affichage en 1,6 s) correspond à une page transférée en 14,5 Ko au lieu de 14,8 Ko : le HTML compressé est juste à la limite d'environ 14 Ko qu'un serveur envoie lors du premier aller-retour réseau (voir le journal).
+- Les scores varient d'une mesure à l'autre : sur mobile, la performance va de 73 à 99, la première mesure (navigateur de test démarré à froid) étant toujours la plus basse. Lors de cette première visite, « Bonnes pratiques » tombe aussi à 96 à cause d'une erreur 404 sur `favicon.ico` (le site n'a pas d'icône d'onglet).
+- Avant l'allègement du HTML, la page transitait en 14,5 à 14,8 Ko, juste à la limite d'environ 14 Ko qu'un serveur envoie lors du premier aller-retour réseau, et le premier affichage médian sur mobile était de 1,9 s (score 97). Depuis, elle transite en 12,3 à 12,6 Ko (voir le journal).
 - Lighthouse a relevé quelques requêtes supplémentaires (environ 100 Ko) qui n'existent pas dans le code source du site. Elles viennent de l'environnement de test et non de la page.
 
 ## 3. Journal des corrections (V1 → finale)
@@ -66,8 +66,10 @@ Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en l
 | 21/10 | Premier affichage plus lent sur mobile (Lighthouse 99 → 96 en ligne) | Page compressée passée de 14,5 à 18 Ko, au-delà de ce que le serveur envoie dans le premier aller-retour réseau (environ 14 Ko). Tests à l'appui : ni le canvas ni les filtres CSS n'étaient en cause | JavaScript déplacé dans `app.js`, chargé en `defer` ; la page HTML compressée tombe à 13 Ko. Rendu et comportement identiques | Mesure locale, 4G simulée (médiane de 3) : premier affichage 1 219 → 1 136 ms, plus rapide que la version précédente (1 170 ms). En ligne : médiane mobile 97 |
 | 22/10 | Bougie purement décorative, et absente sur mobile | Décor figé, masqué faute de place sous 640 px | Flamme agitée au survol ; bougie qu'on prend au clic maintenu (souris) ou à l'appui long de 0,4 s (doigt) et qu'on déplace dans toute la pièce, halo compris, la flamme penchant selon le mouvement ; affichée sur mobile en resserrant un peu les livres | Testé avec de vrais événements souris et tactiles : appui court ignoré, pas de défilement parasite, livres toujours cliquables ; page HTML toujours sous 14 Ko compressée |
 | 22/10 | Pendant les tests, bougie inerte puis qui ne suivait pas le pointeur | La rangée de livres la recouvrait ; en sortant la bougie de l'étagère, le navigateur perdait le pointeur | Bougie placée au premier plan ; mouvements écoutés sur toute la fenêtre pendant le déplacement | Survol, prise, déplacement et dépôt fonctionnent à la souris comme au doigt |
-| 22/10 | Page HTML compressée juste à la limite d'environ 14 Ko (13,7 Ko) | Les styles du livre ouvert étaient dans la page, alors qu'ils ne servent qu'après un clic | Styles du livre ouvert déplacés dans `book.css`, chargé par `app.js` après l'affichage (la lettrine, utilisée aussi sans JavaScript, reste dans la page) ; si l'on clique avant son arrivée, le livre attend ses styles | HTML compressé 13,7 → 11,5 Ko. Styles calculés identiques avant/après sur 330 à 450 éléments (accueil, livres ouverts, mobile). Mesure locale, 4G simulée (médiane de 3) : premier affichage 1 256 → 1 205 ms, blocage 22 → 0 ms |
+| 22/10 | Page HTML compressée juste à la limite d'environ 14 Ko (13,7 Ko) | Les styles du livre ouvert étaient dans la page, alors qu'ils ne servent qu'après un clic | Styles du livre ouvert déplacés dans `book.css`, chargé par `app.js` après l'affichage (la lettrine, utilisée aussi sans JavaScript, reste dans la page) ; si l'on clique avant son arrivée, le livre attend ses styles | HTML compressé 13,7 → 11,5 Ko. Styles calculés identiques avant/après sur 330 à 450 éléments (accueil, livres ouverts, mobile). Mesure locale, 4G simulée (médiane de 3) : premier affichage 1 256 → 1 205 ms, blocage 22 → 0 ms. En ligne : premier affichage médian sur mobile 1,9 → 1,7 s, performance 97 → 98 |
 | 22/10 | La bougie restait là où on la lâchait | Aucun retour prévu après le déplacement | Lâchée, la bougie regagne sa place sur l'étagère en 0,6 s (instantanément en mouvement réduit), la flamme ployant pendant le trajet ; on peut la rattraper en route | Testé à la souris et au doigt : retour au pixel près ; rattrapage sans saut |
+| 22/10 | Sur téléphone, contenu du livre tronqué ou page blanche ; en paysage, presque rien de lisible | Hauteur du livre en `vh` : avec la barre d'adresse visible, le bas (et les boutons) passait sous l'interface du navigateur. Pages placées dans un conteneur 3D, que Safari affiche mal quand elles défilent ; couvertures retournées restées présentes. En paysage, livre réduit à 72 % d'une hauteur d'environ 390 px et boutons trop longs, passés sur deux lignes | Livre à 100 % de la hauteur réellement visible ; conteneur 3D retiré et couvertures masquées une fois le livre ouvert ; en paysage, deux pages en version compacte (sommaire resserré, marges réduites) ; sur téléphone, grandes flèches et numéro du chapitre en bas de la page | Contrôle automatique des 7 livres sur 6 tailles d'écran (dont un iPhone avec ses barres) : flèches et texte visibles partout. Hauteur de texte : 360×640 448 → 527 px ; paysage 844×390 179–200 → 301 px, sommaire entier ; rendu sur ordinateur inchangé |
+| 22/10 | Sur téléphone, il fallait viser les boutons pour changer de chapitre | Aucun geste tactile prévu | Glisser le doigt vers la gauche (chapitre suivant) ou vers la droite (chapitre précédent) ; le défilement vertical du texte reste possible | Testé avec de vrais gestes tactiles en portrait et en paysage : II → III → IV → III ; défilement vertical et petits gestes sans effet sur la page |
 | 22/10 | Flamme peu vivante : elle ne réagissait qu'au survol | Animation fixe, indépendante des mouvements de la souris | « Souffle » de la souris : à moins de 170 px, la souris fait ployer la flamme dans le sens de son mouvement, d'autant plus qu'elle est proche et rapide, puis la flamme oscille et se redresse (petit ressort amorti en JavaScript). Même mécanisme quand on déplace la bougie. Désactivé en mouvement réduit | Testé avec de vrais mouvements de souris : aucun effet quand la souris passe loin, inclinaison jusqu'à environ 15 à 18° près de la flamme, retour au repos en environ 1 s |
 
 ## 4. Analyse
@@ -82,10 +84,10 @@ Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en l
 |---|---:|---:|---:|---|
 | C1 Contenu | 3 | 10 | 30 | Clair, cohérent, objectif indiqué ; pas encore de réalisations chiffrées |
 | C2 HTML sémantique | 3 | 10 | 30 | Un seul `h1`, hiérarchie `h2`/`h3`, balises structurelles ; le `footer` est encore dans le `main` |
-| C3 Responsive | 4 | 15 | 60 | Pas de défilement horizontal, lecture pleine largeur sur mobile, typographie fluide |
+| C3 Responsive | 4 | 15 | 60 | Pas de défilement horizontal, une page pleine hauteur en portrait et deux pages en paysage sur téléphone, glissement du doigt pour tourner les pages, typographie fluide |
 | C4 UX & accessibilité | 4 | 15 | 60 | Lighthouse 100, contrastes ≥ 4,5:1, navigation clavier complète, mouvement réduit |
 | C5 SEO | 4 | 10 | 40 | Lighthouse 100, titre et description pertinents, contenu indexable |
-| C6 Performance | 4 | 10 | 40 | Lighthouse 97 (mobile) et 100 (ordinateur) en médiane, HTML de 13,7 Ko compressé, script en `defer`, aucune dépendance |
+| C6 Performance | 4 | 10 | 40 | Lighthouse 98 (mobile) et 100 (ordinateur) en médiane, HTML de 11,5 Ko compressé, styles du livre et script chargés après l'affichage, aucune dépendance |
 | C7 Validation & corrections | 3 | 10 | 30 | W3C sans erreur, Lighthouse, journal ci-dessus ; Outiref reste à passer |
 | C8 Publication | 4 | 5 | 20 | En ligne, testé sur mobile, corrigé après publication |
 | C9 Auto-évaluation | 4 | 5 | 20 | Résultats, causes et impact mesuré (ce document) |
@@ -97,6 +99,7 @@ Calcul : 360 / (4 × 100) × 20 = 18.
 
 ## 6. Pistes d'amélioration restantes
 
+- Vérifier le livre sur un vrai iPhone (Safari) : les corrections visent des défauts connus de Safari, mais n'ont été testées qu'en émulation dans Edge.
 - Permettre de déplacer la bougie au clavier (aujourd'hui, cet élément décoratif ne se manipule qu'à la souris ou au doigt).
 - Ajouter une icône d'onglet (favicon) pour supprimer l'erreur 404 et atteindre 100 en « Bonnes pratiques » sur mobile.
 - Passer Outiref et compléter le tableau des résultats.

@@ -52,7 +52,9 @@
   var prevBtn = document.getElementById('prevBtn');
   var nextBtn = document.getElementById('nextBtn');
   var flip = document.getElementById('flip');
-  var narrow = window.matchMedia('(max-width: 640px)');
+  var narrow = window.matchMedia('(max-width: 640px) and (orientation: portrait)');   // une seule page
+  var turnCount = document.getElementById('turnCount');
+  var coverTimer = 0;
   var turning = false;
   var turnTimer = 0;
 
@@ -117,6 +119,7 @@
     });
     setTurnButton(prevBtn, ORDER[i - 1]);
     setTurnButton(nextBtn, ORDER[i + 1]);
+    turnCount.textContent = cfg.num + ' / ' + RUBS[ORDER[ORDER.length - 1]].num;
   }
 
   function openViewer(rub){
@@ -131,6 +134,9 @@
     void viewer.offsetWidth;
     viewer.classList.add('active');
     openbook.classList.add('open');
+    // Une fois les couvertures retournées, on les masque pour de bon
+    window.clearTimeout(coverTimer);
+    coverTimer = window.setTimeout(function(){ openbook.classList.add('opened'); }, reduce ? 0 : 1000);
     leafR.focus({preventScroll:true});
   }
 
@@ -193,7 +199,8 @@
     });
     setBackgroundInert(false);
     statusEl.textContent = 'Livre refermé';
-    openbook.classList.remove('open');
+    window.clearTimeout(coverTimer);
+    openbook.classList.remove('open', 'opened');
     openbook.classList.add('closing');
     viewer.classList.remove('active');
     window.setTimeout(function(){
@@ -217,6 +224,22 @@
 
   prevBtn.addEventListener('click', function(){ turnTo(prevBtn.getAttribute('data-rub')); });
   nextBtn.addEventListener('click', function(){ turnTo(nextBtn.getAttribute('data-rub')); });
+  // Glisser le doigt sur le livre : vers la gauche, page suivante ; vers la droite, page précédente
+  var swipe = null;
+  openbook.addEventListener('touchstart', function(ev){
+    swipe = ev.touches.length === 1 ? { x: ev.touches[0].clientX, y: ev.touches[0].clientY, t: Date.now() } : null;
+  }, { passive: true });
+  openbook.addEventListener('touchend', function(ev){
+    if (!swipe) return;
+    var touch = ev.changedTouches[0];
+    var dx = touch.clientX - swipe.x, dy = touch.clientY - swipe.y, quick = Date.now() - swipe.t < 800;
+    swipe = null;
+    // Geste net et surtout horizontal (un défilement vertical du texte ne tourne pas la page)
+    if (!quick || Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    var btn = dx < 0 ? nextBtn : prevBtn;
+    if (!btn.hidden) turnTo(btn.getAttribute('data-rub'));
+  }, { passive: true });
+
   leafL.addEventListener('click', function(ev){
     var item = ev.target.closest('.toc-item');
     if (item) turnTo(item.getAttribute('data-rub'), true);

@@ -27,17 +27,18 @@ page_cv/
 - **Polices système** à l'allure de livre (Palatino, Book Antiqua), sans téléchargement.
 - **GitHub Pages** pour l'hébergement.
 
-Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko une fois compressée par GitHub Pages) et ne contient que ce qui sert au premier affichage. `app.js` (25 Ko, 8 Ko compressé) est chargé avec `defer`, et c'est lui qui charge ensuite `book.css` (10 Ko, 3 Ko compressé) : aucun des deux ne retarde le premier affichage.
+Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko une fois compressée par GitHub Pages) et ne contient que ce qui sert au premier affichage. `app.js` (26 Ko, 8 Ko compressé) est chargé avec `defer`, et c'est lui qui charge ensuite `book.css` (12 Ko, 4 Ko compressé) : aucun des deux ne retarde le premier affichage.
 
 ## Fonctionnalités
 
 - **Livre ouvert** :
   - sommaire des 7 chapitres sur la page de gauche, chaque ligne mène au chapitre ;
   - boutons « chapitre précédent / suivant » et flèches ← → du clavier, avec une page qui tourne en 3D ;
+  - sur téléphone : glisser le doigt vers la gauche (chapitre suivant) ou vers la droite (chapitre précédent), ou utiliser les grandes flèches en bas de la page ;
   - couverture et signet de la couleur du livre choisi.
 - **Décor** : bibliothèque complète en arrière-plan, dessinée une seule fois dans un `<canvas>` et volontairement floue (des étagères en CSS la remplacent sans JavaScript) ; plaque en métal brossé, pages au grain de papier, icône gravée et chiffre romain pour chaque rubrique.
 - **Bougie interactive** : la flamme s'agite au survol et ploie sous le « souffle » de la souris quand celle-ci passe à proximité, puis oscille avant de se redresser ; on peut prendre la bougie (clic maintenu à la souris, appui long au doigt) et la déplacer dans toute la pièce, son halo lumineux avec elle, la flamme penchant selon le mouvement ; une fois lâchée, elle regagne d'elle-même sa place sur l'étagère.
-- **Responsive** : sur mobile, le livre ouvert n'affiche que la page de texte, en pleine largeur.
+- **Responsive** : sur téléphone en portrait, le livre ouvert n'affiche que la page de texte, en pleine largeur et sur toute la hauteur visible ; en paysage, il affiche les deux pages dans une version compacte, comme sur ordinateur.
 - **Accessibilité** :
   - navigation complète au clavier, lien d'évitement et focus visible ;
   - le livre ouvert se comporte comme une fenêtre modale : focus gardé à l'intérieur, fermeture avec Échap, retour sur le livre du chapitre affiché ;
@@ -53,7 +54,7 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko u
 | Outil | Résultat |
 |---|---|
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement |
-| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 97 / 100 / 100 / 100 |
+| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 98 / 100 / 100 / 100 |
 | Lighthouse ordinateur | 100 / 100 / 100 / 100 |
 
 Scores Lighthouse : médiane de 3 mesures sur le site en ligne (22/10/2026).
