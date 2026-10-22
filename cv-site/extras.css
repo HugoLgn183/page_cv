@@ -429,3 +429,31 @@
 }
 .keepsake:hover,.keepsake.tag-on{translate:0 -3px;}
 .keepsake:hover .keepsake-tag,.keepsake.tag-on .keepsake-tag{opacity:1;translate:-50% 0;}
+
+/* ================= 13. PROFONDEUR ET REFLETS ================= */
+/* Le fond glisse à la souris (décalage posé en JS avec « translate ») */
+.depth .bookcase,.depth .secret-ink,.depth .lib-window,.depth .sunbeam,.depth .sconce,.depth .arch{will-change:translate;}
+/* Reflet sur la plaque : sous le texte (la plaque devient un contexte d'empilement), donc sans toucher aux contrastes */
+.plaque{isolation:isolate;}
+.plaque-sheen{position:absolute;inset:0;z-index:-1;border-radius:inherit;overflow:hidden;pointer-events:none;}
+.plaque-sheen::before{
+  content:"";position:absolute;top:-20%;bottom:-20%;left:var(--sx,50%);width:34%;margin-left:-17%;
+  background:linear-gradient(100deg,transparent,rgba(255,250,225,.42) 50%,transparent);
+  mix-blend-mode:screen;opacity:0;
+}
+.depth .plaque-sheen::before{opacity:.9;}               /* à la souris : il suit le pointeur */
+.plaque-sheen.sweep::before{opacity:.9;animation:sheenSweep 2.4s ease-in-out;}   /* au doigt : un passage de temps en temps */
+@keyframes sheenSweep{from{left:-30%;}to{left:130%;}}
+/* Reflet sur la tranche d'un livre survolé : une seule traversée */
+.spine-sheen{position:absolute;inset:0;border-radius:inherit;overflow:hidden;pointer-events:none;}
+.spine-sheen::before{
+  content:"";position:absolute;left:-40%;right:-40%;height:38%;top:-45%;
+  background:linear-gradient(170deg,transparent,rgba(255,236,180,.28) 50%,transparent);
+  mix-blend-mode:screen;
+}
+@media (prefers-reduced-motion:no-preference){
+  @media (hover:hover){ .book:hover .spine-sheen::before{animation:spineSweep .9s ease-out;} }
+  .book:focus-visible .spine-sheen::before{animation:spineSweep .9s ease-out;}
+}
+@keyframes spineSweep{from{top:-45%;}to{top:110%;}}
+@media (prefers-reduced-motion:reduce){ .plaque-sheen::before{display:none;} }

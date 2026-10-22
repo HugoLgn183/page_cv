@@ -1197,4 +1197,62 @@
     lib.addEventListener('bookcasedrawn', placeKeepsakes, true);  // avant les mots secrets, qui les évitent
     if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
   }
+
+  // ===================== 13. Profondeur et reflets =====================
+  // À la souris, le fond (bibliothèque, mots secrets, fenêtre, rai de soleil, appliques) glisse un peu
+  // à l'opposé du pointeur : il paraît plus loin que la plaque et l'étagère. Un reflet de lumière
+  // glisse sur la plaque en laiton (il suit la souris ; au doigt, il passe de temps en temps)
+  // et sur la tranche dorée d'un livre survolé. Rien de tout cela en mouvement réduit.
+  var plaqueEl = document.querySelector('.plaque');
+  if (plaqueEl) {
+    var sheen = document.createElement('span');
+    sheen.className = 'plaque-sheen';
+    sheen.setAttribute('aria-hidden', 'true');
+    plaqueEl.insertBefore(sheen, plaqueEl.firstChild);       // sous le texte (voir extras.css)
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.book'), function(b){
+    var s = document.createElement('span');
+    s.className = 'spine-sheen';
+    s.setAttribute('aria-hidden', 'true');
+    b.appendChild(s);
+  });
+
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (!reduce && finePointer) {
+    lib.classList.add('depth');
+    var far = ['.bookcase', '.secret-ink', '.lib-window', '.sunbeam', '.sconce', '.arch'];
+    var aim = { x: 0, y: 0 }, at = { x: 0, y: 0 }, depthFrame = 0;
+    var depthStep = function(){
+      depthFrame = 0;
+      at.x += (aim.x - at.x) * .08;
+      at.y += (aim.y - at.y) * .08;
+      var dx = (-at.x * 9).toFixed(2) + 'px', dy = (-at.y * 6).toFixed(2) + 'px';
+      far.forEach(function(sel){
+        Array.prototype.forEach.call(lib.querySelectorAll(sel), function(el){ el.style.translate = dx + ' ' + dy; });
+      });
+      if (sheen) sheen.style.setProperty('--sx', ((at.x + 1) / 2 * 100).toFixed(1) + '%');
+      if (Math.abs(aim.x - at.x) > .002 || Math.abs(aim.y - at.y) > .002) depthFrame = window.requestAnimationFrame(depthStep);
+    };
+    var depthAim = function(x, y){
+      aim.x = x; aim.y = y;
+      if (!depthFrame) depthFrame = window.requestAnimationFrame(depthStep);
+    };
+    window.addEventListener('pointermove', function(ev){
+      if (ev.pointerType !== 'mouse' || !document.getElementById('viewer').hidden) return;   // livre ouvert : décor figé
+      depthAim(ev.clientX / window.innerWidth * 2 - 1, ev.clientY / window.innerHeight * 2 - 1);
+    });
+    document.documentElement.addEventListener('mouseleave', function(){ depthAim(0, 0); });   // souris sortie de la page
+  } else if (!reduce && sheen) {
+    // Au doigt : le reflet traverse la plaque de temps en temps
+    (function sweepLater(){
+      window.setTimeout(function(){
+        if (!document.hidden) {
+          sheen.classList.remove('sweep');
+          void sheen.offsetWidth;
+          sheen.classList.add('sweep');
+        }
+        sweepLater();
+      }, 7000 + Math.random() * 6000);
+    })();
+  }
 })();
