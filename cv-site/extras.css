@@ -43,3 +43,44 @@
   font-family:var(--serif);font-size:1rem;line-height:1;letter-spacing:.12em;font-variant-caps:all-small-caps;
   color:#f3d77e;text-shadow:0 0 6px rgba(243,215,126,.9),0 0 18px rgba(255,190,90,.6);
 }
+
+/* ================= 2. LE HIBOU BIBLIOTHÉCAIRE ================= */
+.owl{
+  appearance:none;position:absolute;z-index:5;width:54px;height:63px;padding:0;border:0;background:none;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+}
+.owl svg{display:block;width:100%;height:100%;overflow:visible;transform-origin:50% 100%;transition:transform .25s ease;}
+@media (hover:hover){ .owl:hover svg{transform:rotate(-6deg);} }
+.owl.hoot svg{animation:owlHoot .7s ease;}
+@keyframes owlHoot{
+  0%,100%{transform:none;}
+  20%{transform:translateY(-8px) rotate(-6deg);}
+  45%{transform:translateY(0) rotate(5deg);}
+  65%{transform:translateY(-3px) rotate(-2deg);}
+}
+.owl-eye{fill:#f6e6b0;}
+.owl-pupil{fill:#1b1208;}
+.owl-pupil .owl-shine{fill:#fff;}
+.owl-lid{fill:#5a3d22;transform-box:fill-box;transform-origin:50% 0;transform:scaleY(0);transition:transform .07s ease;}
+.owl.blink .owl-lid{transform:scaleY(1);}
+/* Dans le noir : une silhouette aux yeux qui brillent */
+.lights-off .owl-body *,.lights-off .owl-beak,.lights-off .owl-lid{fill:#140c06;}
+.lights-off .owl-body path[stroke]{stroke:#140c06;}
+.lights-off .owl-feet{stroke:#140c06;}
+.lights-off .owl-eye{fill:#ffcf40;}
+.lights-off .owl svg{filter:drop-shadow(0 0 6px rgba(255,190,60,.55));}
+
+/* Bulle d'astuce, dont la pointe vise le hibou (--tail) */
+.owl-bubble{
+  position:absolute;z-index:7;max-width:min(250px,calc(100vw - 32px));padding:10px 13px;border-radius:10px;
+  background:var(--grain),var(--paper);color:var(--ink);font-family:var(--serif);font-size:.95rem;line-height:1.35;
+  box-shadow:0 10px 24px -8px rgba(0,0,0,.65);pointer-events:none;
+  opacity:0;visibility:hidden;transform:translateY(6px);
+  transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s;
+}
+.owl-bubble.show{opacity:1;visibility:visible;transform:none;transition:opacity .25s ease,transform .25s ease;}
+.owl-bubble::after{
+  content:"";position:absolute;top:100%;left:var(--tail,50%);margin-left:-8px;
+  border:8px solid transparent;border-top-color:var(--paper);
+}
+@media (max-width:640px){ .owl{width:46px;height:54px;} }

@@ -76,7 +76,8 @@
     // Chaque mot est écrit sur la tranche d'un livre du fond, dans une portion visible assez grande
     // pour le contenir ; les mots, du plus long au plus court, sont répartis le plus loin possible
     function placeWords(){
-      var covers = (lib.coverRects || []).concat(rectOf(lightSwitch));
+      var owl = document.querySelector('.owl');
+      var covers = (lib.coverRects || []).concat(rectOf(lightSwitch), owl ? rectOf(owl) : []);
       var spines = (lib.bookSpines || []).filter(function(b){ return b.w >= 11; }).map(function(b){
         var seg = freeSegment(b, covers);
         return seg && { x: b.x + b.w / 2, top: seg[0], len: seg[1] - seg[0], size: Math.max(9, Math.min(13, b.w * .75)) };
@@ -138,4 +139,129 @@
     });
     setLabel();
   }
+
+  // ===================== 2. Le hibou bibliothécaire =====================
+  // Perché sur la pile de livres (sur le livre « Contact » sur téléphone), il suit le pointeur
+  // des yeux, cligne de temps en temps et donne une astuce quand on clique dessus.
+  var touchFirst = window.matchMedia('(hover: none)').matches;
+  var TIPS = touchFirst ? [
+    'Touchez un livre pour lire mon CV.',
+    'Gardez le doigt sur la bougie pour la prendre et la promener.',
+    "Basculez l'interrupteur, à gauche : la bougie révèle des mots cachés…",
+    'Dans un livre ouvert, glissez le doigt à gauche ou à droite pour tourner les pages.',
+    "Besoin d'un CV papier ? Touchez « Exporter en PDF », tout en bas."
+  ] : [
+    'Cliquez sur un livre pour lire mon CV.',
+    'Maintenez le clic sur la bougie pour la prendre et la promener.',
+    "Basculez l'interrupteur, à gauche : la bougie révèle des mots cachés…",
+    'Dans un livre ouvert, les flèches ← → du clavier tournent les pages.',
+    "Besoin d'un CV papier ? « Exporter en PDF », tout en bas."
+  ];
+  var OWL_SVG =
+    '<svg viewBox="0 0 60 70" aria-hidden="true" focusable="false">' +
+      '<g class="owl-body">' +
+        '<path d="M13 16 17 2 25 12Z" fill="#553a20"/><path d="M47 16 43 2 35 12Z" fill="#553a20"/>' +
+        '<ellipse cx="30" cy="40" rx="22" ry="26" fill="#6b4a2b"/>' +
+        '<ellipse cx="30" cy="48" rx="13" ry="16" fill="#c9a77a"/>' +
+        '<path d="M23 44q3.5 3 7 0q3.5 3 7 0M21 51q3 3 6 0q3 3 6 0q3 3 6 0M24 58q3 2.5 6 0q3 2.5 6 0" fill="none" stroke="#8a6a44" stroke-width="1.2"/>' +
+        '<ellipse cx="10" cy="45" rx="6" ry="15" fill="#553a20" transform="rotate(12 10 45)"/>' +
+        '<ellipse cx="50" cy="45" rx="6" ry="15" fill="#553a20" transform="rotate(-12 50 45)"/>' +
+        '<circle cx="21" cy="25" r="10" fill="#e8d5b0"/><circle cx="39" cy="25" r="10" fill="#e8d5b0"/>' +
+      '</g>' +
+      '<circle class="owl-eye" cx="21" cy="25" r="6.5"/><circle class="owl-eye" cx="39" cy="25" r="6.5"/>' +
+      '<g class="owl-pupil"><circle cx="21" cy="25" r="3.3"/><circle class="owl-shine" cx="22.2" cy="23.8" r="1"/></g>' +
+      '<g class="owl-pupil"><circle cx="39" cy="25" r="3.3"/><circle class="owl-shine" cx="40.2" cy="23.8" r="1"/></g>' +
+      '<rect class="owl-lid" x="14" y="18" width="14" height="14" rx="7"/><rect class="owl-lid" x="32" y="18" width="14" height="14" rx="7"/>' +
+      '<path class="owl-beak" d="M27 31h6l-3 6Z" fill="#e0a43a"/>' +
+      '<path class="owl-feet" d="M22 64l-2 4M25 64v5M28 64l2 4M32 64l-2 4M35 64v5M38 64l2 4" stroke="#e0a43a" stroke-width="2" stroke-linecap="round"/>' +
+    '</svg>';
+
+  var owl = document.createElement('button');
+  owl.type = 'button';
+  owl.className = 'owl';
+  owl.setAttribute('aria-label', 'Hibou bibliothécaire : donner une astuce');
+  owl.title = 'Hibou bibliothécaire';
+  owl.innerHTML = OWL_SVG;
+  var bubble = document.createElement('div');                 // bulle (le texte est aussi annoncé)
+  bubble.className = 'owl-bubble';
+  bubble.setAttribute('aria-hidden', 'true');
+  lib.appendChild(owl);
+  lib.appendChild(bubble);
+
+  var eyes = owl.querySelectorAll('.owl-eye'), pupils = owl.querySelectorAll('.owl-pupil');
+  var tipIndex = 0, bubbleTimer = 0, greeted = false, look = null, lookFrame = 0;
+
+  // Perché sur la pile de livres couchés, ou sur le dernier livre quand la pile est masquée
+  function perch(){
+    var stack = document.querySelector('.stack'), books = document.querySelectorAll('.book');
+    var base = stack && stack.offsetParent ? stack : books[books.length - 1];
+    var r = base.getBoundingClientRect(), room = lib.getBoundingClientRect();
+    owl.style.left = Math.round(r.left - room.left + r.width / 2 - owl.offsetWidth / 2) + 'px';
+    owl.style.top = Math.round(r.top - room.top - owl.offsetHeight + 3) + 'px';
+    if (bubble.classList.contains('show')) placeBubble();
+  }
+  function placeBubble(){
+    var o = owl.getBoundingClientRect(), room = lib.getBoundingClientRect();
+    var width = bubble.offsetWidth, cx = o.left - room.left + o.width / 2;
+    var left = Math.max(8, Math.min(lib.clientWidth - width - 8, cx - width / 2));
+    bubble.style.left = Math.round(left) + 'px';
+    bubble.style.top = Math.round(o.top - room.top - bubble.offsetHeight - 12) + 'px';
+    bubble.style.setProperty('--tail', Math.round(cx - left) + 'px');   // la pointe vise le hibou
+  }
+  function say(text, aloud){
+    bubble.textContent = text;
+    bubble.classList.add('show');
+    placeBubble();
+    if (aloud) announce(text);
+    window.clearTimeout(bubbleTimer);
+    bubbleTimer = window.setTimeout(function(){ bubble.classList.remove('show'); }, 7000);
+  }
+
+  // Un clic : il sautille, hulule et donne l'astuce suivante
+  owl.addEventListener('click', function(){
+    greeted = true;
+    owl.classList.remove('hoot');
+    void owl.offsetWidth;
+    owl.classList.add('hoot');
+    say('Hou hou ! ' + TIPS[tipIndex], true);
+    tipIndex = (tipIndex + 1) % TIPS.length;
+  });
+  // Un clic ailleurs ou Échap referme la bulle
+  window.addEventListener('pointerdown', function(ev){ if (!owl.contains(ev.target)) bubble.classList.remove('show'); });
+  document.addEventListener('keydown', function(ev){ if (ev.key === 'Escape') bubble.classList.remove('show'); });
+
+  // Les yeux suivent la souris (ou le dernier endroit touché)
+  function aimEyes(){
+    lookFrame = 0;
+    Array.prototype.forEach.call(eyes, function(eye, i){
+      var r = eye.getBoundingClientRect(), dx = look.x - (r.left + r.width / 2), dy = look.y - (r.top + r.height / 2);
+      var d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 120) * 2.6 / d;
+      pupils[i].setAttribute('transform', 'translate(' + (dx * k).toFixed(2) + ' ' + (dy * k).toFixed(2) + ')');
+    });
+  }
+  function watch(ev){
+    look = { x: ev.clientX, y: ev.clientY };
+    if (!lookFrame) lookFrame = window.requestAnimationFrame(aimEyes);
+  }
+  window.addEventListener('pointermove', watch);
+  window.addEventListener('pointerdown', watch);
+
+  // Un clignement de temps en temps
+  function blink(){
+    owl.classList.add('blink');
+    window.setTimeout(function(){ owl.classList.remove('blink'); }, 140);
+    window.setTimeout(blink, 2500 + Math.random() * 4000);
+  }
+  if (!reduce) window.setTimeout(blink, 3000);
+
+  // Il se présente une fois, quelques secondes après l'arrivée (si personne ne l'a encore sollicité)
+  window.setTimeout(function(){
+    if (greeted || !document.getElementById('viewer').hidden) return;
+    say('Hou hou ! Je suis le bibliothécaire. ' + (touchFirst ? 'Touchez-moi' : 'Cliquez sur moi') + ' pour une astuce.', false);
+  }, 4000);
+
+  // Toujours perché au bon endroit, avant que les mots secrets ne soient replacés (phase de capture)
+  lib.addEventListener('bookcasedrawn', perch, true);
+  perch();
+  if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));   // les mots évitent le hibou
 })();

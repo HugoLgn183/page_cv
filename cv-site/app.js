@@ -18,11 +18,12 @@
   var closeBtn = document.getElementById('viewerClose');
   var statusEl = document.getElementById('status');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // Éléments rendus inertes pendant la lecture d'un livre (fenêtre modale)
-  var background = Array.prototype.slice.call(document.querySelectorAll('.skip-link, .plaque-wrap, #shelf, .lib-foot'));
+  // Éléments rendus inertes pendant la lecture d'un livre (fenêtre modale), extras compris
+  // (interrupteur, hibou : créés plus tard par extras.js, d'où la recherche à chaque appel)
+  var BACKGROUND = '.skip-link, .plaque-wrap, #shelf, .lib-foot, .light-switch, .owl';
 
   function setBackgroundInert(on){
-    background.forEach(function(el){
+    Array.prototype.forEach.call(document.querySelectorAll(BACKGROUND), function(el){
       if (on) { el.setAttribute('inert', ''); el.setAttribute('aria-hidden', 'true'); }
       else { el.removeAttribute('inert'); el.removeAttribute('aria-hidden'); }
     });
