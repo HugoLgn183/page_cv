@@ -162,7 +162,7 @@
     'Touchez-moi 5 fois de suite : un terminal secret s\u2019ouvrira…',
     "La pièce suit l'heure de votre horloge : rai de soleil le jour, lueur de la bougie la nuit.",
     "La pendule, en haut à droite, avance l'heure : aube, jour, soir, nuit… Un tour complet la remet à l'heure.",
-    "Sur l'étagère, trois souvenirs du parcours de Hugo : l'haltère du coach sportif, le béret du militaire et le câble réseau de l'informatique.",
+    "Sur l'étagère, trois souvenirs du parcours de Hugo : l'haltère de l'ancien coach sportif, le béret de l'ancien militaire et l'ordinateur portable de l'alternant technicien informatique.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
     'Touchez le bouton rond, sur la colonne de droite, pour entendre la bibliothèque : pages, bougie, hibou…',
     "Besoin d'un CV papier ? Touchez « Exporter en PDF », tout en bas."
@@ -176,7 +176,7 @@
     'Psst… tapez « sudo » au clavier, n\u2019importe où sur la page.',
     "La pièce suit l'heure de votre horloge : rai de soleil le jour, lueur de la bougie la nuit.",
     "La pendule, en haut à droite, avance l'heure : aube, jour, soir, nuit… Un tour complet la remet à l'heure.",
-    "Sur l'étagère, trois souvenirs du parcours de Hugo : l'haltère du coach sportif, le béret du militaire et le câble réseau de l'informatique.",
+    "Sur l'étagère, trois souvenirs du parcours de Hugo : l'haltère de l'ancien coach sportif, le béret de l'ancien militaire et l'ordinateur portable de l'alternant technicien informatique.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
     'Cliquez sur le bouton rond, sur la colonne de droite, pour entendre la bibliothèque : pages, bougie, hibou…',
     "Besoin d'un CV papier ? « Exporter en PDF », tout en bas."
@@ -1129,7 +1129,8 @@
 
   // ===================== 12. Les souvenirs du parcours =====================
   // Trois objets posés sur l'étagère racontent le parcours avant même d'ouvrir un livre :
-  // l'haltère du coach sportif, le béret du militaire (troupes de marine), le câble réseau de l'informatique.
+  // l'haltère de l'ancien coach sportif, le béret de l'ancien militaire (troupes de marine) et l'ordinateur
+  // portable branché au réseau de l'alternant technicien informatique.
   // Placés en JavaScript dans la place libre de l'étagère ; masqués s'il n'y en a pas (téléphone).
   var KEEPSAKES = [
     { cls: 'ks-beret', side: 'left', w: 70, h: 26, tag: 'Ancien militaire',
@@ -1139,18 +1140,26 @@
            '<circle cx="18" cy="14" r="5" fill="#d9b04a" stroke="#7a5a1e" stroke-width=".8"/>' +
            '<path d="M18 10.5v6.5M16 11.8h4M15.2 15.2q2.8 3.2 5.6 0" fill="none" stroke="#5d4412" stroke-width="1.1" stroke-linecap="round"/>' +
            '<defs><linearGradient id="ksBeret" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34497a"/><stop offset="1" stop-color="#16213d"/></linearGradient></defs>' },
-    { cls: 'ks-dumbbell', side: 'left', w: 64, h: 26, tag: 'Coach sportif',
+    { cls: 'ks-dumbbell', side: 'left', w: 64, h: 26, tag: 'Ancien coach sportif',
       svg: '<rect x="14" y="11" width="36" height="4" rx="1.5" fill="url(#ksBar)"/>' +
            '<path d="M26 11v4M29 11v4M32 11v4M35 11v4M38 11v4" stroke="#4d4d4d" stroke-width=".7"/>' +
            '<rect x="4" y="2" width="9" height="22" rx="2" fill="#2b2b2e"/><rect x="12" y="5" width="4" height="16" rx="1.5" fill="#3b3b40"/>' +
            '<rect x="51" y="2" width="9" height="22" rx="2" fill="#2b2b2e"/><rect x="48" y="5" width="4" height="16" rx="1.5" fill="#3b3b40"/>' +
            '<path d="M6 4h5M53 4h5" stroke="rgba(255,255,255,.25)" stroke-width="1.2" stroke-linecap="round"/>' +
            '<defs><linearGradient id="ksBar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8d8d8"/><stop offset="1" stop-color="#7a7a7a"/></linearGradient></defs>' },
-    { cls: 'ks-cable', side: 'right', w: 60, h: 36, tag: 'Informatique',
-      svg: '<g fill="none" stroke="#2f7fd1" stroke-width="3"><ellipse cx="25" cy="25" rx="20" ry="9"/><ellipse cx="25" cy="23" rx="16" ry="7"/><ellipse cx="25" cy="21" rx="12" ry="5"/></g>' +
-           '<path d="M41 19Q46 12 50 13" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linecap="round"/>' +
-           '<rect x="48" y="8" width="10" height="9" rx="1.5" fill="rgba(225,238,255,.7)" stroke="#9fb3c8" stroke-width=".8"/>' +
-           '<path d="M50 9.5v3M52 9.5v3M54 9.5v3M56 9.5v3" stroke="#d9b04a" stroke-width=".8"/>' }
+    { cls: 'ks-laptop', side: 'right', w: 96, h: 50, tag: 'Alternant - technicien informatique',
+      svg: '<rect x="16" y="1" width="50" height="34" rx="2.5" fill="#2c3038"/>' +                       // écran ouvert
+           '<rect x="19" y="4" width="44" height="28" rx="1" fill="url(#ksScreen)"/>' +
+           '<path d="M22 9h9M34 9h14M22 14h20M22 19h7M32 19h18" stroke="#3fd36b" stroke-width="2" opacity=".75"/>' +   // lignes de terminal
+           '<rect class="ks-cursor" x="22" y="23" width="4" height="2.5" fill="#7dffa3"/>' +
+           '<rect x="16" y="35" width="50" height="2" fill="#1b1e24"/>' +
+           '<path d="M15 37H67L71 45Q71 47 69 47H13Q11 47 11 45Z" fill="url(#ksBase)"/>' +                      // clavier
+           '<path d="M17 39.5H65M15 42H67" stroke="#6b717a" stroke-width=".7" stroke-dasharray="2.2 .8"/>' +
+           '<rect x="34" y="43.6" width="14" height="2.4" rx=".8" fill="#a3a9b1"/>' +
+           '<rect x="69" y="40" width="6" height="4.5" rx=".7" fill="rgba(225,238,255,.85)" stroke="#9fb3c8" stroke-width=".6"/>' +   // prise RJ45
+           '<path d="M75 42.2q6 0 6 3.4t6 3.4h4q4 0 4-2.4t-4-2.6h-3q-3 0-3 2.5t4 2.5" fill="none" stroke="#2f7fd1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>' +   // câble réseau enroulé
+           '<defs><linearGradient id="ksScreen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#12332a"/><stop offset="1" stop-color="#0a1914"/></linearGradient>' +
+           '<linearGradient id="ksBase" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4d8de"/><stop offset="1" stop-color="#8e949c"/></linearGradient></defs>' }
   ];
   var shelfZone = document.querySelector('.shelf-zone');
   var keepsakes = shelfZone ? KEEPSAKES.map(function(k){
@@ -1173,7 +1182,7 @@
     return { el: el, k: k };
   }) : [];
 
-  // À gauche de la bougie : le béret contre la bougie, l'haltère avant lui ; à droite des livres couchés : le câble
+  // À gauche de la bougie : le béret contre la bougie, l'haltère avant lui ; à droite des livres couchés : l'ordinateur
   function placeKeepsakes(){
     var board = document.querySelector('.shelf-board'), home = document.querySelector('.candle-home') || document.querySelector('.candle');
     var stack = document.querySelector('.stack'), books = document.querySelectorAll('.books-row .book');

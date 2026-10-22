@@ -422,13 +422,16 @@
 .keepsake[hidden]{display:none;}
 .keepsake svg{display:block;width:100%;height:100%;overflow:visible;}
 .keepsake-tag{
-  position:absolute;left:50%;bottom:calc(100% + 8px);translate:-50% 4px;white-space:nowrap;
+  position:absolute;left:50%;bottom:calc(100% + 8px);translate:-50% 4px;width:max-content;max-width:150px;text-align:center;
   padding:3px 8px;border-radius:4px;background:var(--grain),var(--paper);color:var(--ink);
   font-family:var(--serif);font-size:.78rem;box-shadow:0 4px 10px rgba(0,0,0,.5);
   opacity:0;transition:opacity .2s ease,translate .2s ease;pointer-events:none;
 }
 .keepsake:hover,.keepsake.tag-on{translate:0 -3px;}
 .keepsake:hover .keepsake-tag,.keepsake.tag-on .keepsake-tag{opacity:1;translate:-50% 0;}
+/* L'ordinateur portable : un curseur qui clignote dans le terminal */
+@media (prefers-reduced-motion:no-preference){ .ks-cursor{animation:cursorBlink 1.1s steps(2,jump-none) infinite;} }
+@keyframes cursorBlink{0%{opacity:1;}100%{opacity:0;}}
 
 /* ================= 13. PROFONDEUR ET REFLETS ================= */
 /* Le fond glisse à la souris (décalage posé en JS avec « translate ») */
