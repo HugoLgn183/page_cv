@@ -13,7 +13,8 @@ page_cv/
 ├── README.md          Présentation du projet (ce fichier)
 ├── AUTOEVALUATION.md  Résultats des outils, journal des corrections, auto-évaluation
 └── cv-site/
-    ├── index.html     Le site : HTML et CSS (tout le contenu du CV est ici)
+    ├── index.html     Le site : HTML et CSS du premier affichage (tout le contenu du CV est ici)
+    ├── book.css       Styles du livre ouvert, chargés après l'affichage
     ├── app.js         JavaScript du livre ouvert et du décor, chargé en defer
     └── cv.md          Contenu du CV au format texte (source de référence)
 ```
@@ -26,7 +27,7 @@ page_cv/
 - **Polices système** à l'allure de livre (Palatino, Book Antiqua), sans téléchargement.
 - **GitHub Pages** pour l'hébergement.
 
-Aucune image, police externe ou dépendance. La page HTML pèse 52 Ko (un peu moins de 14 Ko une fois compressée par GitHub Pages) et `app.js` 22 Ko (7 Ko compressé). Le script est chargé avec `defer` : il ne retarde pas le premier affichage.
+Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko une fois compressée par GitHub Pages) et ne contient que ce qui sert au premier affichage. `app.js` (25 Ko, 8 Ko compressé) est chargé avec `defer`, et c'est lui qui charge ensuite `book.css` (10 Ko, 3 Ko compressé) : aucun des deux ne retarde le premier affichage.
 
 ## Fonctionnalités
 
@@ -35,7 +36,7 @@ Aucune image, police externe ou dépendance. La page HTML pèse 52 Ko (un peu mo
   - boutons « chapitre précédent / suivant » et flèches ← → du clavier, avec une page qui tourne en 3D ;
   - couverture et signet de la couleur du livre choisi.
 - **Décor** : bibliothèque complète en arrière-plan, dessinée une seule fois dans un `<canvas>` et volontairement floue (des étagères en CSS la remplacent sans JavaScript) ; plaque en métal brossé, pages au grain de papier, icône gravée et chiffre romain pour chaque rubrique.
-- **Bougie interactive** : la flamme s'agite au survol et ploie sous le « souffle » de la souris quand celle-ci passe à proximité, puis oscille avant de se redresser ; on peut prendre la bougie (clic maintenu à la souris, appui long au doigt) et la déplacer dans toute la pièce, son halo lumineux avec elle, la flamme penchant selon le mouvement.
+- **Bougie interactive** : la flamme s'agite au survol et ploie sous le « souffle » de la souris quand celle-ci passe à proximité, puis oscille avant de se redresser ; on peut prendre la bougie (clic maintenu à la souris, appui long au doigt) et la déplacer dans toute la pièce, son halo lumineux avec elle, la flamme penchant selon le mouvement ; une fois lâchée, elle regagne d'elle-même sa place sur l'étagère.
 - **Responsive** : sur mobile, le livre ouvert n'affiche que la page de texte, en pleine largeur.
 - **Accessibilité** :
   - navigation complète au clavier, lien d'évitement et focus visible ;
