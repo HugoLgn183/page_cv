@@ -348,11 +348,14 @@
   }
   function drawBookcase(){
     var W = lib.clientWidth, H = lib.clientHeight;
-    if (Math.abs(W - drawnW) < 30 && Math.abs(H - drawnH) < 80) return;
+    // Pas de nouveau dessin pour un petit changement de hauteur (barre d'adresse d'un téléphone)
+    if (Math.abs(W - drawnW) < 30 && Math.abs(H - drawnH) < 80) return false;
     drawnW = W; drawnH = H;
     var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     bookcase.width = Math.round(W * dpr);
     bookcase.height = Math.round(H * dpr);
+    bookcase.style.width = W + 'px';                          // affiché à la taille exacte du dessin
+    bookcase.style.height = H + 'px';
     bcx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     var rand = seeded(7);
@@ -418,11 +421,16 @@
     bcx.fillStyle = dark;
     bcx.fillRect(0, 0, W, H);
     document.documentElement.classList.add('has-bookcase');
-
-    // Position des tranches et des éléments posés devant la bibliothèque (plaque, livres, colonnes…) :
-    // extras.js s'en sert pour écrire les titres à l'encre secrète sur des tranches visibles
-    var room = lib.getBoundingClientRect();
     lib.bookSpines = spines;
+    updateCovers();
+    return true;
+  }
+
+  // Position des éléments posés devant la bibliothèque (plaque, livres, colonnes…), à recalculer
+  // à chaque changement de mise en page : extras.js s'en sert, avec lib.bookSpines, pour écrire
+  // les titres à l'encre secrète sur des tranches visibles
+  function updateCovers(){
+    var room = lib.getBoundingClientRect();
     lib.coverRects = Array.prototype.map.call(
       document.querySelectorAll('.plaque, .book, .bookend, .shelf-board, .shelf-leg, .stack, .candle-home, .pillar, .lib-foot'),
       function(el){
@@ -437,7 +445,9 @@
     var pending = 0;
     window.addEventListener('resize', function(){
       window.cancelAnimationFrame(pending);
-      pending = window.requestAnimationFrame(drawBookcase);
+      pending = window.requestAnimationFrame(function(){
+        if (!drawBookcase() && lib.bookSpines) updateCovers();
+      });
     });
   }
 

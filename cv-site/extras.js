@@ -58,33 +58,48 @@
     }
     var words = Array.prototype.slice.call(ink.children);
 
-    // Chaque mot est écrit sur la tranche d'un livre du fond assez grand pour le contenir ;
-    // les mots, du plus long au plus court, sont répartis le plus loin possible les uns des autres
+    // Plus longue portion d'une tranche que rien ne cache (plaque, livres, colonnes…), de haut en bas
+    function freeSegment(b, covers){
+      var gaps = [[b.y + 4, b.y + b.h - 4]];
+      covers.forEach(function(z){
+        if (b.x >= z.r || b.x + b.w <= z.l) return;                   // ne passe pas devant ce livre
+        gaps = gaps.reduce(function(out, g){
+          if (z.b <= g[0] || z.t >= g[1]) return out.concat([g]);
+          if (z.t > g[0]) out.push([g[0], z.t]);
+          if (z.b < g[1]) out.push([z.b, g[1]]);
+          return out;
+        }, []);
+      });
+      return gaps.reduce(function(best, g){ return !best || g[1] - g[0] > best[1] - best[0] ? g : best; }, null);
+    }
+
+    // Chaque mot est écrit sur la tranche d'un livre du fond, dans une portion visible assez grande
+    // pour le contenir ; les mots, du plus long au plus court, sont répartis le plus loin possible
     function placeWords(){
-      var spines = (lib.bookSpines || []).filter(function(b){ return b.w >= 11; });
       var covers = (lib.coverRects || []).concat(rectOf(lightSwitch));
+      var spines = (lib.bookSpines || []).filter(function(b){ return b.w >= 11; }).map(function(b){
+        var seg = freeSegment(b, covers);
+        return seg && { x: b.x + b.w / 2, top: seg[0], len: seg[1] - seg[0], size: Math.max(9, Math.min(13, b.w * .75)) };
+      }).filter(Boolean);
       var chosen = [];
       words.slice().sort(function(a, b){ return b.textContent.length - a.textContent.length; }).forEach(function(word){
         var best = null, bestScore = -Infinity;
-        spines.forEach(function(b){
-          if (chosen.indexOf(b) !== -1) return;
-          var size = Math.max(9, Math.min(13, b.w * .75));
-          var need = word.textContent.length * size * .78 + 12;
-          if (b.h < need) return;                                        // le mot doit tenir sur la tranche
-          var cx = b.x + b.w / 2, cy = b.y + b.h / 2;
-          // …et l'endroit où il sera écrit ne doit être caché par rien (plaque, livres, colonnes…)
-          if (covers.some(function(z){ return b.x < z.r && b.x + b.w > z.l && cy - need / 2 < z.b && cy + need / 2 > z.t; })) return;
+        spines.forEach(function(s){
+          if (chosen.indexOf(s) !== -1) return;
+          var need = word.textContent.length * s.size * .78 + 8;
+          if (s.len < need) return;                                      // le mot doit tenir sur la partie visible
+          var cy = s.top + s.len / 2;
           var score = chosen.length ? Math.min.apply(null, chosen.map(function(c){
-            return Math.hypot(c.x + c.w / 2 - cx, c.y + c.h / 2 - cy);
-          })) : -(cx + cy);
-          if (score > bestScore) { best = b; bestScore = score; }
+            return Math.hypot(c.x - s.x, c.top + c.len / 2 - cy);
+          })) : -(s.x + cy);
+          if (score > bestScore) { best = s; bestScore = score; }
         });
-        word.hidden = !best;                                // aucun livre assez grand : le mot reste caché
+        word.hidden = !best;                                // aucune place assez grande : le mot reste caché
         if (!best) return;
         chosen.push(best);
-        word.style.left = Math.round(best.x + best.w / 2) + 'px';
-        word.style.top = Math.round(best.y + best.h / 2) + 'px';
-        word.style.fontSize = Math.max(9, Math.min(13, best.w * .75)).toFixed(1) + 'px';
+        word.style.left = Math.round(best.x) + 'px';
+        word.style.top = Math.round(best.top + best.len / 2) + 'px';
+        word.style.fontSize = best.size.toFixed(1) + 'px';
       });
     }
     function rectOf(el){
