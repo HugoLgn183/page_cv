@@ -1326,4 +1326,126 @@
       }, 7000 + Math.random() * 6000);
     })();
   }
+
+  // ===================== 14. Le sol =====================
+  // Un parquet en perspective part du pied de la bibliothèque du fond (avec une plinthe), et un tapis
+  // est posé sous l'étagère. Dessiné en SVG à la taille de la pièce, redessiné quand elle change ;
+  // placé juste devant la bibliothèque du fond et derrière tout le reste (colonnes, étagère, pied de page).
+  var floorSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  floorSvg.setAttribute('class', 'floor');
+  floorSvg.setAttribute('aria-hidden', 'true');
+  floorSvg.setAttribute('focusable', 'false');
+  var bookcaseCanvas = document.getElementById('bookcase');
+  lib.insertBefore(floorSvg, bookcaseCanvas ? bookcaseCanvas.nextSibling : lib.firstChild);
+
+  // L'étagère repose sur un buffet bas en bois (grands tiroirs à poignée, socle), lui-même posé sur le tapis
+  var pedestal = document.createElement('div');
+  pedestal.className = 'pedestal';
+  pedestal.setAttribute('aria-hidden', 'true');
+  pedestal.innerHTML = '<div class="ped-top"></div><div class="ped-body"></div><div class="ped-plinth"></div>';
+  var shelfZoneEl = document.querySelector('.shelf-zone');
+  if (shelfZoneEl) shelfZoneEl.appendChild(pedestal);
+
+  // Place le meuble sous la planche et renvoie la ligne où il touche le sol (repère de la pièce)
+  function placePedestal(room, footT){
+    var board = document.querySelector('.shelf-board'), zone = shelfZoneEl && shelfZoneEl.getBoundingClientRect();
+    if (!board || !zone) return null;
+    var b = board.getBoundingClientRect(), inset = window.innerWidth <= 640 ? 44 : 22;
+    var top = b.bottom - room.top, room4 = footT - top;          // place jusqu'au pied de page (le bas du buffet peut glisser sous sa bande sombre)
+    var base = top + Math.min(Math.max(50, room4 * .6), room4 + 20);
+    var w = b.width - inset * 2, doors = Math.max(2, Math.round(w / 240));
+    pedestal.style.cssText = 'left:' + Math.round(b.left - zone.left + inset) + 'px;top:' + Math.round(b.bottom - zone.top) + 'px;' +
+                             'width:' + Math.round(w) + 'px;height:' + Math.round(base - top) + 'px';
+    if (pedestal.querySelectorAll('.ped-door').length !== doors) {
+      var html = '';
+      for (var i = 0; i < doors; i++) html += '<span class="ped-door"><i></i></span>';
+      pedestal.querySelector('.ped-body').innerHTML = html;
+    }
+    pedestal.classList.toggle('low', base - top < 40);         // trop bas pour des tiroirs : simple caisson
+    lib.classList.add('has-pedestal');
+    return { base: base, left: b.left - room.left + inset, width: w };
+  }
+
+  function drawFloor(){
+    var leg = document.querySelector('.shelf-leg'), foot = document.querySelector('.lib-foot');
+    if (!leg || !foot) return;
+    var W = lib.clientWidth, H = lib.clientHeight, room = lib.getBoundingClientRect();
+    var lg = leg.getBoundingClientRect(), legB = lg.bottom - room.top, legW = lg.width;
+    var footT = foot.getBoundingClientRect().top - room.top;
+    var ped = placePedestal(room, footT);
+    var yw = Math.round(legB - 40);                          // rencontre du mur et du sol, derrière l'étagère
+    var hz = yw - (H - yw) * 1.2, f = 800, vx = W / 2;        // ligne d'horizon, focale, point de fuite
+    var Y = function(Z){ return hz + f / Z; }, Xs = function(X, Z){ return vx + X * f / Z; };
+    var zNear = f / (H - hz), zFar = f / (yw - hz);
+    var X0 = 62 / (H - hz), L = X0 * 4.2;                    // une lame : 62 px de large au premier plan
+    var rnd = seeded(11), out = [];
+    // Lames de parquet, joints décalés d'une rangée à l'autre
+    var n = Math.ceil(W / 2 / 62) + 2;
+    for (var c = -n; c < n; c++) {
+      var phase = ((c * .618) % 1 + 1) % 1 * L;
+      for (var za = zNear - phase; za < zFar; za += L) {
+        var a = Math.max(za, zNear), b = Math.min(za + L, zFar);
+        if (b <= a) continue;
+        var pts = [[c * X0, a], [(c + 1) * X0, a], [(c + 1) * X0, b], [c * X0, b]].map(function(p){
+          return Xs(p[0], p[1]).toFixed(1) + ',' + Y(p[1]).toFixed(1);
+        }).join(' ');
+        var light = 19 + rnd() * 9, hue = 22 + rnd() * 8;
+        out.push('<polygon points="' + pts + '" fill="hsl(' + hue.toFixed(0) + ' 42% ' + light.toFixed(1) + '%)"/>');
+      }
+    }
+    var s = '<defs>' +
+      '<linearGradient id="flShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset=".35" stop-color="#000" stop-opacity=".05"/><stop offset="1" stop-color="#000" stop-opacity=".45"/></linearGradient>' +
+      '<linearGradient id="flSides" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".5"/><stop offset=".25" stop-color="#000" stop-opacity="0"/><stop offset=".75" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>' +
+      '<linearGradient id="flBoard" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a4524"/><stop offset=".25" stop-color="#3b2413"/><stop offset="1" stop-color="#160c05"/></linearGradient>' +
+      '<radialGradient id="flRug" cx=".5" cy=".55" r=".7"><stop offset="0" stop-color="#7e2a28"/><stop offset=".7" stop-color="#561a19"/><stop offset="1" stop-color="#361010"/></radialGradient>' +
+      '<radialGradient id="flFoot"><stop offset="0" stop-color="#000" stop-opacity=".7"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>' +
+      '<clipPath id="flClip"><rect x="0" y="' + yw + '" width="' + W + '" height="' + (H - yw) + '"/></clipPath>' +
+      '</defs><g clip-path="url(#flClip)"><g stroke="#000" stroke-opacity=".55" stroke-width=".7">' + out.join('') + '</g>';
+    // Tapis : un rectangle posé à plat, vu en perspective, avec bordure dorée, médaillon et franges
+    var y1 = legB + 6, y2 = Math.min(H - 6, footT + 34);       // le fond du tapis passe sous le meuble
+    if (y2 - y1 > 30) {
+      var half = ped ? ped.width / 2 + 34 : legW * .62;          // il dépasse du meuble de chaque côté
+      var z1 = f / (y1 - hz), z2 = f / (y2 - hz), R = half * z1 / f;   // R : demi-largeur réelle du tapis
+      var quad = function(k){                                 // contour réduit de k (0 = bord du tapis)
+        var dz = (z1 - z2) * k, rx = R * (1 - k * 1.3);
+        return [[-rx, z1 - dz], [rx, z1 - dz], [rx, z2 + dz], [-rx, z2 + dz]].map(function(p){
+          return Xs(p[0], p[1]).toFixed(1) + ',' + Y(p[1]).toFixed(1);
+        }).join(' ');
+      };
+      var zc = (z1 + z2) / 2, cy = Y(zc), crx = R * .34 * f / zc, cry = Math.abs(Y(zc - (z1 - z2) * .2) - Y(zc + (z1 - z2) * .2)) / 2;
+      s += '<polygon points="' + quad(0) + '" fill="url(#flRug)"/>' +
+           '<polygon points="' + quad(.08) + '" fill="none" stroke="#b08a3e" stroke-opacity=".75" stroke-width="1.6"/>' +
+           '<polygon points="' + quad(.14) + '" fill="none" stroke="#1c0606" stroke-opacity=".6" stroke-width="2.4"/>' +
+           '<polygon points="' + quad(.2) + '" fill="none" stroke="#b08a3e" stroke-opacity=".45" stroke-width=".9" stroke-dasharray="4 3"/>' +
+           '<ellipse cx="' + vx + '" cy="' + cy.toFixed(1) + '" rx="' + crx.toFixed(1) + '" ry="' + cry.toFixed(1) + '" fill="#3a1010" stroke="#b08a3e" stroke-opacity=".6" stroke-width="1.2"/>' +
+           '<ellipse cx="' + vx + '" cy="' + cy.toFixed(1) + '" rx="' + (crx * .55).toFixed(1) + '" ry="' + (cry * .55).toFixed(1) + '" fill="none" stroke="#c9a24a" stroke-opacity=".45" stroke-width=".8"/>';
+      var fr = [];                                              // franges sur les bords avant et arrière
+      for (var i = 0; i <= 40; i++) {
+        var X = -R + 2 * R * i / 40;
+        fr.push('M' + Xs(X, z2).toFixed(1) + ' ' + y2.toFixed(1) + 'l0 5');
+        fr.push('M' + Xs(X, z1).toFixed(1) + ' ' + y1.toFixed(1) + 'l0 -3');
+      }
+      s += '<path d="' + fr.join('') + '" stroke="#d8c39a" stroke-opacity=".45" stroke-width=".8"/>';
+    }
+    // Ombre du meuble sur le sol, lumière (fond plus sombre, côtés assombris), plinthe au pied du mur
+    var shadowX = ped ? ped.left + ped.width / 2 : lg.left - room.left + legW / 2;
+    s += '<ellipse cx="' + shadowX.toFixed(1) + '" cy="' + (ped ? ped.base : legB).toFixed(1) + '" rx="' + ((ped ? ped.width : legW) * .58).toFixed(1) + '" ry="9" fill="url(#flFoot)"/>' +
+         '<rect x="0" y="' + yw + '" width="' + W + '" height="' + (H - yw) + '" fill="url(#flShade)"/>' +
+         '<rect x="0" y="' + yw + '" width="' + W + '" height="' + (H - yw) + '" fill="url(#flSides)"/></g>' +
+         '<rect x="0" y="' + (yw - 9) + '" width="' + W + '" height="10" fill="url(#flBoard)"/>' +
+         '<rect x="0" y="' + (yw - 9) + '" width="' + W + '" height="1" fill="#c99a5c" fill-opacity=".25"/>';
+    floorSvg.setAttribute('width', W);
+    floorSvg.setAttribute('height', H);
+    floorSvg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    floorSvg.innerHTML = s;
+    floorSvg.dataset.yw = yw;
+    // Plus de mots secrets sur les livres que le sol cache
+    if (lib.bookSpines) lib.bookSpines = lib.bookSpines.filter(function(b){ return b.y + b.h < yw - 12; });
+  }
+  // Générateur pseudo-aléatoire à graine fixe : le parquet reste le même à chaque dessin
+  function seeded(seed){ return function(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
+  drawFloor();
+  window.addEventListener('resize', drawFloor);
+  lib.addEventListener('bookcasedrawn', drawFloor, true);   // avant les mots secrets, qui évitent le sol
+  if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
 })();
