@@ -30,7 +30,7 @@ page_cv/
 - **Polices système** à l'allure de livre (Palatino, Book Antiqua), sans téléchargement.
 - **GitHub Pages** pour l'hébergement.
 
-Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko une fois compressée par GitHub Pages) et ne contient que ce qui sert au premier affichage. `app.js` (27 Ko, 8,6 Ko compressé) est chargé avec `defer`, et c'est lui qui charge ensuite `book.css` (12 Ko, 4 Ko compressé) ; `print.css` (3 Ko) n'est utilisé qu'à l'impression ; `extras.css` et `extras.js` (60 Ko, 19 Ko compressés) ne sont chargés qu'une fois la page entièrement affichée : aucun ne retarde le premier affichage.
+Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko une fois compressée par GitHub Pages) et ne contient que ce qui sert au premier affichage. `app.js` (27 Ko, 8,6 Ko compressé) est chargé avec `defer`, et c'est lui qui charge ensuite `book.css` (12 Ko, 4 Ko compressé) ; `print.css` (3 Ko) n'est utilisé qu'à l'impression ; `extras.css` et `extras.js` (69 Ko, 21 Ko compressés) ne sont chargés qu'une fois la page entièrement affichée : aucun ne retarde le premier affichage.
 
 ## Fonctionnalités
 
@@ -47,6 +47,7 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko u
 - **Les livres vivants** : les livres frémissent quand on les survole (ou qu'on y arrive au clavier), et de temps en temps l'un d'eux bouge tout seul ; à l'ouverture, un nuage de poussière s'échappe du livre, et un peu de poussière se soulève de l'étagère quand on le range. Rien de tout cela en mouvement réduit.
 - **Le marque-page** : le dernier chapitre lu est retenu dans le navigateur du visiteur (rien n'est envoyé ailleurs, oublié au bout de 30 jours) ; un ruban doré dépasse alors du livre correspondant et, à la visite suivante, le hibou propose « Reprendre la lecture » ou « Non merci ». La proposition ne prend pas le focus, ne bloque rien et disparaît d'elle-même ; elle est annoncée aux lecteurs d'écran et ses boutons s'utilisent au clavier.
 - **L'ambiance selon l'heure** : la pièce suit l'horloge du visiteur. Le jour, un rai de soleil tombe d'une fenêtre sur la bibliothèque de gauche, avec l'ombre des croisillons et de la poussière qui danse dans la lumière ; à l'aube (6 h – 8 h) et le soir (18 h – 21 h), il est plus bas et orangé ; la nuit (21 h – 6 h), la pièce s'assombrit, les appliques baissent et seule la bougie éclaire autour d'elle, même quand on la déplace (le hibou dit alors « Bonsoir »). Ce décor passe sous la plaque et les livres : leurs contrastes ne changent jamais. L'interrupteur garde le dernier mot.
+- **Les sons discrets** : coupés par défaut ; un bouton rond en laiton (colonne de droite, sous l'étagère sur téléphone) les active, et le choix est retenu dans le navigateur. Couverture qui se referme, pages qui tournent, hululement du hibou, coup de tampon, déclic de l'interrupteur, bougie qu'on souffle ou qu'on rallume, léger crépitement de la flamme. Tous les sons sont fabriqués par le navigateur (Web Audio API) : aucun fichier audio à télécharger. Rien ne joue avant un geste du visiteur.
 - **Le mode terminal secret** : taper « sudo » au clavier (ou le code Konami), ou toucher 5 fois le hibou sur téléphone, ouvre un terminal vert sur noir façon vieux moniteur. Commandes `help`, `ls`, `cat <fichier>` (les rubriques du CV, lues directement dans la page), `whoami`, `neofetch`, `date`, `history`, `clear`, `exit` ; historique avec ↑ ↓, complétion avec Tab, et quelques commandes cachées (`sudo`, `rm`, `cd`).
 - **Responsive** : sur téléphone en portrait, le livre ouvert n'affiche que la page de texte, en pleine largeur et sur toute la hauteur visible ; en paysage, il affiche les deux pages dans une version compacte, comme sur ordinateur.
 - **Accessibilité** :
@@ -54,7 +55,8 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko u
   - le livre ouvert se comporte comme une fenêtre modale : focus gardé à l'intérieur, fermeture avec Échap, retour sur le livre du chapitre affiché ;
   - changement de chapitre annoncé aux lecteurs d'écran ;
   - contrastes vérifiés (au moins 4,5:1 pour le texte) ;
-  - animations réduites si le système le demande (`prefers-reduced-motion`).
+  - animations réduites si le système le demande (`prefers-reduced-motion`) ;
+  - sons coupés par défaut, bouton « Sons » utilisable au clavier et annoncé (`aria-pressed`).
 - **Fonctionne sans JavaScript** : tout le CV est écrit dans le HTML et s'affiche sous forme de page classique. C'est aussi ce que lisent les moteurs de recherche.
 - **SEO** : titre et meta description adaptés, URL canonique, balises Open Graph pour l'aperçu lors d'un partage.
 - **Export PDF** : le bouton « Exporter en PDF » produit un CV classique sur une seule page A4 : en-tête avec le nom, la présentation et le contact, puis deux colonnes (profil, compétences, langues et permis à gauche ; expériences et formations à droite), sans le décor du site, avec le lien GitHub écrit en clair et le tampon « Bon pour un entretien » en bas de la colonne de gauche.

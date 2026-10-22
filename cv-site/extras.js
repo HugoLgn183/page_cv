@@ -160,6 +160,7 @@
     'Touchez-moi 5 fois de suite : un terminal secret s\u2019ouvrira…',
     "La pièce suit l'heure de votre horloge : rai de soleil le jour, lueur de la bougie la nuit.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
+    'Touchez le bouton rond, sur la colonne de droite, pour entendre la bibliothèque : pages, bougie, hibou…',
     "Besoin d'un CV papier ? Touchez « Exporter en PDF », tout en bas."
   ] : [
     'Cliquez sur un livre pour lire mon CV.',
@@ -171,6 +172,7 @@
     'Psst… tapez « sudo » au clavier, n\u2019importe où sur la page.',
     "La pièce suit l'heure de votre horloge : rai de soleil le jour, lueur de la bougie la nuit.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
+    'Cliquez sur le bouton rond, sur la colonne de droite, pour entendre la bibliothèque : pages, bougie, hibou…',
     "Besoin d'un CV papier ? « Exporter en PDF », tout en bas."
   ];
   var OWL_SVG =
@@ -831,4 +833,137 @@
 
   setPeriod();
   window.setInterval(setPeriod, 60000);                    // le soir tombe aussi pendant la visite
+
+  // ===================== 9. Les sons discrets =====================
+  // Coupés par défaut. Un bouton sur la colonne de droite les active (choix retenu dans le navigateur).
+  // Tous les sons sont fabriqués à la volée avec la Web Audio API : aucun fichier à télécharger.
+  // Le son ne démarre jamais sans un geste du visiteur (le navigateur l'exige aussi).
+  var SOUND_KEY = 'cv-sons';
+  var soundOn = false, actx = null, master = null, noiseBuf = null;
+  try { soundOn = window.localStorage.getItem(SOUND_KEY) === '1'; } catch (e) { /* stockage indisponible */ }
+
+  var soundSwitch = document.createElement('button');
+  soundSwitch.type = 'button';
+  soundSwitch.className = 'sound-switch';
+  soundSwitch.setAttribute('aria-label', 'Sons de la bibliothèque');
+  soundSwitch.innerHTML =
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+      '<path d="M4 9h4l5-4v14l-5-4H4Z" fill="currentColor"/>' +
+      '<path class="snd-waves" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' +
+      '<path class="snd-mute" d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' +
+    '</svg>';
+  lib.appendChild(soundSwitch);
+  function showSoundState(){
+    soundSwitch.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+    soundSwitch.title = soundOn ? 'Couper les sons' : 'Activer les sons';
+    soundSwitch.classList.toggle('on', soundOn);
+  }
+  showSoundState();
+
+  // Le contexte audio n'est créé qu'au premier geste du visiteur, et seulement si les sons sont activés
+  function audio(){
+    if (!soundOn) return null;
+    if (!actx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      actx = new AC();
+      master = actx.createGain();
+      master.gain.value = .35;                              // discret
+      master.connect(actx.destination);
+      noiseBuf = actx.createBuffer(1, actx.sampleRate, actx.sampleRate);
+      var data = noiseBuf.getChannelData(0);
+      for (var i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+    }
+    if (actx.state === 'suspended') actx.resume();
+    return actx;
+  }
+  // Un souffle de bruit filtré (papier, souffle, grésillement)
+  function noise(delay, dur, o){
+    var c = audio(); if (!c) return;
+    var t = c.currentTime + delay, src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+    src.buffer = noiseBuf;
+    f.type = o.type || 'bandpass';
+    f.Q.value = o.q || 1;
+    f.frequency.setValueAtTime(o.f0, t);
+    if (o.f1) f.frequency.exponentialRampToValueAtTime(o.f1, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(o.gain, t + (o.attack || .005));
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(f); f.connect(g); g.connect(master);
+    src.start(t, Math.random() * .5); src.stop(t + dur + .02);
+  }
+  // Une note qui glisse (hululement, choc sourd, carillon)
+  function tone(delay, dur, o){
+    var c = audio(); if (!c) return;
+    var t = c.currentTime + delay, osc = c.createOscillator(), g = c.createGain();
+    osc.type = o.type || 'sine';
+    osc.frequency.setValueAtTime(o.f0, t);
+    if (o.f1) osc.frequency.exponentialRampToValueAtTime(o.f1, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(o.gain, t + (o.attack || .01));
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    osc.connect(g); g.connect(master);
+    osc.start(t); osc.stop(t + dur + .02);
+  }
+  var SOUNDS = {
+    page: function(){ noise(0, .3, { f0: 1600, f1: 4200, q: .8, gain: .5, attack: .06 }); noise(.17, .16, { f0: 2600, f1: 1500, q: 1.2, gain: .25 }); },
+    open: function(){ tone(0, .2, { f0: 110, f1: 55, gain: .7 }); SOUNDS.page(); },
+    close: function(){ tone(0, .22, { f0: 95, f1: 50, gain: .8 }); noise(0, .1, { type: 'lowpass', f0: 700, gain: .4 }); },
+    hoot: function(){
+      tone(0, .3, { f0: 420, f1: 380, gain: .3, attack: .06 });
+      tone(.4, .55, { f0: 410, f1: 340, gain: .3, attack: .08 });
+    },
+    crackle: function(){
+      var n = 1 + Math.floor(Math.random() * 3);
+      for (var i = 0; i < n; i++) noise(i * (.03 + Math.random() * .08), .015 + Math.random() * .02, { type: 'highpass', f0: 2400, gain: .1 + Math.random() * .15 });
+    },
+    blow: function(){ noise(0, .5, { type: 'lowpass', f0: 1100, f1: 260, gain: .45, attack: .08 }); },
+    relight: function(){ noise(0, .18, { f0: 3200, f1: 1200, q: .7, gain: .5, attack: .01 }); SOUNDS.crackle(); },
+    click: function(){ noise(0, .02, { type: 'highpass', f0: 3000, gain: .6 }); tone(0, .03, { f0: 1700, gain: .08 }); },
+    stamp: function(){ tone(0, .14, { f0: 150, f1: 70, gain: .9 }); noise(0, .09, { type: 'lowpass', f0: 600, gain: .5 }); },
+    hello: function(){ tone(0, .22, { f0: 660, gain: .12 }); tone(.12, .35, { f0: 990, gain: .1 }); }
+  };
+  function play(name){ if (soundOn) SOUNDS[name](); }
+
+  soundSwitch.addEventListener('click', function(){
+    soundOn = !soundOn;
+    try { window.localStorage.setItem(SOUND_KEY, soundOn ? '1' : '0'); } catch (e) { /* tant pis */ }
+    showSoundState();
+    if (soundOn) play('hello');
+    else if (actx) actx.suspend();
+    announce(soundOn ? 'Sons activés.' : 'Sons coupés.');
+  });
+
+  // Les sons suivent ce qui se passe dans la page, sans rien modifier au reste du code
+  var shelfRow = document.querySelector('.books-row'), bookEl = document.querySelector('.openbook');
+  var soundLit = null;
+  if (shelfRow) new MutationObserver(function(){
+    var lit = shelfRow.querySelector('.book.lit');
+    if (lit && soundLit && lit !== soundLit) play('page');     // on tourne les pages vers un autre chapitre
+    soundLit = lit;
+  }).observe(shelfRow, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  // (on compare l'état d'avant le premier changement à l'état final : une ouverture retire puis remet des classes)
+  if (bookEl) new MutationObserver(function(records){
+    var was = records[0].oldValue || '', now = bookEl.className;
+    if (/\bopen\b/.test(now) && !/\bopen\b/.test(was)) play('open');
+    if (/\bclosing\b/.test(now) && !/\bclosing\b/.test(was)) play('close');
+  }).observe(bookEl, { attributes: true, attributeFilter: ['class'], attributeOldValue: true });
+  owl.addEventListener('click', function(){ play('hoot'); });
+  if (flame) lightSwitch.addEventListener('click', function(){ play('click'); });
+  document.addEventListener('click', function(ev){                // phase de capture : le livre ouvert
+    if (ev.target.closest && ev.target.closest('.stamp-tool')) play('stamp');   // arrête la remontée des clics
+  }, true);
+  if (candleBox) new MutationObserver(function(records){
+    var was = /\bout\b/.test(records[0].oldValue || ''), now = candleBox.classList.contains('out');
+    if (now && !was) play('blow');
+    if (!now && was) play('relight');
+  }).observe(candleBox, { attributes: true, attributeFilter: ['class'], attributeOldValue: true });
+
+  // La bougie crépite doucement de temps en temps (seulement sons activés, onglet visible, flamme allumée)
+  (function crackleLater(){
+    window.setTimeout(function(){
+      if (soundOn && actx && actx.state === 'running' && !document.hidden && candleBox && !candleBox.classList.contains('out')) play('crackle');
+      crackleLater();
+    }, 2500 + Math.random() * 5000);
+  })();
 })();

@@ -307,3 +307,22 @@
 [data-heure="nuit"] .sconce{opacity:.25;}
 [data-heure="nuit"] .ambiance.candle-out{ /* bougie soufflée : plus de lueur */
   background:rgba(4,2,0,.62);}
+
+/* ================= 9. LES SONS DISCRETS ================= */
+/* Bouton en laiton sur la colonne de droite, pendant de l'interrupteur */
+.sound-switch{
+  appearance:none;position:absolute;z-index:6;cursor:pointer;
+  right:calc(max(9vw,70px) / 2 - 17px);top:46%;width:34px;height:34px;padding:6px;
+  border:1px solid #5d4412;border-radius:50%;color:#4a3410;
+  background:radial-gradient(circle at 35% 30%,#f3d989,#c79a3a 55%,#8a6418);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.55),0 4px 10px rgba(0,0,0,.55);
+  transition:box-shadow .4s ease;
+}
+.sound-switch svg{display:block;width:100%;height:100%;}
+.sound-switch .snd-waves{opacity:0;}
+.sound-switch.on .snd-waves{opacity:1;}
+.sound-switch.on .snd-mute{opacity:0;}
+.sound-switch.on{box-shadow:inset 0 1px 2px rgba(255,255,255,.55),0 0 14px rgba(236,206,108,.45);}
+.sound-switch:focus-visible{outline:2px solid #f3d989;outline-offset:3px;}
+/* Sur téléphone, le hibou se perche à cet endroit : le bouton descend sous l'étagère */
+@media (max-width:640px){ .sound-switch{top:auto;bottom:130px;} }

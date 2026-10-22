@@ -8,7 +8,7 @@
   html,body{background:#fff!important;}
   body{color:#1c1c1c;font-size:9pt;line-height:1.32;}
   .wall,.bookcase,.backshelf,.arch,.pillar,.sconce,.mote,.viewer,.library,.lib-foot,.skip-link,
-  .candle,.candle-home,.pla-sub p:last-child,.night,.secret-ink,.light-switch,.owl,.owl-bubble,.terminal,.dust,.shelf-ribbon,.ambiance{display:none!important;}
+  .candle,.candle-home,.pla-sub p:last-child,.night,.secret-ink,.light-switch,.owl,.owl-bubble,.terminal,.dust,.shelf-ribbon,.ambiance,.sound-switch{display:none!important;}
   .lib{display:block;min-height:0;overflow:visible;}
   a{color:inherit;text-decoration:none;}
 

@@ -20,7 +20,7 @@
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // Éléments rendus inertes pendant la lecture d'un livre (fenêtre modale), extras compris
   // (interrupteur, hibou : créés plus tard par extras.js, d'où la recherche à chaque appel)
-  var BACKGROUND = '.skip-link, .plaque-wrap, #shelf, .lib-foot, .light-switch, .owl';
+  var BACKGROUND = '.skip-link, .plaque-wrap, #shelf, .lib-foot, .light-switch, .owl, .sound-switch';
 
   function setBackgroundInert(on){
     Array.prototype.forEach.call(document.querySelectorAll(BACKGROUND), function(el){
