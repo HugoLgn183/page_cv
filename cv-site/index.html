@@ -317,6 +317,8 @@ a{color:inherit;}
 
 /* --- Objets posés sur l'étagère (décoratifs) --- */
 .shelf-decor{position:absolute;bottom:24px;z-index:1;pointer-events:none;}
+/* Repère invisible : la place de la bougie sur l'étagère, où elle revient quand on la lâche */
+.candle-home{left:max(4%,calc(50% - 330px));width:26px;height:72px;visibility:hidden;}
 .candle{
   left:max(4%,calc(50% - 330px));width:26px;height:72px;
   /* La bougie se prend à la main : clic maintenu (souris) ou appui long (doigt) */
@@ -473,6 +475,7 @@ a{color:inherit;}
   .lib-foot{font-size:.86rem;}
   .stack{display:none;}
   .candle{left:10px;scale:.75;}
+  .candle-home{left:10px;}
   .book{width:36px;height:175px;padding:8px 0 6px;}
   .bookend{width:14px;}
   .b1{height:186px;width:36px;}

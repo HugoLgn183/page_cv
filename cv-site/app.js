@@ -377,9 +377,14 @@
   }
 
   // --- Bougie : on la prend au clic maintenu (souris) ou à l'appui long (doigt),
-  //     puis on la promène dans toute la pièce, halo compris ---
+  //     puis on la promène dans toute la pièce, halo compris ; lâchée, elle regagne sa place ---
   var candle = document.querySelector('.candle');
   if (candle && window.PointerEvent) {
+    var home = document.createElement('span');             // repère de sa place sur l'étagère
+    home.className = 'shelf-decor candle-home';
+    home.setAttribute('aria-hidden', 'true');
+    candle.parentNode.insertBefore(home, candle);
+    var homing = 0;              // retour vers l'étagère en cours (requestAnimationFrame)
     var holding = null;          // déplacement en cours
     var press = null;            // appui long en attente (tactile)
     var flameBox = candle.querySelector('.flame-lean');
@@ -416,6 +421,8 @@
       }
     }
     function pickUp(x, y){
+      // Rattrapée pendant son retour : on l'arrête là où elle est
+      if (homing) { window.cancelAnimationFrame(homing); homing = 0; }
       if (!candle.classList.contains('loose')) {
         // Première prise : la bougie quitte l'étagère pour être placée dans la pièce
         var zone = candle.offsetParent.getBoundingClientRect(), room = lib.getBoundingClientRect();
@@ -448,6 +455,37 @@
       if (!holding) return;
       holding = null;
       candle.classList.remove('held');
+      goHome();
+    }
+
+    // Une fois lâchée, la bougie regagne sa place sur l'étagère
+    function homePosition(){
+      var zone = home.offsetParent.getBoundingClientRect(), room = lib.getBoundingClientRect();
+      return [zone.left - room.left + home.offsetLeft, zone.top - room.top + home.offsetTop];
+    }
+    function settle(){
+      homing = 0;
+      candle.classList.remove('loose');
+      candle.style.left = candle.style.top = '';
+      home.parentNode.insertBefore(candle, home.nextSibling);
+    }
+    function goHome(){
+      if (reduce) { settle(); return; }                     // mouvement réduit : retour immédiat
+      var from = [candle.offsetLeft, candle.offsetTop], to = homePosition();
+      var start = performance.now(), duration = 600, prevX = from[0], prevT = start;
+      function step(now){
+        var t = Math.min(1, (now - start) / duration);
+        var ease = 1 - Math.pow(1 - t, 3);                  // départ vif, arrivée en douceur
+        var x = from[0] + (to[0] - from[0]) * ease, y = from[1] + (to[1] - from[1]) * ease;
+        candle.style.left = x + 'px';
+        candle.style.top = y + 'px';
+        pushFlame(-(x - prevX) / Math.max(8, now - prevT) * 3);   // la flamme ploie pendant le trajet
+        prevX = x;
+        prevT = now;
+        if (t < 1) homing = window.requestAnimationFrame(step);
+        else settle();
+      }
+      homing = window.requestAnimationFrame(step);
     }
 
     // Souffle de la souris : en passant près de la flamme, la souris déplace l'air
