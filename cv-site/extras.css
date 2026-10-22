@@ -204,3 +204,33 @@
   75%{transform:translate(5px,-86px) scale(2.2);opacity:.3;}
   100%{opacity:0;transform:translate(-3px,-118px) scale(2.8);}
 }
+
+/* ================= 6. LES LIVRES VIVANTS ================= */
+/* Un frémissement au survol (ou au clavier) ; « rotate » se combine avec le « transform » du survol */
+.lib .book{transform-origin:50% 100%;}
+@media (prefers-reduced-motion:no-preference){
+  @media (hover:hover){ .lib .book:hover{animation:bookShiver .55s ease-in-out;} }
+  .lib .book:focus-visible{animation:bookShiver .55s ease-in-out;}
+  .lib .book.shiver{animation:bookShiver .8s ease-in-out;}
+}
+@keyframes bookShiver{
+  0%,100%{rotate:0deg;}
+  18%{rotate:-1.6deg;}
+  36%{rotate:1.3deg;}
+  54%{rotate:-.9deg;}
+  72%{rotate:.5deg;}
+  88%{rotate:-.2deg;}
+}
+/* Poussière : des grains clairs qui s'envolent puis s'effacent */
+.dust{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;}
+.dust i{
+  position:absolute;width:var(--s,2px);height:var(--s,2px);border-radius:50%;
+  background:rgba(236,222,192,.95);box-shadow:0 0 4px rgba(236,206,140,.6);
+  opacity:0;animation:dustFly 1.8s cubic-bezier(.15,.6,.35,1) forwards;
+}
+@keyframes dustFly{
+  0%{opacity:0;transform:translate(0,0) scale(.6);}
+  15%{opacity:.95;}
+  70%{opacity:.5;}
+  100%{opacity:0;transform:translate(var(--dx,0),var(--dy,-60px)) scale(1.1);}
+}

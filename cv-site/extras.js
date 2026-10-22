@@ -594,4 +594,85 @@
     candleEl.appendChild(smoke);
     window.setTimeout(function(){ if (smoke.parentNode) smoke.parentNode.removeChild(smoke); }, 3500);
   }
+
+  // ===================== 6. Les livres vivants =====================
+  // Les livres frémissent au survol (extras.css) et, de temps en temps, l'un d'eux bouge tout seul.
+  // Un nuage de poussière s'échappe du livre quand on l'ouvre, et de l'étagère quand on le range.
+  // Tout est décoratif (aria-hidden, sans pointeur) et coupé en mouvement réduit.
+  var row = document.querySelector('.books-row');
+  var openbookEl = document.querySelector('.openbook');
+  var viewerEl = document.getElementById('viewer') || document.querySelector('.viewer');
+  if (row && openbookEl && viewerEl && !reduce) {
+    var shelfBooks = Array.prototype.slice.call(row.querySelectorAll('.book'));
+    var litBook = null;
+
+    // Un nuage de poussière : des grains partent d'une zone et s'envolent en ralentissant
+    function dust(parent, x, y, w, h, count, spread){
+      var cloud = document.createElement('span');
+      cloud.className = 'dust';
+      cloud.setAttribute('aria-hidden', 'true');
+      for (var i = 0; i < count; i++) {
+        var grain = document.createElement('i');
+        var gx = x + Math.random() * w, gy = y + Math.random() * h;
+        var angle = -Math.PI / 2 + (Math.random() - .5) * spread;          // surtout vers le haut
+        var dist = 30 + Math.random() * 70;
+        grain.style.cssText = 'left:' + gx.toFixed(1) + 'px;top:' + gy.toFixed(1) + 'px;' +
+          '--dx:' + (Math.cos(angle) * dist).toFixed(1) + 'px;--dy:' + (Math.sin(angle) * dist).toFixed(1) + 'px;' +
+          '--s:' + (1.5 + Math.random() * 2.5).toFixed(1) + 'px;' +
+          'animation-delay:' + Math.round(Math.random() * 260) + 'ms;animation-duration:' + Math.round(1300 + Math.random() * 900) + 'ms';
+        cloud.appendChild(grain);
+      }
+      parent.appendChild(cloud);
+      window.setTimeout(function(){ if (cloud.parentNode) cloud.parentNode.removeChild(cloud); }, 2700);
+    }
+
+    // On retient le livre allumé (celui qu'on a ouvert, ou le chapitre en cours)
+    new MutationObserver(function(){
+      litBook = row.querySelector('.book.lit') || litBook;
+    }).observe(row, { subtree: true, attributes: true, attributeFilter: ['class'] });
+
+    new MutationObserver(function(){
+      var cls = openbookEl.classList;
+      if (cls.contains('open') && !openbookEl.dataset.dusted) {
+        // Ouverture : la poussière s'échappe du haut et du bas du livre quand la couverture se soulève
+        openbookEl.dataset.dusted = '1';
+        window.setTimeout(function(){
+          if (!openbookEl.classList.contains('open')) return;
+          var r = openbookEl.getBoundingClientRect();
+          dust(viewerEl, r.left + r.width * .1, r.top - 6, r.width * .8, 12, 22, 1.8);
+          dust(viewerEl, r.left + r.width * .15, r.bottom - 10, r.width * .7, 10, 14, 2.6);
+        }, 320);
+      } else if (cls.contains('closing') && openbookEl.dataset.dusted) {
+        // Fermeture : le livre reprend sa place, un peu de poussière se soulève de l'étagère
+        delete openbookEl.dataset.dusted;
+        var book = litBook;
+        window.setTimeout(function(){
+          if (!book || openbookEl.classList.contains('open')) return;
+          var b = book.getBoundingClientRect(), l = lib.getBoundingClientRect();
+          dust(lib, b.left - l.left - 6, b.top - l.top - 4, b.width + 12, 8, 12, 2.2);
+          dust(lib, b.left - l.left - 10, b.bottom - l.top - 6, b.width + 20, 6, 10, 2.8);
+        }, 450);
+      }
+    }).observe(openbookEl, { attributes: true, attributeFilter: ['class'] });
+
+    // De temps en temps, un livre frémit tout seul (jamais pendant la lecture ni sur un onglet caché)
+    function shiverSoon(){
+      window.setTimeout(function(){
+        if (!document.hidden && viewerEl.hidden) {
+          var free = shelfBooks.filter(function(b){ return !b.matches(':hover') && b !== document.activeElement; });
+          var b = free[Math.floor(Math.random() * free.length)];
+          if (b) {
+            b.classList.add('shiver');
+            b.addEventListener('animationend', function done(ev){
+              if (ev.target !== b || ev.pseudoElement) return;
+              b.classList.remove('shiver');
+              b.removeEventListener('animationend', done);
+            });
+          }
+        }
+        shiverSoon();
+      }, 9000 + Math.random() * 9000);
+    }
+    shiverSoon();
+  }
 })();
