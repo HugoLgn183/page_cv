@@ -1052,25 +1052,79 @@
       '<div class="win-bars"></div>' +
     '</div>' +
     '<div class="win-sill"></div>';
+  libWindow.hidden = true;                                  // affichée une fois sa niche peinte dans le décor
   lib.insertBefore(libWindow, document.querySelector('.plaque-wrap'));
 
-  // Centrée dans l'espace libre entre la colonne et la plaque ; le rai de soleil part de la fenêtre
-  function placeWindow(){
+  // La fenêtre prend la place d'une travée de la bibliothèque du fond : entre deux montants, du plafond
+  // jusqu'à une planche. Ce pan de mur est peint dans le dessin du fond (même flou, même lumière),
+  // les livres de la travée disparaissent et les mots secrets ne s'y posent plus.
+  // Géométrie reprise de drawBookcase() dans app.js (hauteur des rangées, travées, montants, planches).
+  var bookcaseEl = document.getElementById('bookcase');
+  function layoutWindow(){
     var pillar = document.querySelector('.pillar-l'), plaque = document.querySelector('.plaque');
-    if (!pillar || !plaque) return;
-    var room = lib.getBoundingClientRect(), p = pillar.getBoundingClientRect(), q = plaque.getBoundingClientRect();
-    var gap = q.left - p.right, w = Math.min(150, gap - 48);
-    libWindow.hidden = w < 84;
-    if (libWindow.hidden) { beam.style.left = beam.style.top = beam.style.width = ''; return; }
-    var left = p.right - room.left + (gap - w) / 2, top = 34, h = Math.round(w * 1.55);
-    libWindow.style.cssText = 'left:' + Math.round(left) + 'px;top:' + top + 'px;width:' + Math.round(w) + 'px;height:' + h + 'px';
-    beam.style.left = Math.round(left - w * .2) + 'px';
-    beam.style.top = Math.round(top + h * .35 - lib.clientHeight * .18) + 'px';
+    var W = bookcaseEl && parseFloat(bookcaseEl.style.width), H = bookcaseEl && parseFloat(bookcaseEl.style.height);
+    var hide = function(){ libWindow.hidden = true; beam.style.left = beam.style.top = beam.style.width = ''; };
+    if (!pillar || !plaque || !W || !lib.bookSpines || window.innerWidth <= 640) return hide();
+    var rowH = Math.max(140, Math.min(190, H / 5)), sections = Math.max(2, Math.round(W / 300)), secW = W / sections;
+    var room = lib.getBoundingClientRect();
+    var pillarR = pillar.getBoundingClientRect().right - room.left, plaqueL = plaque.getBoundingClientRect().left - room.left;
+    // La travée dont la partie visible, entre la colonne et la plaque, est la plus large
+    var bay = null;
+    for (var s = 0; s < sections; s++) {
+      var x0 = s * secW + 8, x1 = (s + 1) * secW - 8;          // entre les montants (16 px de large)
+      var v0 = Math.max(x0, pillarR), v1 = Math.min(x1, plaqueL);
+      if (!bay || v1 - v0 > bay.v1 - bay.v0) bay = { x0: x0, x1: x1, v0: v0, v1: v1 };
+    }
+    var w = Math.min(150, bay.v1 - bay.v0 - 34), top = 34, floor = 0;
+    if (w < 84) return hide();
+    for (var t = 16; t < H && !floor; t += rowH) {              // première planche assez basse pour une fenêtre élancée
+      if (t + rowH - 12 - top - 40 >= w * 1.4) floor = t + rowH - 12;
+    }
+    if (!floor) return hide();
+    var h = Math.min(floor - top - 40, w * 2.6);
+    paintBay(bay.x0, bay.x1, floor, W, H);
+    lib.bookSpines = lib.bookSpines.filter(function(b){ return b.x + b.w < bay.x0 || b.x > bay.x1 || b.y > floor; });
+    var left = bay.v0 + (bay.v1 - bay.v0 - w) / 2;
+    libWindow.hidden = false;
+    libWindow.style.cssText = 'left:' + Math.round(left) + 'px;top:' + top + 'px;width:' + Math.round(w) + 'px;height:' + Math.round(h) + 'px';
+    beam.style.left = Math.round(left - w * .2) + 'px';        // le rai de soleil part de la fenêtre
+    beam.style.top = Math.round(top + h * .3 - lib.clientHeight * .18) + 'px';
     beam.style.width = Math.round(w * 1.5) + 'px';
   }
-  placeWindow();
-  window.addEventListener('resize', placeWindow);
-  lib.addEventListener('bookcasedrawn', placeWindow, true);   // avant les mots secrets, qui l'évitent
+  // Pan de mur en pierre claire, dans le dessin du fond (qui est ensuite atténué et flouté comme le reste)
+  function paintBay(x0, x1, floor, W, H){
+    var cx = bookcaseEl.getContext('2d');
+    cx.save();
+    var stone = cx.createLinearGradient(x0, 0, x1, 0);
+    stone.addColorStop(0, '#5e4630');
+    stone.addColorStop(.5, '#8c6c4a');
+    stone.addColorStop(1, '#5e4630');
+    cx.fillStyle = stone;
+    cx.fillRect(x0, 0, x1 - x0, floor);
+    cx.strokeStyle = 'rgba(0,0,0,.3)';                          // assises de pierre
+    cx.lineWidth = 1;
+    cx.beginPath();
+    for (var y = 22, n = 0; y < floor; y += 24, n++) {
+      cx.moveTo(x0, y); cx.lineTo(x1, y);
+      for (var j = (n % 2 ? 30 : 0) + x0; j < x1; j += 60) { cx.moveTo(j, y - 24); cx.lineTo(j, y); }
+    }
+    cx.stroke();
+    var side = cx.createLinearGradient(x0, 0, x1, 0);           // ombre des montants
+    side.addColorStop(0, 'rgba(0,0,0,.55)');
+    side.addColorStop(.12, 'rgba(0,0,0,0)');
+    side.addColorStop(.88, 'rgba(0,0,0,0)');
+    side.addColorStop(1, 'rgba(0,0,0,.55)');
+    cx.fillStyle = side;
+    cx.fillRect(x0, 0, x1 - x0, floor);
+    var dark = cx.createRadialGradient(W / 2, H * .38, Math.min(W, H) * .2, W / 2, H * .38, Math.max(W, H) * .8);
+    dark.addColorStop(0, 'rgba(0,0,0,0)');                      // même assombrissement des bords que le reste du dessin
+    dark.addColorStop(1, 'rgba(0,0,0,.6)');
+    cx.fillStyle = dark;
+    cx.fillRect(x0, 0, x1 - x0, floor);
+    cx.restore();
+  }
+  window.addEventListener('resize', layoutWindow);
+  lib.addEventListener('bookcasedrawn', layoutWindow, true);  // avant les mots secrets, qui évitent le mur
   if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
 
   // ===================== 12. Les souvenirs du parcours =====================
