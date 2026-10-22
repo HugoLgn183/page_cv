@@ -48,7 +48,12 @@
   .chip{display:block;margin:0 0 .8mm;padding:0 0 0 3mm;background:none;border:0;border-radius:0;font-size:8.6pt;text-indent:-3mm;}
   .chip::before{content:"•  ";color:#b8892b;}
   .kv li{padding:.5mm 0;border:0;font-size:8.6pt;}
-  /* Contact : uniquement ce qui sert sur papier (lien écrit en clair) */
+  /* Contact : en haut, sous la présentation, avec uniquement ce qui sert sur papier */
+  .plaque #rub-contact{margin-top:1.4mm;}
+  .plaque #rub-contact .page-head{display:none;}
+  .plaque .contact-list{display:flex;flex-wrap:wrap;gap:0 3mm;}
+  .plaque .contact-list li{gap:0;font-size:9.5pt;}
+  .plaque .contact-list li:not(.masked) ~ li:not(.masked)::before{content:"·";margin-right:3mm;color:#b8892b;}
   #rub-contact .lead,.contact-list .masked,.contact-list .ico,.contact-list .note{display:none;}
   .contact-list{margin:0;}
   .contact-list li{padding:.5mm 0;border:0;font-size:8.6pt;}

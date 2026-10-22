@@ -281,7 +281,7 @@
 
   document.getElementById('pdfBtn').addEventListener('click', function(){ window.print(); });
 
-  // Impression / export PDF : le CV est remis en page sur deux colonnes, puis rétabli
+  // Impression / export PDF : contact dans l'en-tête et le reste sur deux colonnes, puis tout est rétabli
   var cvText = document.getElementById('cv-text');
   var printCols = null;
   window.addEventListener('beforeprint', function(){
@@ -291,7 +291,8 @@
     var side = document.createElement('div'), main = document.createElement('div');
     side.className = 'print-side';
     main.className = 'print-main';
-    ['profil', 'competences', 'langues', 'permis', 'contact'].forEach(function(id){
+    document.querySelector('.plaque').appendChild(document.getElementById('rub-contact'));
+    ['profil', 'competences', 'langues', 'permis'].forEach(function(id){
       side.appendChild(document.getElementById('rub-' + id));
     });
     ['experience', 'formation'].forEach(function(id){

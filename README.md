@@ -48,7 +48,7 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,4 Ko u
   - animations réduites si le système le demande (`prefers-reduced-motion`).
 - **Fonctionne sans JavaScript** : tout le CV est écrit dans le HTML et s'affiche sous forme de page classique. C'est aussi ce que lisent les moteurs de recherche.
 - **SEO** : titre et meta description adaptés, URL canonique, balises Open Graph pour l'aperçu lors d'un partage.
-- **Export PDF** : le bouton « Exporter en PDF » produit un CV classique sur une seule page A4 : en-tête avec le nom, deux colonnes (profil, compétences, langues, permis et contact à gauche ; expériences et formations à droite), sans le décor du site, avec le lien GitHub écrit en clair.
+- **Export PDF** : le bouton « Exporter en PDF » produit un CV classique sur une seule page A4 : en-tête avec le nom, la présentation et le contact, puis deux colonnes (profil, compétences, langues et permis à gauche ; expériences et formations à droite), sans le décor du site, avec le lien GitHub écrit en clair.
 
 ## Validation
 
