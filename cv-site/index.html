@@ -338,10 +338,11 @@ a{color:inherit;}
   background:radial-gradient(60% 80% at 50% 30%,#f0d078,#a67b22 60%,#5d4412);
   box-shadow:0 4px 6px rgba(0,0,0,.55);
 }
-/* Support de la flamme : penche selon le déplacement (--lean, réglé en JS) */
+/* Support de la flamme : ploie sous le souffle de la souris ou quand on déplace la bougie
+   (--lean, animé en JS par un petit ressort amorti) */
 .flame-lean{
   position:absolute;bottom:56px;left:50%;width:0;height:0;
-  transform:rotate(var(--lean,0deg));transition:transform .25s ease-out;
+  transform:rotate(var(--lean,0deg));
 }
 .flame{
   position:absolute;bottom:0;left:-5px;width:10px;height:20px;
@@ -362,8 +363,8 @@ a{color:inherit;}
   .candle:hover .flame{animation:flickerStrong .5s ease-in-out infinite;}
   .candle:hover .flame::after{animation:haloFlicker .5s ease-in-out infinite;}
 }
-.candle.held .flame{animation:flickerStrong .5s ease-in-out infinite;}
-.candle.held .flame::after{animation:haloFlicker .5s ease-in-out infinite;}
+.candle.held .flame,.candle.gust .flame{animation:flickerStrong .5s ease-in-out infinite;}
+.candle.held .flame::after,.candle.gust .flame::after{animation:haloFlicker .5s ease-in-out infinite;}
 @keyframes flickerStrong{
   0%,100%{transform:scale(1,1) rotate(0);opacity:1;}
   20%{transform:scale(.86,1.16) rotate(-6deg);opacity:.85;}

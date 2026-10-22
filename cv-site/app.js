@@ -370,7 +370,10 @@
   if (candle && window.PointerEvent) {
     var holding = null;          // déplacement en cours
     var press = null;            // appui long en attente (tactile)
-    var leanReset = 0;
+    var flameBox = candle.querySelector('.flame-lean');
+    var sway = { angle: 0, speed: 0, running: false };   // inclinaison de la flamme (ressort amorti)
+    var gustTimer = 0;
+    var lastMouse = null;
     var activeId = null;         // pointeur (souris ou doigt) qui tient la bougie
 
     function clampPosition(left, top){
@@ -378,8 +381,27 @@
       var maxTop = lib.clientHeight - candle.offsetHeight;
       return [Math.max(0, Math.min(maxLeft, left)), Math.max(20, Math.min(maxTop, top))];
     }
-    function setLean(deg){
-      candle.style.setProperty('--lean', deg.toFixed(1) + 'deg');
+    // Petit ressort amorti : la flamme ploie sous une poussée, oscille puis se redresse
+    function swayStep(){
+      sway.speed += -0.06 * sway.angle - 0.1 * sway.speed;
+      sway.angle = Math.max(-35, Math.min(35, sway.angle + sway.speed));
+      if (Math.abs(sway.angle) < 0.05 && Math.abs(sway.speed) < 0.05) {
+        sway.angle = sway.speed = 0;
+        sway.running = false;
+      }
+      candle.style.setProperty('--lean', sway.angle.toFixed(1) + 'deg');
+      if (sway.running) window.requestAnimationFrame(swayStep);
+    }
+    function pushFlame(impulse){
+      if (reduce) return;                                // mouvement réduit : flamme immobile
+      sway.speed = Math.max(-6, Math.min(6, sway.speed + impulse));
+      if (!sway.running) { sway.running = true; window.requestAnimationFrame(swayStep); }
+      // Un souffle un peu fort fait aussi vaciller la flamme
+      if (Math.abs(impulse) > .6) {
+        candle.classList.add('gust');
+        window.clearTimeout(gustTimer);
+        gustTimer = window.setTimeout(function(){ candle.classList.remove('gust'); }, 450);
+      }
     }
     function pickUp(x, y){
       if (!candle.classList.contains('loose')) {
@@ -400,13 +422,11 @@
       var pos = clampPosition(holding.left + x - holding.x, holding.top + y - holding.y);
       candle.style.left = pos[0] + 'px';
       candle.style.top = pos[1] + 'px';
-      // La flamme penche à l'opposé du mouvement, comme une vraie flamme
+      // La bougie fend l'air : la flamme part à l'opposé du mouvement
       var now = performance.now(), speed = (x - holding.lastX) / Math.max(8, now - holding.lastT);
-      setLean(Math.max(-28, Math.min(28, -speed * 45)));
+      pushFlame(-speed * 2.2);
       holding.lastX = x;
       holding.lastT = now;
-      window.clearTimeout(leanReset);
-      leanReset = window.setTimeout(function(){ setLean(0); }, 120);
     }
     function release(){
       if (press) window.clearTimeout(press.timer);
@@ -416,8 +436,24 @@
       if (!holding) return;
       holding = null;
       candle.classList.remove('held');
-      setLean(0);
     }
+
+    // Souffle de la souris : en passant près de la flamme, la souris déplace l'air
+    // et la flamme ploie dans le sens du mouvement, d'autant plus que la souris est proche et rapide
+    window.addEventListener('pointermove', function(ev){
+      if (ev.pointerType !== 'mouse' || holding) { lastMouse = null; return; }
+      var now = performance.now();
+      if (lastMouse && now - lastMouse.t < 100) {
+        var box = flameBox.getBoundingClientRect();
+        var dist = Math.hypot(ev.clientX - box.left, ev.clientY - (box.top - 10));
+        var reach = 170;                                 // portée du souffle, en pixels
+        if (dist < reach) {
+          var vx = (ev.clientX - lastMouse.x) / Math.max(8, now - lastMouse.t);
+          pushFlame(vx * 1.6 * (1 - dist / reach));
+        }
+      }
+      lastMouse = { x: ev.clientX, y: ev.clientY, t: now };
+    });
 
     candle.addEventListener('pointerdown', function(ev){
       if (ev.button !== 0 || activeId !== null) return;
