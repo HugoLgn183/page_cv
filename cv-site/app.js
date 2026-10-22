@@ -364,4 +364,101 @@
     });
   }
 
+  // --- Bougie : on la prend au clic maintenu (souris) ou à l'appui long (doigt),
+  //     puis on la promène dans toute la pièce, halo compris ---
+  var candle = document.querySelector('.candle');
+  if (candle && window.PointerEvent) {
+    var holding = null;          // déplacement en cours
+    var press = null;            // appui long en attente (tactile)
+    var leanReset = 0;
+    var activeId = null;         // pointeur (souris ou doigt) qui tient la bougie
+
+    function clampPosition(left, top){
+      var maxLeft = lib.clientWidth - candle.offsetWidth;
+      var maxTop = lib.clientHeight - candle.offsetHeight;
+      return [Math.max(0, Math.min(maxLeft, left)), Math.max(20, Math.min(maxTop, top))];
+    }
+    function setLean(deg){
+      candle.style.setProperty('--lean', deg.toFixed(1) + 'deg');
+    }
+    function pickUp(x, y){
+      if (!candle.classList.contains('loose')) {
+        // Première prise : la bougie quitte l'étagère pour être placée dans la pièce
+        var zone = candle.offsetParent.getBoundingClientRect(), room = lib.getBoundingClientRect();
+        candle.style.left = (zone.left - room.left + candle.offsetLeft) + 'px';
+        candle.style.top = (zone.top - room.top + candle.offsetTop) + 'px';
+        candle.classList.add('loose');
+        lib.appendChild(candle);
+        // Déplacer l'élément dans la page fait perdre la capture du pointeur : on la reprend
+        try { candle.setPointerCapture(activeId); } catch (e) {}
+      }
+      holding = { x: x, y: y, left: candle.offsetLeft, top: candle.offsetTop, lastX: x, lastT: performance.now() };
+      candle.classList.add('held');
+      if (navigator.vibrate) navigator.vibrate(12);
+    }
+    function moveTo(x, y){
+      var pos = clampPosition(holding.left + x - holding.x, holding.top + y - holding.y);
+      candle.style.left = pos[0] + 'px';
+      candle.style.top = pos[1] + 'px';
+      // La flamme penche à l'opposé du mouvement, comme une vraie flamme
+      var now = performance.now(), speed = (x - holding.lastX) / Math.max(8, now - holding.lastT);
+      setLean(Math.max(-28, Math.min(28, -speed * 45)));
+      holding.lastX = x;
+      holding.lastT = now;
+      window.clearTimeout(leanReset);
+      leanReset = window.setTimeout(function(){ setLean(0); }, 120);
+    }
+    function release(){
+      if (press) window.clearTimeout(press.timer);
+      press = null;
+      activeId = null;
+      candle.classList.remove('pressing');
+      if (!holding) return;
+      holding = null;
+      candle.classList.remove('held');
+      setLean(0);
+    }
+
+    candle.addEventListener('pointerdown', function(ev){
+      if (ev.button !== 0 || activeId !== null) return;
+      activeId = ev.pointerId;
+      candle.setPointerCapture(ev.pointerId);
+      if (ev.pointerType === 'mouse') {
+        ev.preventDefault();
+        pickUp(ev.clientX, ev.clientY);
+        return;
+      }
+      // Doigt ou stylet : il faut maintenir l'appui un court instant
+      candle.classList.add('pressing');
+      press = { x: ev.clientX, y: ev.clientY };
+      press.timer = window.setTimeout(function(){
+        candle.classList.remove('pressing');
+        if (press) pickUp(press.x, press.y);
+        press = null;
+      }, 400);
+    });
+    // Écoute sur toute la fenêtre : le pointeur peut quitter la bougie pendant le geste
+    window.addEventListener('pointermove', function(ev){
+      if (ev.pointerId !== activeId) return;
+      if (holding) { moveTo(ev.clientX, ev.clientY); return; }
+      if (press) {
+        // Le doigt a bougé avant la fin de l'appui long : on annule
+        if (Math.abs(ev.clientX - press.x) > 10 || Math.abs(ev.clientY - press.y) > 10) release();
+        else { press.x = ev.clientX; press.y = ev.clientY; }
+      }
+    });
+    ['pointerup', 'pointercancel'].forEach(function(type){
+      window.addEventListener(type, function(ev){
+        if (ev.pointerId === activeId) release();
+      });
+    });
+    candle.addEventListener('contextmenu', function(ev){ ev.preventDefault(); });
+    window.addEventListener('resize', function(){
+      if (!candle.classList.contains('loose')) return;
+      var pos = clampPosition(candle.offsetLeft, candle.offsetTop);
+      candle.style.left = pos[0] + 'px';
+      candle.style.top = pos[1] + 'px';
+    });
+  }
+
 })();

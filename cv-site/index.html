@@ -317,7 +317,17 @@ a{color:inherit;}
 
 /* --- Objets posés sur l'étagère (décoratifs) --- */
 .shelf-decor{position:absolute;bottom:24px;z-index:1;pointer-events:none;}
-.candle{left:max(4%,calc(50% - 330px));width:26px;height:72px;}
+.candle{
+  left:max(4%,calc(50% - 330px));width:26px;height:72px;
+  /* La bougie se prend à la main : clic maintenu (souris) ou appui long (doigt) */
+  z-index:3; /* au-dessus de la rangée de livres, qui couvre toute l'étagère */
+  pointer-events:auto;cursor:grab;touch-action:none;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+  transform-origin:50% 100%;transition:translate .2s ease,filter .2s ease;
+}
+.candle.loose{bottom:auto;z-index:5;}               /* sortie de l'étagère, placée en JS */
+.candle.pressing{filter:brightness(1.18);}         /* appui long en cours */
+.candle.held{cursor:grabbing;translate:0 -6px;filter:drop-shadow(0 14px 10px rgba(0,0,0,.55));}
 .candle::before{ /* cire */
   content:"";position:absolute;bottom:7px;left:5px;width:16px;height:50px;border-radius:4px 4px 2px 2px;
   background:linear-gradient(90deg,#bfae84,#f3e9cc 42%,#d8c9a0 70%,#a8966c);
@@ -328,8 +338,13 @@ a{color:inherit;}
   background:radial-gradient(60% 80% at 50% 30%,#f0d078,#a67b22 60%,#5d4412);
   box-shadow:0 4px 6px rgba(0,0,0,.55);
 }
+/* Support de la flamme : penche selon le déplacement (--lean, réglé en JS) */
+.flame-lean{
+  position:absolute;bottom:56px;left:50%;width:0;height:0;
+  transform:rotate(var(--lean,0deg));transition:transform .25s ease-out;
+}
 .flame{
-  position:absolute;bottom:56px;left:50%;width:10px;height:20px;margin-left:-5px;
+  position:absolute;bottom:0;left:-5px;width:10px;height:20px;
   border-radius:50% 50% 45% 45% / 62% 62% 38% 38%;
   background:radial-gradient(ellipse at 50% 72%,#fffbe6 0 18%,#ffd76e 38%,rgba(255,150,40,.9) 62%,transparent 74%);
   transform-origin:50% 100%;animation:flicker 2.6s ease-in-out infinite;
@@ -340,7 +355,22 @@ a{color:inherit;}
 .flame::after{ /* halo */
   content:"";position:absolute;left:50%;top:50%;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;
   background:radial-gradient(circle,rgba(255,206,120,.26),rgba(255,206,120,.08) 45%,transparent 70%);
+  pointer-events:none;
 }
+/* Flamme agitée : au survol de la souris et quand on tient la bougie */
+@media (hover:hover){
+  .candle:hover .flame{animation:flickerStrong .5s ease-in-out infinite;}
+  .candle:hover .flame::after{animation:haloFlicker .5s ease-in-out infinite;}
+}
+.candle.held .flame{animation:flickerStrong .5s ease-in-out infinite;}
+.candle.held .flame::after{animation:haloFlicker .5s ease-in-out infinite;}
+@keyframes flickerStrong{
+  0%,100%{transform:scale(1,1) rotate(0);opacity:1;}
+  20%{transform:scale(.86,1.16) rotate(-6deg);opacity:.85;}
+  45%{transform:scale(1.1,.9) rotate(5deg);opacity:1;}
+  70%{transform:scale(.9,1.12) rotate(-4deg);opacity:.9;}
+}
+@keyframes haloFlicker{0%,100%{opacity:1;}35%{opacity:.72;}65%{opacity:.9;}}
 @keyframes flicker{
   0%,100%{transform:scale(1,1) rotate(0);opacity:1;}
   25%{transform:scale(.94,1.06) rotate(-2deg);opacity:.92;}
@@ -641,12 +671,13 @@ a{color:inherit;}
   .pla-kicker{letter-spacing:.16em;font-size:.8rem;}
   .pla-sub{font-size:.86rem;}
   .library{padding:26px 6px 14px;}
-  .books-row{gap:12px;padding:0 10px;}
+  .books-row{gap:8px;padding:0 10px;}
   .bookend{margin:0 -14px 0 0;}
   .bookend:last-of-type{margin:0 0 0 -14px;}
   .sconce{width:110px;height:110px;top:40px;}
   .lib-foot{font-size:.86rem;}
-  .shelf-decor{display:none;}
+  .stack{display:none;}
+  .candle{left:10px;scale:.75;}
   .openbook{width:98vw;height:min(82vh,640px);}
   /* Sur mobile : une seule page, toute la largeur pour le texte */
   .openbook .leaf-l,.gutter,.spine-fold{display:none;}
@@ -734,7 +765,7 @@ a{color:inherit;}
     <h2 class="sr-only" id="shelf-title">Rubriques du CV</h2>
 
     <div class="shelf-zone">
-      <div class="shelf-decor candle" aria-hidden="true"><span class="flame"></span></div>
+      <div class="shelf-decor candle" aria-hidden="true"><span class="flame-lean"><span class="flame"></span></span></div>
       <div class="shelf-decor stack" aria-hidden="true"><span></span><span></span><span></span></div>
       <nav class="books-row" aria-label="Rubriques du curriculum vitae">
         <span class="bookend" aria-hidden="true"></span>
