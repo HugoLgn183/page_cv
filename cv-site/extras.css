@@ -489,3 +489,41 @@
 }
 .pedestal.low .ped-door{display:none;}
 .ped-plinth{height:9px;margin:0 -5px;border-radius:0 0 3px 3px;background:linear-gradient(180deg,#5a3a1d,#1a0e06);box-shadow:0 3px 6px rgba(0,0,0,.6);}
+
+/* ================= 15. LA PLAQUE SUSPENDUE ================= */
+/* Panneau de bois sculpté derrière la plaque (placé en JS), ombre portée sur la bibliothèque du fond */
+.plaque-board{
+  position:absolute;pointer-events:none;border-radius:14px;
+  background:
+    linear-gradient(180deg,rgba(255,215,160,.10),transparent 18%,transparent 82%,rgba(0,0,0,.25)),
+    repeating-linear-gradient(92deg,rgba(0,0,0,.08) 0 2px,transparent 2px 9px,rgba(255,220,170,.03) 9px 10px,transparent 10px 17px),
+    linear-gradient(180deg,#56371b,#3a2410 55%,#26170a);
+  box-shadow:
+    inset 0 0 0 1px #160c05,
+    inset 0 2px 0 rgba(255,214,160,.22),
+    inset 0 -3px 6px rgba(0,0,0,.5),
+    0 0 0 1px rgba(0,0,0,.55),
+    0 30px 46px -12px rgba(0,0,0,.8),
+    0 8px 18px rgba(0,0,0,.45);
+}
+.plaque-board::before{ /* moulure creusée dans le bois */
+  content:"";position:absolute;inset:5px;border-radius:10px;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.55),0 0 0 1px rgba(255,210,150,.10);
+}
+/* Chaînes en laiton qui descendent du plafond */
+.plaque-chain{
+  position:absolute;width:8px;pointer-events:none;
+  background:
+    radial-gradient(ellipse 2.6px 4.2px at 50% 50%,transparent 1.3px,#e3be62 1.6px,#8a6418 2.5px,transparent 2.7px) 0 0/8px 10px repeat-y,
+    linear-gradient(90deg,transparent 3px,#b8892e 3px 5px,transparent 5px) 0 5px/8px 10px repeat-y;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.6));
+}
+.chain-anchor{ /* platine fixée au plafond */
+  position:absolute;left:-7px;top:-4px;width:22px;height:8px;border-radius:0 0 4px 4px;
+  background:linear-gradient(180deg,#e3be62,#8a6418);
+}
+.chain-eye{ /* piton vissé dans le haut du panneau */
+  position:absolute;left:-1px;bottom:-5px;width:10px;height:10px;border-radius:50%;
+  border:2px solid #c99a3c;box-sizing:border-box;box-shadow:0 1px 2px rgba(0,0,0,.6);
+}
+@media (max-width:640px){ .plaque-board{border-radius:12px;} .chain-anchor{display:none;} }

@@ -79,7 +79,8 @@
       var owl = document.querySelector('.owl');
       var win = document.querySelector('.lib-window');                // la fenêtre (section 11) cache aussi des livres
       var covers = (lib.coverRects || []).concat(rectOf(lightSwitch), owl ? rectOf(owl) : [], win && !win.hidden ? rectOf(win) : [],
-        Array.prototype.filter.call(document.querySelectorAll('.keepsake'), function(k){ return !k.hidden; }).map(rectOf));   // souvenirs (section 12)
+        Array.prototype.filter.call(document.querySelectorAll('.keepsake'), function(k){ return !k.hidden; }).map(rectOf),   // souvenirs (section 12)
+        Array.prototype.map.call(document.querySelectorAll('.plaque-board, .plaque-chain'), rectOf));   // plaque suspendue (section 15)
       var spines = (lib.bookSpines || []).filter(function(b){ return b.w >= 11; }).map(function(b){
         var seg = freeSegment(b, covers);
         return seg && { x: b.x + b.w / 2, top: seg[0], len: seg[1] - seg[0], size: Math.max(9, Math.min(13, b.w * .75)) };
@@ -1448,4 +1449,38 @@
   window.addEventListener('resize', drawFloor);
   lib.addEventListener('bookcasedrawn', drawFloor, true);   // avant les mots secrets, qui évitent le sol
   if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
+
+  // ===================== 15. La plaque suspendue =====================
+  // La plaque ne flotte plus devant la bibliothèque : ses rivets la fixent sur un panneau de bois sculpté,
+  // suspendu au plafond par deux chaînes en laiton, et dont l'ombre tombe sur les livres du fond.
+  // Panneau et chaînes sont placés derrière la plaque, sans rien changer à sa place ni à sa taille.
+  var plaqueWrap = document.querySelector('.plaque-wrap'), plaqueBox = document.querySelector('.plaque');
+  if (plaqueWrap && plaqueBox) {
+    var board = document.createElement('div');
+    board.className = 'plaque-board';
+    board.setAttribute('aria-hidden', 'true');
+    var chains = [0, 1].map(function(){
+      var c = document.createElement('div');
+      c.className = 'plaque-chain';
+      c.setAttribute('aria-hidden', 'true');
+      c.innerHTML = '<i class="chain-anchor"></i><i class="chain-eye"></i>';
+      return c;
+    });
+    plaqueWrap.insertBefore(board, plaqueBox);
+    chains.forEach(function(c){ plaqueWrap.insertBefore(c, board); });
+
+    var hangPlaque = function(){
+      var m = window.innerWidth <= 640 ? 7 : 13;              // marge du panneau autour de la plaque
+      var x = plaqueBox.offsetLeft - m, y = plaqueBox.offsetTop - m, w = plaqueBox.offsetWidth + 2 * m, h = plaqueBox.offsetHeight + 2 * m;
+      board.style.cssText = 'left:' + x + 'px;top:' + y + 'px;width:' + w + 'px;height:' + h + 'px';
+      chains.forEach(function(c, i){
+        var cx = x + w * (i ? .82 : .18);
+        c.style.cssText = 'left:' + Math.round(cx - 4) + 'px;top:0;height:' + (y + 3) + 'px';
+      });
+    };
+    hangPlaque();
+    window.addEventListener('resize', hangPlaque);
+    lib.addEventListener('bookcasedrawn', hangPlaque, true);   // avant les mots secrets, qui évitent le panneau
+    if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
+  }
 })();
