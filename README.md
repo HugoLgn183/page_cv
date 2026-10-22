@@ -26,7 +26,7 @@ page_cv/
 - **Polices système** à l'allure de livre (Palatino, Book Antiqua), sans téléchargement.
 - **GitHub Pages** pour l'hébergement.
 
-Aucune image, police externe ou dépendance. La page HTML pèse 51 Ko (13 Ko une fois compressée par GitHub Pages) et `app.js` 16 Ko (5 Ko compressé). Le script est chargé avec `defer` : il ne retarde pas le premier affichage.
+Aucune image, police externe ou dépendance. La page HTML pèse 52 Ko (un peu moins de 14 Ko une fois compressée par GitHub Pages) et `app.js` 22 Ko (7 Ko compressé). Le script est chargé avec `defer` : il ne retarde pas le premier affichage.
 
 ## Fonctionnalités
 
@@ -34,7 +34,8 @@ Aucune image, police externe ou dépendance. La page HTML pèse 51 Ko (13 Ko une
   - sommaire des 7 chapitres sur la page de gauche, chaque ligne mène au chapitre ;
   - boutons « chapitre précédent / suivant » et flèches ← → du clavier, avec une page qui tourne en 3D ;
   - couverture et signet de la couleur du livre choisi.
-- **Décor** : bibliothèque complète en arrière-plan, dessinée une seule fois dans un `<canvas>` et volontairement floue (des étagères en CSS la remplacent sans JavaScript) ; bougie animée, plaque en métal brossé, pages au grain de papier, icône gravée et chiffre romain pour chaque rubrique.
+- **Décor** : bibliothèque complète en arrière-plan, dessinée une seule fois dans un `<canvas>` et volontairement floue (des étagères en CSS la remplacent sans JavaScript) ; plaque en métal brossé, pages au grain de papier, icône gravée et chiffre romain pour chaque rubrique.
+- **Bougie interactive** : la flamme s'agite au survol et ploie sous le « souffle » de la souris quand celle-ci passe à proximité, puis oscille avant de se redresser ; on peut prendre la bougie (clic maintenu à la souris, appui long au doigt) et la déplacer dans toute la pièce, son halo lumineux avec elle, la flamme penchant selon le mouvement.
 - **Responsive** : sur mobile, le livre ouvert n'affiche que la page de texte, en pleine largeur.
 - **Accessibilité** :
   - navigation complète au clavier, lien d'évitement et focus visible ;
@@ -51,8 +52,10 @@ Aucune image, police externe ou dépendance. La page HTML pèse 51 Ko (13 Ko une
 | Outil | Résultat |
 |---|---|
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement |
-| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 96 / 100 / 96 / 100 |
-| Lighthouse ordinateur | 100 / 100 / 96 / 100 |
+| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 97 / 100 / 100 / 100 |
+| Lighthouse ordinateur | 100 / 100 / 100 / 100 |
+
+Scores Lighthouse : médiane de 3 mesures sur le site en ligne (22/10/2026).
 
 Le détail des mesures, le journal des corrections de la V1 à la version finale et l'auto-évaluation sont dans [AUTOEVALUATION.md](AUTOEVALUATION.md).
 
