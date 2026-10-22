@@ -149,12 +149,14 @@
     'Gardez le doigt sur la bougie pour la prendre et la promener.',
     "Basculez l'interrupteur, à gauche : la bougie révèle des mots cachés…",
     'Dans un livre ouvert, glissez le doigt à gauche ou à droite pour tourner les pages.',
+    'Sur la page Contact du livre, un tampon vous attend…',
     "Besoin d'un CV papier ? Touchez « Exporter en PDF », tout en bas."
   ] : [
     'Cliquez sur un livre pour lire mon CV.',
     'Maintenez le clic sur la bougie pour la prendre et la promener.',
     "Basculez l'interrupteur, à gauche : la bougie révèle des mots cachés…",
     'Dans un livre ouvert, les flèches ← → du clavier tournent les pages.',
+    'Sur la page Contact du livre, un tampon vous attend…',
     "Besoin d'un CV papier ? « Exporter en PDF », tout en bas."
   ];
   var OWL_SVG =
@@ -264,4 +266,65 @@
   lib.addEventListener('bookcasedrawn', perch, true);
   perch();
   if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));   // les mots évitent le hibou
+
+  // ===================== 3. Le tampon « Bon pour un entretien » =====================
+  // Sur la page Contact du livre ouvert : un tampon encreur à apposer d'un clic.
+  // L'empreinte est mémorisée dans le navigateur du visiteur (simple confort, sans conséquence si indisponible).
+  var leafR = document.getElementById('leafR');
+  var STAMP_KEY = 'cv-tampon';
+  var STAMP_TOOL =
+    '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false">' +
+      '<circle cx="20" cy="9" r="6" fill="#7a5028"/><rect x="17" y="13" width="6" height="9" fill="#5a3a1c"/>' +
+      '<rect x="8" y="21" width="24" height="9" rx="2" fill="#6b4422"/><rect x="9" y="30" width="22" height="4" rx="1" fill="#b3261e"/>' +
+    '</svg>';
+
+  function stampedBefore(){
+    try { return window.localStorage.getItem(STAMP_KEY) === '1'; } catch (e) { return false; }
+  }
+  function rememberStamp(){
+    try { window.localStorage.setItem(STAMP_KEY, '1'); } catch (e) { /* stockage indisponible : tant pis */ }
+  }
+  function makeMark(fresh){
+    var mark = document.createElement('div');
+    mark.className = 'stamp-mark' + (fresh && !reduce ? ' fresh' : '');
+    mark.setAttribute('aria-hidden', 'true');
+    mark.style.setProperty('--rot', (-3 - Math.random() * 7).toFixed(1) + 'deg');   // un peu de travers, jamais pareil
+    mark.style.setProperty('--dx', (Math.random() * 24 - 12).toFixed(0) + 'px');
+    mark.innerHTML = '<span>Bon pour</span><strong>un entretien</strong><small>H. Largeron · 2026</small>';
+    return mark;
+  }
+
+  // Ajoute la zone du tampon chaque fois que la page Contact s'affiche dans le livre
+  function addStampZone(){
+    if (!leafR.querySelector('.contact-list') || leafR.querySelector('.stamp-zone')) return;
+    var zone = document.createElement('div');
+    zone.className = 'stamp-zone';
+    zone.innerHTML =
+      '<button type="button" class="stamp-tool">' + STAMP_TOOL + '<span>Apposer le tampon</span></button>' +
+      '<div class="stamp-area"><span class="stamp-hint" aria-hidden="true">Réservé au recruteur</span></div>';
+    var area = zone.querySelector('.stamp-area'), tool = zone.querySelector('.stamp-tool');
+    tool.setAttribute('aria-label', 'Apposer le tampon « Bon pour un entretien »');
+    if (stampedBefore()) area.insertBefore(makeMark(false), area.firstChild);   // avant l'indication, qu'il masque
+    tool.addEventListener('click', function(){
+      var old = area.querySelector('.stamp-mark');
+      if (old) area.removeChild(old);
+      area.insertBefore(makeMark(true), area.firstChild);
+      tool.classList.remove('pressed');
+      void tool.offsetWidth;
+      tool.classList.add('pressed');
+      if (!reduce) {                                          // la page tressaute sous le coup de tampon
+        var page = leafR.parentNode;
+        page.classList.remove('thump');
+        void page.offsetWidth;
+        page.classList.add('thump');
+      }
+      rememberStamp();
+      announce('Tampon apposé : bon pour un entretien !');
+    });
+    leafR.appendChild(zone);
+  }
+  if (leafR && window.MutationObserver) {
+    new MutationObserver(addStampZone).observe(leafR, { childList: true });
+    addStampZone();
+  }
 })();
