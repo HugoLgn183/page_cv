@@ -116,6 +116,7 @@
       var room = lib.getBoundingClientRect(), f = flame.getBoundingClientRect();
       var lx = f.left - room.left, ly = f.top - room.top - 8;
       var radius = reduce ? 230 : 230 + Math.sin(now / 90) * 6 + Math.sin(now / 37) * 4;
+      if (flame.closest('.candle').classList.contains('out')) radius = 0;    // bougie soufflée : noir complet
       night.style.setProperty('--lx', Math.round(lx) + 'px');
       night.style.setProperty('--ly', Math.round(ly) + 'px');
       night.style.setProperty('--lr', radius.toFixed(1) + 'px');
@@ -154,6 +155,7 @@
     'Gardez le doigt sur la bougie pour la prendre et la promener.',
     "Basculez l'interrupteur, à gauche : la bougie révèle des mots cachés…",
     'Dans un livre ouvert, glissez le doigt à gauche ou à droite pour tourner les pages.',
+    'Touchez deux fois la bougie pour la souffler… et encore deux fois pour la rallumer.',
     'Sur la page Contact du livre, un tampon vous attend…',
     'Touchez-moi 5 fois de suite : un terminal secret s\u2019ouvrira…',
     "Besoin d'un CV papier ? Touchez « Exporter en PDF », tout en bas."
@@ -162,6 +164,7 @@
     'Maintenez le clic sur la bougie pour la prendre et la promener.',
     "Basculez l'interrupteur, à gauche : la bougie révèle des mots cachés…",
     'Dans un livre ouvert, les flèches ← → du clavier tournent les pages.',
+    'Double-cliquez sur la bougie pour la souffler… et recommencez pour la rallumer.',
     'Sur la page Contact du livre, un tampon vous attend…',
     'Psst… tapez « sudo » au clavier, n\u2019importe où sur la page.',
     "Besoin d'un CV papier ? « Exporter en PDF », tout en bas."
@@ -544,4 +547,51 @@
     owlTaps = owlTaps.filter(function(t){ return now - t < 3000; }).concat(now);
     if (owlTaps.length >= 5) { owlTaps = []; openTerminal(); }
   });
+
+  // ===================== 5. Souffler la bougie =====================
+  // Double-clic (ou deux touchers rapides) sur la bougie : elle s'éteint dans un filet de fumée ;
+  // recommencer la rallume. Un glissé (déplacement de la bougie) n'est pas compté comme un clic.
+  var candleEl = document.querySelector('.candle');
+  if (candleEl) {
+    // On compare l'appui et le relâchement nous-mêmes : à la souris, la bougie est « prise en main »
+    // dès l'appui et déplacée dans la page, si bien que le navigateur ne lui envoie pas de « click »
+    var downAt = null, lastTap = 0;
+    candleEl.addEventListener('pointerdown', function(ev){ downAt = { x: ev.clientX, y: ev.clientY, id: ev.pointerId }; });
+    window.addEventListener('pointerup', function(ev){
+      if (!downAt || ev.pointerId !== downAt.id) return;
+      var moved = Math.hypot(ev.clientX - downAt.x, ev.clientY - downAt.y) > 8;
+      downAt = null;
+      if (moved) { lastTap = 0; return; }                       // un glissé n'est pas un clic
+      var now = Date.now();
+      if (now - lastTap < 400) { lastTap = 0; toggleCandle(); }
+      else lastTap = now;
+    });
+  }
+
+  function toggleCandle(){
+    var out = !candleEl.classList.contains('out');
+    candleEl.classList.toggle('out', out);
+    candleEl.classList.remove('relit');
+    if (out) {
+      if (!reduce) puffOfSmoke();
+      if (lib.classList.contains('lights-off')) {
+        say('Hou ! Qui a soufflé la bougie ? Il fait tout noir… ' +
+            (touchFirst ? 'Touchez-la deux fois' : 'Double-cliquez dessus') + ' pour la rallumer.', true);
+      }
+    } else if (!reduce) {
+      void candleEl.offsetWidth;
+      candleEl.classList.add('relit');                       // petit éclat, comme une allumette
+      window.setTimeout(function(){ candleEl.classList.remove('relit'); }, 600);
+    }
+  }
+
+  // Un filet de fumée qui monte en ondulant, puis disparaît
+  function puffOfSmoke(){
+    var smoke = document.createElement('span');
+    smoke.className = 'smoke';
+    smoke.setAttribute('aria-hidden', 'true');
+    smoke.innerHTML = '<i></i><i></i><i></i><i></i><i></i>';
+    candleEl.appendChild(smoke);
+    window.setTimeout(function(){ if (smoke.parentNode) smoke.parentNode.removeChild(smoke); }, 3500);
+  }
 })();

@@ -173,3 +173,34 @@
   .terminal{font-size:13px;}
   .term-prompt{font-size:12px;}
 }
+
+/* ================= 5. SOUFFLER LA BOUGIE ================= */
+/* Bougie soufflée : plus de flamme ni de halo (règles plus précises que celles du survol) */
+.lib .candle.out .flame{animation:none;opacity:0;transform:scale(.2,.4);transition:opacity .25s ease,transform .25s ease;}
+.lib .candle.out .flame::after{animation:none;opacity:0;}
+.lib .candle.out .flame::before{opacity:1;} /* la mèche reste visible */
+/* Rallumage : un petit éclat, comme une allumette */
+.lib .candle.relit .flame{animation:relight .55s ease-out;}
+@keyframes relight{
+  0%{opacity:0;transform:scale(.3);filter:brightness(2.2);}
+  35%{opacity:1;transform:scale(1.35,1.5);filter:brightness(1.8);}
+  100%{opacity:1;transform:none;filter:none;}
+}
+/* Filet de fumée au-dessus de la mèche */
+.smoke{position:absolute;left:50%;bottom:58px;width:0;height:0;pointer-events:none;}
+.smoke i{
+  position:absolute;left:-9px;bottom:0;width:18px;height:18px;border-radius:50%;
+  background:radial-gradient(circle,rgba(215,210,200,.8),rgba(215,210,200,0) 70%);
+  filter:blur(1.2px);opacity:0;animation:smokeRise 2.6s ease-out forwards;
+}
+.smoke i:nth-child(2){animation-delay:.18s;}
+.smoke i:nth-child(3){animation-delay:.36s;}
+.smoke i:nth-child(4){animation-delay:.54s;}
+.smoke i:nth-child(5){animation-delay:.72s;}
+@keyframes smokeRise{
+  0%{opacity:.9;transform:translate(0,0) scale(.5);}
+  25%{transform:translate(6px,-26px) scale(1);}
+  50%{transform:translate(-6px,-56px) scale(1.6);opacity:.6;}
+  75%{transform:translate(5px,-86px) scale(2.2);opacity:.3;}
+  100%{opacity:0;transform:translate(-3px,-118px) scale(2.8);}
+}
