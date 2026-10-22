@@ -3,6 +3,12 @@
 (function(){
   'use strict';
 
+  // Styles du livre ouvert : inutiles au premier affichage, chargés après coup
+  var bookCss = document.createElement('link');
+  bookCss.rel = 'stylesheet';
+  bookCss.href = 'book.css';
+  document.head.appendChild(bookCss);
+
   var books = Array.prototype.slice.call(document.querySelectorAll('.book'));
   var viewer = document.getElementById('viewer');
   var openbook = document.getElementById('openbook');
@@ -199,7 +205,13 @@
 
   books.forEach(function(btn){
     btn.addEventListener('click', function(){
-      openViewer(btn.getAttribute('data-rub'));
+      var rub = btn.getAttribute('data-rub');
+      // Clic très rapide, avant l'arrivée de book.css : on attend ses styles
+      if (!bookCss.sheet) {
+        bookCss.addEventListener('load', function(){ openViewer(rub); }, { once: true });
+        return;
+      }
+      openViewer(rub);
     });
   });
 
