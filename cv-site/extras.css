@@ -261,3 +261,49 @@
 }
 .offer-yes{background:#7a5a1e;color:#fbf3df;}
 .offer-btn:hover,.offer-btn:focus-visible{outline:2px solid #7a5a1e;outline-offset:2px;}
+
+/* ================= 8. L'AMBIANCE SELON L'HEURE ================= */
+/* Calque placé sous la plaque et les livres (z-index 1) : il n'éclaire et n'assombrit que le décor */
+.ambiance{
+  position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;
+  transition:background-color 2s ease,opacity .7s ease;
+}
+.lights-off .ambiance{opacity:0;}                      /* l'interrupteur (idée 1) a le dernier mot */
+/* Le rai de soleil : il tombe d'une haute fenêtre à gauche, avec l'ombre de ses croisillons */
+.sunbeam{
+  position:absolute;left:calc(max(9vw,70px) + 1vw);top:-10%;width:max(20vw,170px);height:150%;
+  transform:rotate(-15deg);transform-origin:0 0;
+  background:
+    linear-gradient(90deg,transparent 47%,rgba(0,0,0,.16) 49%,rgba(0,0,0,.16) 51%,transparent 53%),
+    linear-gradient(90deg,transparent,rgba(var(--sun,255,232,176),.24) 18%,rgba(var(--sun,255,232,176),.36) 50%,rgba(var(--sun,255,232,176),.24) 82%,transparent);
+  -webkit-mask-image:linear-gradient(180deg,transparent 12%,#000 22%,#000 58%,transparent 94%);
+  mask-image:linear-gradient(180deg,transparent 12%,#000 22%,#000 58%,transparent 94%);
+  mix-blend-mode:screen;opacity:0;transition:opacity 2s ease;
+}
+.sunbeam i{
+  position:absolute;width:3px;height:3px;border-radius:50%;
+  background:rgba(255,244,214,.9);box-shadow:0 0 5px rgba(255,236,190,.8);opacity:0;
+}
+[data-heure="jour"] .sunbeam{opacity:1;}
+[data-heure="aube"] .sunbeam,[data-heure="soir"] .sunbeam{opacity:1;--sun:255,164,96;transform:rotate(-32deg);}
+[data-heure="soir"] .ambiance{background-color:rgba(20,8,2,.18);}
+@media (prefers-reduced-motion:no-preference){
+  [data-heure="jour"] .sunbeam,[data-heure="aube"] .sunbeam,[data-heure="soir"] .sunbeam{animation:sunShimmer 9s ease-in-out infinite;}
+  .sunbeam i{animation:speckFloat 12s ease-in-out infinite;}
+}
+@media (prefers-reduced-motion:reduce){ .sunbeam i{opacity:.6;} }
+@keyframes sunShimmer{0%,100%{filter:brightness(1);}50%{filter:brightness(1.25);}}
+@keyframes speckFloat{
+  0%,100%{opacity:0;translate:0 0;}
+  20%{opacity:.85;}
+  50%{opacity:.5;translate:14px 22px;}
+  80%{opacity:.85;translate:-6px 40px;}
+}
+/* La nuit : la pièce s'assombrit, les appliques baissent, seule la bougie éclaire autour d'elle */
+[data-heure="nuit"] .ambiance{
+  background:radial-gradient(circle 260px at var(--gx,50%) var(--gy,80%),
+    rgba(255,190,110,.06),rgba(6,3,1,.2) 40%,rgba(4,2,0,.62) 100%);
+}
+[data-heure="nuit"] .sconce{opacity:.25;}
+[data-heure="nuit"] .ambiance.candle-out{ /* bougie soufflée : plus de lueur */
+  background:rgba(4,2,0,.62);}

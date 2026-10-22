@@ -158,6 +158,7 @@
     'Touchez deux fois la bougie pour la souffler… et encore deux fois pour la rallumer.',
     'Sur la page Contact du livre, un tampon vous attend…',
     'Touchez-moi 5 fois de suite : un terminal secret s\u2019ouvrira…',
+    "La pièce suit l'heure de votre horloge : rai de soleil le jour, lueur de la bougie la nuit.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
     "Besoin d'un CV papier ? Touchez « Exporter en PDF », tout en bas."
   ] : [
@@ -168,6 +169,7 @@
     'Double-cliquez sur la bougie pour la souffler… et recommencez pour la rallumer.',
     'Sur la page Contact du livre, un tampon vous attend…',
     'Psst… tapez « sudo » au clavier, n\u2019importe où sur la page.',
+    "La pièce suit l'heure de votre horloge : rai de soleil le jour, lueur de la bougie la nuit.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
     "Besoin d'un CV papier ? « Exporter en PDF », tout en bas."
   ];
@@ -279,7 +281,8 @@
   // Il se présente une fois, quelques secondes après l'arrivée (si personne ne l'a encore sollicité)
   window.setTimeout(function(){
     if (greeted || !document.getElementById('viewer').hidden) return;
-    say('Hou hou ! Je suis le bibliothécaire. ' + (touchFirst ? 'Touchez-moi' : 'Cliquez sur moi') + ' pour une astuce.', false);
+    var late = lib.getAttribute('data-heure') === 'nuit';      // voir l'idée 8
+    say('Hou hou ! ' + (late ? 'Bonsoir, je' : 'Je') + ' suis le bibliothécaire. ' + (touchFirst ? 'Touchez-moi' : 'Cliquez sur moi') + ' pour une astuce.', false);
   }, 4000);
 
   // Toujours perché au bon endroit, avant que les mots secrets ne soient replacés (phase de capture)
@@ -773,4 +776,59 @@
       if (!bubble.contains(document.activeElement)) bubble.classList.remove('show');
     }, 15000);
   }
+
+  // ===================== 8. L'ambiance selon l'heure =====================
+  // La pièce suit l'horloge du visiteur : le jour, un rai de soleil entre par une fenêtre (hors champ) ;
+  // à l'aube et au soir, il est bas et orangé ; la nuit, la pièce s'assombrit et la bougie l'éclaire.
+  // Ce calque reste sous la plaque et les livres : leurs contrastes ne changent pas.
+  var ambiance = document.createElement('div');
+  ambiance.className = 'ambiance';
+  ambiance.setAttribute('aria-hidden', 'true');
+  var beam = document.createElement('div');
+  beam.className = 'sunbeam';
+  for (var g = 0; g < 9; g++) {                             // poussière qui danse dans la lumière
+    var speck = document.createElement('i');
+    speck.style.cssText = 'left:' + (18 + Math.random() * 64).toFixed(0) + '%;top:' + (8 + Math.random() * 70).toFixed(0) + '%;' +
+      'animation-delay:-' + (Math.random() * 12).toFixed(1) + 's';
+    beam.appendChild(speck);
+  }
+  ambiance.appendChild(beam);
+  lib.insertBefore(ambiance, document.querySelector('.plaque-wrap'));
+
+  function period(hour){
+    if (hour >= 21 || hour < 6) return 'nuit';
+    if (hour < 8) return 'aube';
+    if (hour < 18) return 'jour';
+    return 'soir';
+  }
+  function setPeriod(){
+    var p = period(new Date().getHours());
+    if (lib.getAttribute('data-heure') === p) return;
+    lib.setAttribute('data-heure', p);
+    nightGlow();
+  }
+
+  // La nuit, la lueur de la bougie perce l'ombre et la suit quand on la déplace
+  var glowLoop = 0, candleBox = document.querySelector('.candle');
+  function placeGlow(){
+    var f = flame && flame.getBoundingClientRect(), room = lib.getBoundingClientRect();
+    if (!f) return;
+    ambiance.style.setProperty('--gx', Math.round(f.left - room.left) + 'px');
+    ambiance.style.setProperty('--gy', Math.round(f.top - room.top - 8) + 'px');
+  }
+  function nightGlow(){
+    window.cancelAnimationFrame(glowLoop);
+    placeGlow();
+    ambiance.classList.toggle('candle-out', !!candleBox && candleBox.classList.contains('out'));
+    if (lib.getAttribute('data-heure') === 'nuit' && candleBox &&
+        (candleBox.classList.contains('held') || candleBox.classList.contains('loose'))) {
+      glowLoop = window.requestAnimationFrame(nightGlow);  // seulement pendant que la bougie bouge
+    }
+  }
+  if (candleBox) new MutationObserver(nightGlow).observe(candleBox, { attributes: true, attributeFilter: ['class'] });
+  window.addEventListener('resize', placeGlow);
+  lib.addEventListener('bookcasedrawn', placeGlow);
+
+  setPeriod();
+  window.setInterval(setPeriod, 60000);                    // le soir tombe aussi pendant la visite
 })();
