@@ -130,3 +130,46 @@
 /* La page tressaute sous le coup de tampon */
 .leaf-r.thump{animation:pageThump .3s ease;}
 @keyframes pageThump{0%,100%{transform:none;}35%{transform:translateY(2px) scale(.997);}}
+
+/* ================= 4. LE MODE TERMINAL SECRET ================= */
+.terminal{
+  position:fixed;inset:0;z-index:90;display:flex;flex-direction:column;
+  background:#070b07;color:#8dff8d;
+  font-family:'Cascadia Mono','Consolas','DejaVu Sans Mono','Menlo',monospace;font-size:15px;line-height:1.45;
+  text-shadow:0 0 6px rgba(120,255,120,.35);
+}
+/* Lignes de balayage d'un vieux moniteur */
+.terminal::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(180deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px);
+}
+.terminal.booting{animation:crtOn .45s ease-out;}
+@keyframes crtOn{
+  0%{transform:scale(1,.006);filter:brightness(3);}
+  45%{transform:scale(1,.006);filter:brightness(3);}
+  100%{transform:none;filter:none;}
+}
+.term-bar{
+  display:flex;align-items:center;justify-content:space-between;padding:6px 10px 6px 14px;
+  background:#102010;color:#b6ffb6;font-size:13px;border-bottom:1px solid #1f3d1f;
+}
+.term-close{
+  appearance:none;width:32px;height:32px;border:1px solid #2e5a2e;border-radius:4px;cursor:pointer;
+  background:transparent;color:#b6ffb6;font:inherit;font-size:18px;line-height:1;
+}
+.term-close:hover,.term-close:focus-visible{background:#1c3a1c;}
+.term-out{flex:1;overflow:auto;padding:14px 16px 4px;white-space:pre-wrap;overflow-wrap:anywhere;}
+.term-line{margin:0 0 6px;}
+.term-echo{color:#d6ffd6;}
+.term-err{color:#ffb36b;}
+.term-form{display:flex;align-items:center;gap:8px;padding:8px 16px 16px;}
+.term-prompt{color:#d6ffd6;white-space:nowrap;}
+.term-input{
+  flex:1;min-width:0;padding:4px 0;border:0;outline:0;background:transparent;
+  color:#8dff8d;font:inherit;font-size:16px;caret-color:#8dff8d;text-shadow:inherit;
+}
+.term-form:focus-within .term-prompt{text-decoration:underline;text-underline-offset:4px;}
+@media (max-width:640px){
+  .terminal{font-size:13px;}
+  .term-prompt{font-size:12px;}
+}

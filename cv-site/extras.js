@@ -155,6 +155,7 @@
     "Basculez l'interrupteur, à gauche : la bougie révèle des mots cachés…",
     'Dans un livre ouvert, glissez le doigt à gauche ou à droite pour tourner les pages.',
     'Sur la page Contact du livre, un tampon vous attend…',
+    'Touchez-moi 5 fois de suite : un terminal secret s\u2019ouvrira…',
     "Besoin d'un CV papier ? Touchez « Exporter en PDF », tout en bas."
   ] : [
     'Cliquez sur un livre pour lire mon CV.',
@@ -162,6 +163,7 @@
     "Basculez l'interrupteur, à gauche : la bougie révèle des mots cachés…",
     'Dans un livre ouvert, les flèches ← → du clavier tournent les pages.',
     'Sur la page Contact du livre, un tampon vous attend…',
+    'Psst… tapez « sudo » au clavier, n\u2019importe où sur la page.',
     "Besoin d'un CV papier ? « Exporter en PDF », tout en bas."
   ];
   var OWL_SVG =
@@ -353,5 +355,193 @@
   window.addEventListener('afterprint', function(){
     var holder = document.querySelector('.print-stamp');
     if (holder) holder.parentNode.removeChild(holder);
+  });
+
+  // ===================== 4. Le mode terminal secret =====================
+  // S'ouvre en tapant « sudo » (ou le code Konami) sur ordinateur, ou en touchant 5 fois le hibou.
+  // Le contenu affiché est lu dans le CV de la page : il reste toujours à jour.
+  var FILES = { 'profil.txt': 'profil', 'parcours.txt': 'experience', 'competences.txt': 'competences',
+                'formations.txt': 'formation', 'langues.txt': 'langues', 'permis.txt': 'permis', 'contact.txt': 'contact' };
+  var COMMANDS = ['help', 'ls', 'cat', 'whoami', 'neofetch', 'date', 'history', 'clear', 'exit'];
+  var term = null, termOut, termInput, termHistory = [], historyPos = 0, termOpener = null;
+
+  function clean(el){ return el.textContent.replace(/\s+/g, ' ').trim(); }
+
+  // Une rubrique du CV mise en forme comme un fichier texte
+  function fileText(id){
+    var sec = document.getElementById('rub-' + id), title = clean(sec.querySelector('h2')).toUpperCase();
+    var lines = [title, title.replace(/./g, '=')];
+    Array.prototype.forEach.call(sec.querySelectorAll('.lead, .goal p, .sub-block, .chips, .kv, .contact-list'), function(el){
+      if (el.matches('.sub-block')) {
+        lines.push('', clean(el.querySelector('.block-date')) + ' — ' + clean(el.querySelector('.block-title')));
+        var sub = el.querySelector('.block-sub');
+        if (sub) lines.push('  ' + clean(sub));
+        Array.prototype.forEach.call(el.querySelectorAll('li'), function(li){ lines.push('  • ' + clean(li)); });
+      } else if (el.matches('.chips')) {
+        lines.push('');
+        Array.prototype.forEach.call(el.querySelectorAll('.chip'), function(c){ lines.push('• ' + clean(c)); });
+      } else if (el.matches('.kv')) {
+        lines.push('');
+        Array.prototype.forEach.call(el.querySelectorAll('li'), function(li){
+          lines.push((clean(li.querySelector('.k')) + '            ').slice(0, 12) + clean(li.querySelector('.v')));
+        });
+      } else if (el.matches('.contact-list')) {
+        lines.push('');
+        Array.prototype.forEach.call(el.querySelectorAll('li:not(.masked)'), function(li){
+          var link = li.querySelector('a[href^="http"]');
+          lines.push('• ' + (link ? link.href.replace(/^https?:\/\//, '') : clean(li)));
+        });
+      } else {
+        lines.push('', clean(el));
+      }
+    });
+    return lines.join('\n');
+  }
+
+  function print(text, cls){
+    var line = document.createElement('div');
+    line.className = 'term-line' + (cls ? ' ' + cls : '');
+    line.textContent = text;
+    termOut.appendChild(line);
+    termOut.scrollTop = termOut.scrollHeight;
+  }
+
+  function run(raw){
+    var input = raw.trim(), parts = input.split(/\s+/), cmd = parts[0].toLowerCase(), arg = parts.slice(1).join(' ');
+    print('hugo@bibliotheque:~$ ' + raw, 'term-echo');
+    if (!input) return;
+    termHistory.push(input);
+    historyPos = termHistory.length;
+    if (cmd === 'help' || cmd === 'aide' || cmd === 'man') {
+      print('Commandes disponibles :\n' +
+        '  ls               liste les fichiers du CV\n' +
+        '  cat <fichier>    affiche un fichier (ex. : cat profil.txt)\n' +
+        '  whoami           qui suis-je ?\n' +
+        '  neofetch         fiche technique\n' +
+        '  date             date du jour\n' +
+        '  history          commandes déjà tapées\n' +
+        '  clear            efface l\'écran\n' +
+        '  exit             retour à la bibliothèque (ou Échap)\n' +
+        'Astuces : ↑ ↓ pour l\'historique, Tab pour compléter.');
+    } else if (cmd === 'ls' || cmd === 'dir') {
+      print(Object.keys(FILES).join('    '));
+    } else if (cmd === 'cat' || cmd === 'more' || cmd === 'less') {
+      var name = arg.replace(/^\.\//, '');
+      if (!arg) print('cat : quel fichier ? (tapez ls pour la liste)', 'term-err');
+      else if (!FILES[name] && FILES[name + '.txt']) print(fileText(FILES[name + '.txt']));
+      else if (FILES[name]) print(fileText(FILES[name]));
+      else print('cat : ' + arg + ' : fichier introuvable (tapez ls)', 'term-err');
+    } else if (cmd === 'whoami') {
+      print('hugo — ancien militaire et coach sportif, étudiant en BTS SIO SISR en alternance à Saint-Étienne,\nen route vers la cybersécurité.');
+    } else if (cmd === 'neofetch') {
+      print('   ,___,     hugo@bibliotheque\n' +
+            '   (O,O)     -----------------\n' +
+            '   /)  )     OS : BibliOS ' + new Date().getFullYear() + '\n' +
+            '  --"-"--    Shell : cv-sh\n' +
+            '             Uptime : 26 ans\n' +
+            '             Formation : BTS SIO SISR (alternance)\n' +
+            '             Objectif : cybersécurité\n' +
+            '             Langues : français, anglais B2–C1');
+    } else if (cmd === 'date') {
+      print(new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
+    } else if (cmd === 'history') {
+      print(termHistory.map(function(c, i){ return ('  ' + (i + 1)).slice(-3) + '  ' + c; }).join('\n'));
+    } else if (cmd === 'clear' || cmd === 'cls') {
+      termOut.textContent = '';
+    } else if (cmd === 'exit' || cmd === 'quit' || cmd === 'logout') {
+      closeTerminal();
+    } else if (cmd === 'sudo') {
+      print('[sudo] Bien essayé… Accès refusé : ce CV est en lecture seule.', 'term-err');
+    } else if (cmd === 'rm') {
+      print('rm : opération refusée — on ne supprime pas un CV aussi bien rangé.', 'term-err');
+    } else if (cmd === 'cd') {
+      print('cd : il n\'y a qu\'un dossier ici, et vous y êtes déjà.');
+    } else {
+      print(cmd + ' : commande introuvable (tapez help)', 'term-err');
+    }
+  }
+
+  // Complétion avec Tab : commande, puis nom de fichier après « cat »
+  function complete(){
+    var value = termInput.value, m = value.match(/^(\s*cat\s+)(\S*)$/i);
+    var pool = m ? Object.keys(FILES) : COMMANDS, start = m ? m[2] : value.trim();
+    var hits = pool.filter(function(w){ return w.indexOf(start) === 0; });
+    if (hits.length === 1) termInput.value = (m ? m[1] : '') + hits[0] + (m ? '' : ' ');
+    else if (hits.length > 1) print(hits.join('    '));
+  }
+
+  function buildTerminal(){
+    term = document.createElement('div');
+    term.className = 'terminal';
+    term.setAttribute('role', 'dialog');
+    term.setAttribute('aria-modal', 'true');
+    term.setAttribute('aria-label', 'Terminal secret');
+    term.innerHTML =
+      '<div class="term-bar"><span aria-hidden="true">hugo@bibliotheque — cv-sh</span>' +
+        '<button type="button" class="term-close" aria-label="Fermer le terminal">×</button></div>' +
+      '<div class="term-out" role="log" aria-live="polite"></div>' +
+      '<form class="term-form"><label class="term-prompt" for="termInput">hugo@bibliotheque:~$</label>' +
+        '<input id="termInput" class="term-input" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="send"></form>';
+    termOut = term.querySelector('.term-out');
+    termInput = term.querySelector('.term-input');
+    term.querySelector('.term-form').addEventListener('submit', function(ev){
+      ev.preventDefault();
+      var value = termInput.value;
+      termInput.value = '';
+      run(value);
+    });
+    termInput.addEventListener('keydown', function(ev){
+      if (ev.key === 'Tab' && !ev.shiftKey) { ev.preventDefault(); complete(); }
+      else if (ev.key === 'ArrowUp' && historyPos > 0) { ev.preventDefault(); termInput.value = termHistory[--historyPos]; }
+      else if (ev.key === 'ArrowDown') { ev.preventDefault(); historyPos = Math.min(termHistory.length, historyPos + 1); termInput.value = termHistory[historyPos] || ''; }
+    });
+    term.querySelector('.term-close').addEventListener('click', closeTerminal);
+    term.addEventListener('keydown', function(ev){ if (ev.key === 'Escape') { ev.stopPropagation(); closeTerminal(); } });
+    term.addEventListener('click', function(ev){ if (ev.target === term || ev.target === termOut) termInput.focus(); });
+    document.body.appendChild(term);
+    print('BibliOS ' + new Date().getFullYear() + ' — terminal de Hugo Largeron\n' +
+          'Bienvenue, recruteur·se curieux·se ! Tapez help pour commencer, exit (ou Échap) pour revenir.\n');
+  }
+
+  function openTerminal(){
+    if (term && !term.hidden) return;
+    termOpener = document.activeElement;
+    if (!term) buildTerminal();
+    term.hidden = false;
+    term.classList.remove('booting');
+    void term.offsetWidth;
+    if (!reduce) term.classList.add('booting');
+    document.querySelector('main').inert = true;               // la bibliothèque est mise en pause
+    termInput.focus();
+    announce('Terminal ouvert. Tapez help pour la liste des commandes.');
+  }
+  function closeTerminal(){
+    if (!term || term.hidden) return;
+    term.hidden = true;
+    document.querySelector('main').inert = false;
+    if (termOpener && termOpener.focus) termOpener.focus();
+    announce('Terminal fermé.');
+  }
+
+  // Déclencheurs : « sudo » ou code Konami au clavier (hors champ de saisie et livre fermé)…
+  var typed = '', KONAMI = 'ArrowUp ArrowUp ArrowDown ArrowDown ArrowLeft ArrowRight ArrowLeft ArrowRight b a', keys = [];
+  document.addEventListener('keydown', function(ev){
+    if (ev.ctrlKey || ev.metaKey || ev.altKey || (term && !term.hidden)) return;
+    if (/^(input|textarea|select)$/i.test(ev.target.tagName) || !document.getElementById('viewer').hidden) return;
+    keys = keys.concat(ev.key.length === 1 ? ev.key.toLowerCase() : ev.key).slice(-10);
+    typed = (typed + (ev.key.length === 1 ? ev.key.toLowerCase() : ' ')).slice(-8);
+    if (/sudo$/.test(typed) || keys.join(' ') === KONAMI) {
+      ev.preventDefault();                                    // sinon la dernière lettre s'écrirait dans le terminal
+      typed = '';
+      keys = [];
+      openTerminal();
+    }
+  });
+  // …ou 5 touchers rapides sur le hibou
+  var owlTaps = [];
+  owl.addEventListener('click', function(){
+    var now = Date.now();
+    owlTaps = owlTaps.filter(function(t){ return now - t < 3000; }).concat(now);
+    if (owlTaps.length >= 5) { owlTaps = []; openTerminal(); }
   });
 })();
