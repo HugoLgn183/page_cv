@@ -78,7 +78,8 @@
     function placeWords(){
       var owl = document.querySelector('.owl');
       var win = document.querySelector('.lib-window');                // la fenêtre (section 11) cache aussi des livres
-      var covers = (lib.coverRects || []).concat(rectOf(lightSwitch), owl ? rectOf(owl) : [], win && !win.hidden ? rectOf(win) : []);
+      var covers = (lib.coverRects || []).concat(rectOf(lightSwitch), owl ? rectOf(owl) : [], win && !win.hidden ? rectOf(win) : [],
+        Array.prototype.filter.call(document.querySelectorAll('.keepsake'), function(k){ return !k.hidden; }).map(rectOf));   // souvenirs (section 12)
       var spines = (lib.bookSpines || []).filter(function(b){ return b.w >= 11; }).map(function(b){
         var seg = freeSegment(b, covers);
         return seg && { x: b.x + b.w / 2, top: seg[0], len: seg[1] - seg[0], size: Math.max(9, Math.min(13, b.w * .75)) };
@@ -161,6 +162,7 @@
     'Touchez-moi 5 fois de suite : un terminal secret s\u2019ouvrira…',
     "La pièce suit l'heure de votre horloge : rai de soleil le jour, lueur de la bougie la nuit.",
     "La pendule, en haut à droite, avance l'heure : aube, jour, soir, nuit… Un tour complet la remet à l'heure.",
+    "Sur l'étagère, trois souvenirs du parcours de Hugo : l'haltère du coach sportif, le béret du militaire et le câble réseau de l'informatique.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
     'Touchez le bouton rond, sur la colonne de droite, pour entendre la bibliothèque : pages, bougie, hibou…',
     "Besoin d'un CV papier ? Touchez « Exporter en PDF », tout en bas."
@@ -174,6 +176,7 @@
     'Psst… tapez « sudo » au clavier, n\u2019importe où sur la page.',
     "La pièce suit l'heure de votre horloge : rai de soleil le jour, lueur de la bougie la nuit.",
     "La pendule, en haut à droite, avance l'heure : aube, jour, soir, nuit… Un tour complet la remet à l'heure.",
+    "Sur l'étagère, trois souvenirs du parcours de Hugo : l'haltère du coach sportif, le béret du militaire et le câble réseau de l'informatique.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
     'Cliquez sur le bouton rond, sur la colonne de droite, pour entendre la bibliothèque : pages, bougie, hibou…',
     "Besoin d'un CV papier ? « Exporter en PDF », tout en bas."
@@ -1069,4 +1072,75 @@
   window.addEventListener('resize', placeWindow);
   lib.addEventListener('bookcasedrawn', placeWindow, true);   // avant les mots secrets, qui l'évitent
   if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
+
+  // ===================== 12. Les souvenirs du parcours =====================
+  // Trois objets posés sur l'étagère racontent le parcours avant même d'ouvrir un livre :
+  // l'haltère du coach sportif, le béret du militaire (troupes de marine), le câble réseau de l'informatique.
+  // Placés en JavaScript dans la place libre de l'étagère ; masqués s'il n'y en a pas (téléphone).
+  var KEEPSAKES = [
+    { cls: 'ks-beret', side: 'left', w: 70, h: 26, tag: 'Ancien militaire',
+      svg: '<path d="M4 20Q6 6 36 5Q66 6 68 18Q60 23 36 23Q12 23 4 20Z" fill="url(#ksBeret)"/>' +
+           '<path d="M7 20.5Q36 25.5 65 19" fill="none" stroke="#2a1a10" stroke-width="3" stroke-linecap="round"/>' +
+           '<path d="M36 5l1.5-3" stroke="#14203a" stroke-width="2" stroke-linecap="round"/>' +
+           '<circle cx="18" cy="14" r="5" fill="#d9b04a" stroke="#7a5a1e" stroke-width=".8"/>' +
+           '<path d="M18 10.5v6.5M16 11.8h4M15.2 15.2q2.8 3.2 5.6 0" fill="none" stroke="#5d4412" stroke-width="1.1" stroke-linecap="round"/>' +
+           '<defs><linearGradient id="ksBeret" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34497a"/><stop offset="1" stop-color="#16213d"/></linearGradient></defs>' },
+    { cls: 'ks-dumbbell', side: 'left', w: 64, h: 26, tag: 'Coach sportif',
+      svg: '<rect x="14" y="11" width="36" height="4" rx="1.5" fill="url(#ksBar)"/>' +
+           '<path d="M26 11v4M29 11v4M32 11v4M35 11v4M38 11v4" stroke="#4d4d4d" stroke-width=".7"/>' +
+           '<rect x="4" y="2" width="9" height="22" rx="2" fill="#2b2b2e"/><rect x="12" y="5" width="4" height="16" rx="1.5" fill="#3b3b40"/>' +
+           '<rect x="51" y="2" width="9" height="22" rx="2" fill="#2b2b2e"/><rect x="48" y="5" width="4" height="16" rx="1.5" fill="#3b3b40"/>' +
+           '<path d="M6 4h5M53 4h5" stroke="rgba(255,255,255,.25)" stroke-width="1.2" stroke-linecap="round"/>' +
+           '<defs><linearGradient id="ksBar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8d8d8"/><stop offset="1" stop-color="#7a7a7a"/></linearGradient></defs>' },
+    { cls: 'ks-cable', side: 'right', w: 60, h: 36, tag: 'Informatique',
+      svg: '<g fill="none" stroke="#2f7fd1" stroke-width="3"><ellipse cx="25" cy="25" rx="20" ry="9"/><ellipse cx="25" cy="23" rx="16" ry="7"/><ellipse cx="25" cy="21" rx="12" ry="5"/></g>' +
+           '<path d="M41 19Q46 12 50 13" fill="none" stroke="#2f7fd1" stroke-width="3" stroke-linecap="round"/>' +
+           '<rect x="48" y="8" width="10" height="9" rx="1.5" fill="rgba(225,238,255,.7)" stroke="#9fb3c8" stroke-width=".8"/>' +
+           '<path d="M50 9.5v3M52 9.5v3M54 9.5v3M56 9.5v3" stroke="#d9b04a" stroke-width=".8"/>' }
+  ];
+  var shelfZone = document.querySelector('.shelf-zone');
+  var keepsakes = shelfZone ? KEEPSAKES.map(function(k){
+    var el = document.createElement('div');
+    el.className = 'shelf-decor keepsake ' + k.cls;
+    el.setAttribute('aria-hidden', 'true');
+    el.style.width = k.w + 'px';
+    el.style.height = k.h + 'px';
+    el.innerHTML = '<svg viewBox="0 0 ' + k.w + ' ' + k.h + '" focusable="false">' + k.svg + '</svg><span class="keepsake-tag">' + k.tag + '</span>';
+    el.hidden = true;
+    shelfZone.appendChild(el);
+    // Au doigt, un toucher montre l'étiquette quelques secondes
+    var tagTimer = 0;
+    el.addEventListener('pointerdown', function(ev){
+      if (ev.pointerType === 'mouse') return;
+      el.classList.add('tag-on');
+      window.clearTimeout(tagTimer);
+      tagTimer = window.setTimeout(function(){ el.classList.remove('tag-on'); }, 2500);
+    });
+    return { el: el, k: k };
+  }) : [];
+
+  // À gauche de la bougie : le béret contre la bougie, l'haltère avant lui ; à droite des livres couchés : le câble
+  function placeKeepsakes(){
+    var board = document.querySelector('.shelf-board'), home = document.querySelector('.candle-home') || document.querySelector('.candle');
+    var stack = document.querySelector('.stack'), books = document.querySelectorAll('.books-row .book');
+    if (!board || !home || !books.length) return;
+    var z = shelfZone.getBoundingClientRect(), b = board.getBoundingClientRect(), hm = home.getBoundingClientRect();
+    var rightEdge = stack && stack.offsetParent ? stack.getBoundingClientRect().right : books[books.length - 1].getBoundingClientRect().right;
+    var x = { left: hm.left - 16, right: rightEdge + 18 };
+    var limit = { left: b.left + 10, right: b.right - 10 };
+    keepsakes.forEach(function(o){
+      var k = o.k, start = k.side === 'left' ? x.left - k.w : x.right;
+      var fits = k.side === 'left' ? start >= limit.left : start + k.w <= limit.right;
+      o.el.hidden = !fits;
+      if (!fits) return;
+      o.el.style.left = Math.round(start - z.left) + 'px';
+      if (k.side === 'left') x.left = start - 12; else x.right = start + k.w + 12;
+    });
+  }
+  if (keepsakes.length) {
+    placeKeepsakes();
+    window.addEventListener('resize', placeKeepsakes);
+    lib.addEventListener('bookcasedrawn', placeKeepsakes, true);  // avant les mots secrets, qui les évitent
+    if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
+  }
 })();
