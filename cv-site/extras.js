@@ -77,7 +77,8 @@
     // pour le contenir ; les mots, du plus long au plus court, sont répartis le plus loin possible
     function placeWords(){
       var owl = document.querySelector('.owl');
-      var covers = (lib.coverRects || []).concat(rectOf(lightSwitch), owl ? rectOf(owl) : []);
+      var win = document.querySelector('.lib-window');                // la fenêtre (section 11) cache aussi des livres
+      var covers = (lib.coverRects || []).concat(rectOf(lightSwitch), owl ? rectOf(owl) : [], win && !win.hidden ? rectOf(win) : []);
       var spines = (lib.bookSpines || []).filter(function(b){ return b.w >= 11; }).map(function(b){
         var seg = freeSegment(b, covers);
         return seg && { x: b.x + b.w / 2, top: seg[0], len: seg[1] - seg[0], size: Math.max(9, Math.min(13, b.w * .75)) };
@@ -1029,4 +1030,43 @@
   showTime();
   window.requestAnimationFrame(function(){ clock.classList.add('ready'); });   // pas d'animation au chargement
   window.setInterval(showTime, 30000);                     // à l'heure réelle, les aiguilles tournent
+
+  // ===================== 11. La fenêtre =====================
+  // Une haute fenêtre en arc, entre la colonne de gauche et la plaque : son ciel suit l'ambiance
+  // (idée 8 et pendule) et le rai de soleil part d'elle. Masquée quand la place manque (téléphone).
+  var STARS = [[18, 14], [72, 10], [40, 26], [84, 34], [12, 44], [58, 40], [30, 58], [78, 60], [48, 70], [20, 80], [66, 84], [88, 76]];
+  var libWindow = document.createElement('div');
+  libWindow.className = 'lib-window';
+  libWindow.setAttribute('aria-hidden', 'true');
+  libWindow.innerHTML =
+    '<div class="win-glass">' +
+      '<div class="win-sky sky-jour"><i class="cloud c1"></i><i class="cloud c2"></i></div>' +
+      '<div class="win-sky sky-aube"><i class="sun-low"></i></div>' +
+      '<div class="win-sky sky-soir"><i class="sun-low"></i></div>' +
+      '<div class="win-sky sky-nuit"><i class="moon"></i>' +
+        STARS.map(function(s, i){ return '<i class="star" style="left:' + s[0] + '%;top:' + s[1] + '%;animation-delay:-' + (i * .7).toFixed(1) + 's"></i>'; }).join('') +
+      '</div>' +
+      '<div class="win-bars"></div>' +
+    '</div>' +
+    '<div class="win-sill"></div>';
+  lib.insertBefore(libWindow, document.querySelector('.plaque-wrap'));
+
+  // Centrée dans l'espace libre entre la colonne et la plaque ; le rai de soleil part de la fenêtre
+  function placeWindow(){
+    var pillar = document.querySelector('.pillar-l'), plaque = document.querySelector('.plaque');
+    if (!pillar || !plaque) return;
+    var room = lib.getBoundingClientRect(), p = pillar.getBoundingClientRect(), q = plaque.getBoundingClientRect();
+    var gap = q.left - p.right, w = Math.min(150, gap - 48);
+    libWindow.hidden = w < 84;
+    if (libWindow.hidden) { beam.style.left = beam.style.top = beam.style.width = ''; return; }
+    var left = p.right - room.left + (gap - w) / 2, top = 34, h = Math.round(w * 1.55);
+    libWindow.style.cssText = 'left:' + Math.round(left) + 'px;top:' + top + 'px;width:' + Math.round(w) + 'px;height:' + h + 'px';
+    beam.style.left = Math.round(left - w * .2) + 'px';
+    beam.style.top = Math.round(top + h * .35 - lib.clientHeight * .18) + 'px';
+    beam.style.width = Math.round(w * 1.5) + 'px';
+  }
+  placeWindow();
+  window.addEventListener('resize', placeWindow);
+  lib.addEventListener('bookcasedrawn', placeWindow, true);   // avant les mots secrets, qui l'évitent
+  if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
 })();

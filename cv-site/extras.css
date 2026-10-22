@@ -360,3 +360,51 @@
   .clock svg{height:auto;}
   .clock-pendulum{display:none;}
 }
+
+/* ================= 11. LA FENÊTRE ================= */
+/* Haute fenêtre en arc (placée en JS), au ciel changeant selon l'heure ; sous la plaque et les livres */
+.lib-window{position:absolute;z-index:1;pointer-events:none;}
+.lib-window[hidden]{display:none;}
+.win-glass{
+  position:absolute;inset:0;overflow:hidden;
+  border:6px solid #3b2410;border-radius:50% 50% 3px 3px / 32% 32% 3px 3px;
+  box-shadow:0 0 0 2px #1a0f06,inset 0 0 14px rgba(0,0,0,.45),0 0 46px rgba(var(--glow,255,236,190),.28);
+  transition:box-shadow 2s ease;
+}
+.win-sky{position:absolute;inset:0;opacity:0;transition:opacity 2s ease;}
+[data-heure="jour"] .sky-jour,[data-heure="aube"] .sky-aube,[data-heure="soir"] .sky-soir,[data-heure="nuit"] .sky-nuit{opacity:1;}
+.sky-jour{background:linear-gradient(180deg,#5f9fd6,#a9d3f0 62%,#dceffa);}
+.sky-aube{background:linear-gradient(180deg,#6f84bf,#e7a48f 58%,#fde3bd);}
+.sky-soir{background:linear-gradient(180deg,#36336e,#b9548a 46%,#ef8a4a 76%,#ffc96e);}
+.sky-nuit{background:linear-gradient(180deg,#040a1c,#0e1b3a 68%,#1a2950);}
+[data-heure="aube"] .lib-window{--glow:255,196,150;}
+[data-heure="soir"] .lib-window{--glow:255,150,90;}
+[data-heure="nuit"] .lib-window{--glow:120,150,220;}
+[data-heure="nuit"] .win-glass{box-shadow:0 0 0 2px #1a0f06,inset 0 0 14px rgba(0,0,0,.45),0 0 30px rgba(120,150,220,.12);}
+/* Nuages, soleil bas, lune et étoiles */
+.cloud{position:absolute;height:12%;border-radius:50%;background:rgba(255,255,255,.85);filter:blur(2px);}
+.cloud::after{content:"";position:absolute;left:22%;top:-45%;width:45%;height:110%;border-radius:50%;background:inherit;}
+.c1{left:8%;top:22%;width:46%;}
+.c2{left:52%;top:46%;width:38%;opacity:.7;}
+.sun-low{position:absolute;left:30%;bottom:-14%;width:42%;aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(circle,#fff3c4,#ffc35a 55%,rgba(255,170,80,0) 72%);}
+.sky-aube .sun-low{left:46%;opacity:.8;}
+.moon{position:absolute;left:58%;top:16%;width:22%;aspect-ratio:1;border-radius:50%;
+  box-shadow:inset -7px 4px 0 0 #f2ead0;filter:drop-shadow(0 0 6px rgba(242,234,208,.55));}
+.star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;box-shadow:0 0 3px #fff;}
+/* Croisillons et reflet sur la vitre */
+.win-bars{position:absolute;inset:0;background:
+  linear-gradient(90deg,transparent calc(50% - 2px),#3b2410 calc(50% - 2px),#3b2410 calc(50% + 2px),transparent calc(50% + 2px)),
+  linear-gradient(180deg,transparent calc(42% - 2px),#3b2410 calc(42% - 2px),#3b2410 calc(42% + 2px),transparent calc(42% + 2px)),
+  linear-gradient(180deg,transparent calc(71% - 2px),#3b2410 calc(71% - 2px),#3b2410 calc(71% + 2px),transparent calc(71% + 2px)),
+  linear-gradient(125deg,rgba(255,255,255,.16),transparent 38%);}
+/* Rebord en bois */
+.win-sill{position:absolute;left:-12%;right:-12%;bottom:-9px;height:11px;border-radius:2px;
+  background:linear-gradient(180deg,#6a4522,#2c1a0a);box-shadow:0 5px 9px rgba(0,0,0,.55);}
+@media (prefers-reduced-motion:no-preference){
+  .cloud{animation:cloudDrift 38s linear infinite;}
+  .c2{animation-duration:52s;animation-delay:-20s;}
+  .star{animation:twinkle 3.2s ease-in-out infinite;}
+}
+@keyframes cloudDrift{from{translate:-70% 0;}to{translate:190% 0;}}
+@keyframes twinkle{0%,100%{opacity:.35;}50%{opacity:1;}}
