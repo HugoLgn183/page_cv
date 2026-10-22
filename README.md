@@ -13,7 +13,8 @@ page_cv/
 ├── README.md          Présentation du projet (ce fichier)
 ├── AUTOEVALUATION.md  Résultats des outils, journal des corrections, auto-évaluation
 └── cv-site/
-    ├── index.html     Le site : HTML, CSS et JavaScript dans un seul fichier
+    ├── index.html     Le site : HTML et CSS (tout le contenu du CV est ici)
+    ├── app.js         JavaScript du livre ouvert et du décor, chargé en defer
     └── cv.md          Contenu du CV au format texte (source de référence)
 ```
 
@@ -25,7 +26,7 @@ page_cv/
 - **Polices système** à l'allure de livre (Palatino, Book Antiqua), sans téléchargement.
 - **GitHub Pages** pour l'hébergement.
 
-Aucune image, police externe ou dépendance : la page entière pèse environ 66 Ko (18 Ko une fois compressée par GitHub Pages).
+Aucune image, police externe ou dépendance. La page HTML pèse 51 Ko (13 Ko une fois compressée par GitHub Pages) et `app.js` 16 Ko (5 Ko compressé). Le script est chargé avec `defer` : il ne retarde pas le premier affichage.
 
 ## Fonctionnalités
 
@@ -50,7 +51,7 @@ Aucune image, police externe ou dépendance : la page entière pèse environ 66 
 | Outil | Résultat |
 |---|---|
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement |
-| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 99 / 100 / 96 / 100 |
+| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 96 / 100 / 96 / 100 |
 | Lighthouse ordinateur | 100 / 100 / 96 / 100 |
 
 Le détail des mesures, le journal des corrections de la V1 à la version finale et l'auto-évaluation sont dans [AUTOEVALUATION.md](AUTOEVALUATION.md).
