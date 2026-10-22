@@ -144,8 +144,13 @@
   // Perché sur la pile de livres (sur le livre « Contact » sur téléphone), il suit le pointeur
   // des yeux, cligne de temps en temps et donne une astuce quand on clique dessus.
   var touchFirst = window.matchMedia('(hover: none)').matches;
+  // Téléphone tenu en portrait : seul cas où l'astuce « mode paysage » a un sens
+  var portraitPhone = window.matchMedia('(max-width: 640px) and (orientation: portrait)');
+  var LANDSCAPE_TIP = "Tournez votre téléphone en mode paysage : le livre s'ouvre alors sur deux pages, " +
+                      'comme sur ordinateur, avec le sommaire à gauche pour aller directement à un chapitre.';
   var TIPS = touchFirst ? [
     'Touchez un livre pour lire mon CV.',
+    LANDSCAPE_TIP,
     'Gardez le doigt sur la bougie pour la prendre et la promener.',
     "Basculez l'interrupteur, à gauche : la bougie révèle des mots cachés…",
     'Dans un livre ouvert, glissez le doigt à gauche ou à droite pour tourner les pages.',
@@ -225,8 +230,10 @@
     owl.classList.remove('hoot');
     void owl.offsetWidth;
     owl.classList.add('hoot');
-    say('Hou hou ! ' + TIPS[tipIndex], true);
-    tipIndex = (tipIndex + 1) % TIPS.length;
+    var tips = TIPS.filter(function(tip){ return tip !== LANDSCAPE_TIP || portraitPhone.matches; });
+    tipIndex %= tips.length;
+    say('Hou hou ! ' + tips[tipIndex], true);
+    tipIndex = (tipIndex + 1) % tips.length;
   });
   // Un clic ailleurs ou Échap referme la bulle
   window.addEventListener('pointerdown', function(ev){ if (!owl.contains(ev.target)) bubble.classList.remove('show'); });
