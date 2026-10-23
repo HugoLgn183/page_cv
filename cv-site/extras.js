@@ -296,8 +296,7 @@
 
   // Toujours perché au bon endroit, avant que les mots secrets ne soient replacés (phase de capture)
   lib.addEventListener('bookcasedrawn', perch, true);
-  perch();
-  if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));   // les mots évitent le hibou
+  perch();                                                  // les mots secrets l'éviteront (voir la fin du fichier)
 
   // ===================== 3. Le tampon « Bon pour un entretien » =====================
   // Sur la page Contact du livre ouvert : un tampon encreur à apposer d'un clic.
@@ -1126,7 +1125,6 @@
   }
   window.addEventListener('resize', layoutWindow);
   lib.addEventListener('bookcasedrawn', layoutWindow, true);  // avant les mots secrets, qui évitent le mur
-  if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
 
   // ===================== 12. Les souvenirs du parcours =====================
   // Trois objets posés sur l'étagère racontent le parcours avant même d'ouvrir un livre :
@@ -1264,10 +1262,9 @@
     });
   }
   if (keepsakes.length) {
-    placeKeepsakes();
+    if (!lib.bookSpines) placeKeepsakes();                   // sinon : au déclenchement unique de la fin du fichier
     window.addEventListener('resize', placeKeepsakes);
     lib.addEventListener('bookcasedrawn', placeKeepsakes, true);  // avant les mots secrets, qui les évitent
-    if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
   }
 
   // ===================== 13. Profondeur et reflets =====================
@@ -1445,10 +1442,9 @@
   }
   // Générateur pseudo-aléatoire à graine fixe : le parquet reste le même à chaque dessin
   function seeded(seed){ return function(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
-  drawFloor();
+  if (!lib.bookSpines) drawFloor();                        // sinon : au déclenchement unique de la fin du fichier
   window.addEventListener('resize', drawFloor);
   lib.addEventListener('bookcasedrawn', drawFloor, true);   // avant les mots secrets, qui évitent le sol
-  if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
 
   // ===================== 15. La plaque suspendue =====================
   // La plaque ne flotte plus devant la bibliothèque : ses rivets la fixent sur un panneau de bois sculpté,
@@ -1478,9 +1474,16 @@
         c.style.cssText = 'left:' + Math.round(cx - 4) + 'px;top:0;height:' + (y + 3) + 'px';
       });
     };
-    hangPlaque();
+    if (!lib.bookSpines) hangPlaque();                     // sinon : au déclenchement unique de la fin du fichier
     window.addEventListener('resize', hangPlaque);
     lib.addEventListener('bookcasedrawn', hangPlaque, true);   // avant les mots secrets, qui évitent le panneau
-    if (lib.bookSpines) lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
   }
+
+  // Si la bibliothèque du fond est déjà dessinée, on rejoue une seule fois « bookcasedrawn » pour que tout
+  // se recale ensemble (fenêtre, objets, sol, plaque, puis mots secrets). Une seule fois, et dans une tâche
+  // à part quand le navigateur est libre : relancer l'événement à chaque section recalculait tout 5 fois
+  // de suite au chargement (environ 250 ms de blocage mesurés sur ordinateur).
+  if (lib.bookSpines) (window.requestIdleCallback || function(cb){ return window.setTimeout(cb, 50); })(function(){
+    lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
+  });
 })();

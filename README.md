@@ -74,9 +74,9 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko u
 |---|---|
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement |
 | Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 98 / 100 / 100 / 100 |
-| Lighthouse ordinateur | 100 / 100 / 100 / 100 |
+| Lighthouse ordinateur | 90 / 100 / 100 / 100 (avant correctif, voir ci-dessous) |
 
-Scores Lighthouse : médiane de 3 mesures sur le site en ligne, avec les « petits plaisirs » 1 à 9 et l'icône d'onglet (22/10/2026). Sans icône, « Bonnes pratiques » tombait à 96 (`favicon.ico` introuvable, erreur 404).
+Scores Lighthouse : médiane de 3 mesures sur le site en ligne, avec tout le décor (22/10/2026, version « plaque suspendue »). Sur ordinateur, la performance était tombée de 100 à 90 : au chargement, le décor se recalculait plusieurs fois de suite (environ 250 ms de blocage). Le correctif (un seul recalcul, quand le navigateur est libre) ne change pas le rendu ; ce score sera remesuré en ligne une fois le correctif publié. Sans icône d'onglet, « Bonnes pratiques » tombait à 96 (`favicon.ico` introuvable, erreur 404).
 
 Le détail des mesures, le journal des corrections de la V1 à la version finale et l'auto-évaluation sont dans [AUTOEVALUATION.md](AUTOEVALUATION.md).
 
