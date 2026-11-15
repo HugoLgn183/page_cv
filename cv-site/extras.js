@@ -1268,10 +1268,9 @@
   }
 
   // ===================== 13. Profondeur et reflets =====================
-  // À la souris, le fond (bibliothèque, mots secrets, fenêtre, rai de soleil, appliques) glisse un peu
-  // à l'opposé du pointeur : il paraît plus loin que la plaque et l'étagère. Un reflet de lumière
-  // glisse sur la plaque en laiton (il suit la souris ; au doigt, il passe de temps en temps)
-  // et sur la tranche dorée d'un livre survolé. Rien de tout cela en mouvement réduit.
+  // Un reflet de lumière glisse sur la plaque en laiton (il suit la souris ; au doigt, il passe de temps
+  // en temps) et sur la tranche dorée d'un livre survolé. Rien de tout cela en mouvement réduit.
+  // (Le décalage du fond à l'opposé du pointeur a été retiré : déstabilisant et moins réaliste.)
   var plaqueEl = document.querySelector('.plaque');
   if (plaqueEl) {
     var sheen = document.createElement('span');
@@ -1289,16 +1288,11 @@
   var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   if (!reduce && finePointer) {
     lib.classList.add('depth');
-    var far = ['.bookcase', '.secret-ink', '.lib-window', '.sunbeam', '.sconce', '.lantern', '.arch'];
     var aim = { x: 0, y: 0 }, at = { x: 0, y: 0 }, depthFrame = 0;
     var depthStep = function(){
       depthFrame = 0;
       at.x += (aim.x - at.x) * .08;
       at.y += (aim.y - at.y) * .08;
-      var dx = (-at.x * 9).toFixed(2) + 'px', dy = (-at.y * 6).toFixed(2) + 'px';
-      far.forEach(function(sel){
-        Array.prototype.forEach.call(lib.querySelectorAll(sel), function(el){ el.style.translate = dx + ' ' + dy; });
-      });
       if (sheen) sheen.style.setProperty('--sx', ((at.x + 1) / 2 * 100).toFixed(1) + '%');
       if (Math.abs(aim.x - at.x) > .002 || Math.abs(aim.y - at.y) > .002) depthFrame = window.requestAnimationFrame(depthStep);
     };

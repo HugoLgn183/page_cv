@@ -434,8 +434,6 @@
 @keyframes cursorBlink{0%{opacity:1;}100%{opacity:0;}}
 
 /* ================= 13. PROFONDEUR ET REFLETS ================= */
-/* Le fond glisse à la souris (décalage posé en JS avec « translate ») */
-.depth .bookcase,.depth .secret-ink,.depth .lib-window,.depth .sunbeam,.depth .sconce,.depth .lantern,.depth .arch{will-change:translate;}
 /* Reflet sur la plaque : sous le texte (la plaque devient un contexte d'empilement), donc sans toucher aux contrastes */
 .plaque{isolation:isolate;}
 .plaque-sheen{position:absolute;inset:0;z-index:-1;border-radius:inherit;overflow:hidden;pointer-events:none;}
