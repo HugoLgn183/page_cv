@@ -794,12 +794,6 @@
   ambiance.setAttribute('aria-hidden', 'true');
   var beam = document.createElement('div');
   beam.className = 'sunbeam';
-  for (var g = 0; g < 9; g++) {                             // poussière qui danse dans la lumière
-    var speck = document.createElement('i');
-    speck.style.cssText = 'left:' + (18 + Math.random() * 64).toFixed(0) + '%;top:' + (8 + Math.random() * 70).toFixed(0) + '%;' +
-      'animation-delay:-' + (Math.random() * 12).toFixed(1) + 's';
-    beam.appendChild(speck);
-  }
   ambiance.appendChild(beam);
   lib.insertBefore(ambiance, document.querySelector('.plaque-wrap'));
 
@@ -814,6 +808,7 @@
     var p = period(clockHour === null ? new Date().getHours() : clockHour);
     if (lib.getAttribute('data-heure') === p) return;
     lib.setAttribute('data-heure', p);
+    redrawBeam();                                             // l'inclinaison du rai suit l'heure
     nightGlow();
   }
 
@@ -1063,7 +1058,7 @@
   function layoutWindow(){
     var pillar = document.querySelector('.pillar-l'), plaque = document.querySelector('.plaque');
     var W = bookcaseEl && parseFloat(bookcaseEl.style.width), H = bookcaseEl && parseFloat(bookcaseEl.style.height);
-    var hide = function(){ libWindow.hidden = true; beam.style.left = beam.style.top = beam.style.width = ''; };
+    var hide = function(){ libWindow.hidden = true; drawBeam(); };
     if (!pillar || !plaque || !W || !lib.bookSpines || window.innerWidth <= 640) return hide();
     var rowH = Math.max(140, Math.min(190, H / 5)), sections = Math.max(2, Math.round(W / 300)), secW = W / sections;
     var room = lib.getBoundingClientRect();
@@ -1087,9 +1082,60 @@
     var left = bay.v0 + (bay.v1 - bay.v0 - w) / 2;
     libWindow.hidden = false;
     libWindow.style.cssText = 'left:' + Math.round(left) + 'px;top:' + top + 'px;width:' + Math.round(w) + 'px;height:' + Math.round(h) + 'px';
-    beam.style.left = Math.round(left - w * .2) + 'px';        // le rai de soleil part de la fenêtre
-    beam.style.top = Math.round(top + h * .3 - lib.clientHeight * .18) + 'px';
-    beam.style.width = Math.round(w * 1.5) + 'px';
+    beamWin = [left, top, w, h];
+    drawBeam(left, top, w, h);                                  // le rai de lumière part de la fenêtre
+  }
+  // Rai de lumière : les carreaux de la fenêtre projettent chacun leur parallélogramme sur le sol (la croisée
+  // y dessine ses barres sombres) ; un faisceau, coupé en deux par le montant central, les relie à la fenêtre,
+  // plus clair près du verre et plus ténu vers le sol. Teinte et force suivent l'heure (voir extras.css),
+  // et une poussière dérive dans la lumière.
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function svgEl(name, attrs){
+    var e = document.createElementNS(SVGNS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  // Inclinaison du faisceau selon l'heure (décalage du sol, en largeurs de fenêtre) : soleil haut à midi,
+  // bas et rasant à l'aube et surtout le soir, clair de lune assez droit
+  var SLANT = { jour: .2, aube: .7, soir: 1.05, nuit: .35 };
+  var beamWin = null;
+  function redrawBeam(){ if (beamWin) drawBeam(beamWin[0], beamWin[1], beamWin[2], beamWin[3]); }
+  function drawBeam(l, t, w, h){
+    beam.textContent = '';
+    if (!(w > 0)) { beamWin = null; return; }
+    var t0 = t + w * .5, h0 = h - w * .5;                       // le faisceau naît sous la voûte : rien au-dessus de la fenêtre
+    var H = lib.clientHeight, ph = Math.min(48, Math.round(w * .42)), pb = Math.round(H * .97), pt = pb - ph;
+    var slant = SLANT[lib.getAttribute('data-heure')];
+    var pl = l + w * (slant === undefined ? .2 : slant), sh = ph * .55;   // sol : décalé vers la droite, un peu de biais
+    var gap = .05;
+    var cols = [[0, .5 - gap / 2], [.5 + gap / 2, 1]], rows = [[0, .31], [.345, .655], [.69, 1]];
+    var floorPt = function(u, v){ return (pl + u * w + (1 - v) * sh).toFixed(1) + ',' + (pt + v * ph).toFixed(1); };
+    var winPt = function(u, v){ return (l + u * w).toFixed(1) + ',' + (t0 + v * h0).toFixed(1); };
+    var svg = svgEl('svg', { 'aria-hidden': 'true', focusable: 'false' });
+    var defs = svgEl('defs', {});
+    var grad = svgEl('linearGradient', { id: 'sunShaft', gradientUnits: 'userSpaceOnUse', x1: 0, y1: t0 + h0 * .6, x2: 0, y2: pt });
+    [['0', '.36'], ['.55', '.24'], ['1', '.16']].forEach(function(st){
+      grad.appendChild(svgEl('stop', { offset: st[0], 'class': 'sun-stop', 'stop-opacity': st[1] }));
+    });
+    defs.appendChild(grad);
+    svg.appendChild(defs);
+    cols.forEach(function(c){                                   // faisceau : une moitié par côté du montant
+      svg.appendChild(svgEl('polygon', { 'class': 'sun-shaft', fill: 'url(#sunShaft)', points:
+        [winPt(c[0], 0), winPt(c[1], 0), floorPt(c[1], 0), floorPt(c[1], 1), floorPt(c[0], 1), winPt(c[0], 1)].join(' ') }));
+    });
+    cols.forEach(function(c){                                   // sol : un parallélogramme par carreau
+      rows.forEach(function(r){
+        svg.appendChild(svgEl('polygon', { 'class': 'sun-pane',
+          points: [floorPt(c[0], r[0]), floorPt(c[1], r[0]), floorPt(c[1], r[1]), floorPt(c[0], r[1])].join(' ') }));
+      });
+    });
+    beam.appendChild(svg);
+    for (var g = 0; g < 10; g++) {                              // poussière qui danse dans la lumière
+      var k = .1 + Math.random() * .8, speck = document.createElement('i');
+      speck.style.cssText = 'left:' + Math.round(l + w * (.1 + Math.random() * .8) + (pl - l + sh * .5) * k) + 'px;' +
+        'top:' + Math.round(t + h * .6 + (pt - t - h * .6) * k) + 'px;animation-delay:-' + (Math.random() * 12).toFixed(1) + 's';
+      beam.appendChild(speck);
+    }
   }
   // Pan de mur en pierre claire, dans le dessin du fond (qui est ensuite atténué et flouté comme le reste)
   function paintBay(x0, x1, floor, W, H){
