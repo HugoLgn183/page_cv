@@ -299,12 +299,11 @@
   50%{opacity:.5;translate:14px 22px;}
   80%{opacity:.85;translate:-6px 40px;}
 }
-/* La nuit : la pièce s'assombrit, les appliques baissent, seule la bougie éclaire autour d'elle */
+/* La nuit : la pièce s'assombrit, seule la bougie éclaire autour d'elle (les appliques, elles, s'allument : voir section 16) */
 [data-heure="nuit"] .ambiance{
   background:radial-gradient(circle 260px at var(--gx,50%) var(--gy,80%),
     rgba(255,190,110,.06),rgba(6,3,1,.2) 40%,rgba(4,2,0,.62) 100%);
 }
-[data-heure="nuit"] .sconce{opacity:.25;}
 [data-heure="nuit"] .ambiance.candle-out{ /* bougie soufflée : plus de lueur */
   background:rgba(4,2,0,.62);}
 
@@ -528,18 +527,22 @@
 
 /* ================= 16. ARRIVÉE EN DOUCEUR ================= */
 /* Lanternes en laiton sous chaque halo d'applique, suspendues au plafond (chaîne comme celle de la plaque) */
-.lantern{position:absolute;top:0;z-index:2;width:30px;height:191px;pointer-events:none;}
-.lantern-l{left:calc(6vw + 75px);}
-.lantern-r{right:calc(6vw + 75px);}
-.lantern-chain{left:11px;top:0;height:131px;}
+.lantern{position:absolute;top:0;z-index:2;width:40px;height:198px;pointer-events:none;}
+.lantern-l{left:calc(6vw + 70px);}
+.lantern-r{right:calc(6vw + 70px);}
+.lantern-chain{left:16px;top:0;height:128px;}
 .lantern svg{
-  position:absolute;left:0;bottom:0;width:30px;height:62px;overflow:visible;
+  position:absolute;left:0;bottom:0;width:40px;height:76px;overflow:visible;
   filter:drop-shadow(0 3px 4px rgba(0,0,0,.6));
 }
-/* Verre allumé : suit les mêmes états que le halo (interrupteur : éteint, nuit : baissé) */
-.lant-fire{opacity:1;transition:opacity .7s ease;}
-[data-heure="nuit"] .lant-fire{opacity:.35;}
-.lib.lights-off .lant-fire{opacity:0;}
+/* Verre allumé : suit les mêmes états que le halo (interrupteur : éteint) */
+/* Lumières des appliques selon l'heure : presque éteintes en plein jour, plus fortes à l'aube et au soir, pleines la nuit */
+.lant-fire{opacity:0;transition:opacity .7s ease;}
+.lib[data-heure="jour"] .sconce{opacity:.12;}
+.lib[data-heure="aube"] .sconce,.lib[data-heure="soir"] .sconce{opacity:.6;}
+.lib[data-heure="aube"] .lant-fire,.lib[data-heure="soir"] .lant-fire{opacity:.6;}
+.lib[data-heure="nuit"] .lant-fire{opacity:1;}
+.lib.lights-off .sconce,.lib.lights-off .lant-fire{opacity:0;}
 /* Arrivée : lumières baissées, puis elles remontent, la gauche d'abord */
 .lib.arriving .sconce,.lib.arriving .lant-fire{opacity:0;transition:opacity .3s ease;}
 .lib.lighting .sconce,.lib.lighting .lant-fire{transition:opacity 1.8s ease-out;}

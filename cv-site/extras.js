@@ -1478,19 +1478,37 @@
   // les lumières baissent un instant puis remontent doucement, la gauche puis la droite, et la lueur du jour
   // monte avec elles. Seul le décor s'allume : plaque, livres et texte restent affichés tout de suite.
   // Aucun événement « bookcasedrawn » ici : les lanternes se placent en CSS, sans mesure ni recalcul.
-  var LANTERN = '<svg viewBox="0 0 30 62" focusable="false">' +
-    '<defs><radialGradient id="lantGlass§" cx="50%" cy="55%" r="60%">' +
-    '<stop offset="0" stop-color="#fff3c4"/><stop offset=".55" stop-color="#f6b445"/><stop offset="1" stop-color="#b8631a"/>' +
-    '</radialGradient></defs>' +
-    '<circle cx="15" cy="4" r="3" fill="none" stroke="#c99a3c" stroke-width="1.6"/>' +
-    '<path d="M6 16 L15 8 L24 16 Z" fill="#8a6418"/><path d="M9 15 L15 10 L16 15 Z" fill="#c79a3a"/>' +
-    '<rect x="5" y="15" width="20" height="3" rx="1" fill="#c79a3a"/>' +
-    '<rect x="7" y="18" width="16" height="30" fill="#2b1d0d"/>' +
-    '<g class="lant-fire"><rect x="7" y="18" width="16" height="30" fill="url(#lantGlass§)"/>' +
-    '<path d="M15 24 C19 29 19 34 15 40 C11 34 11 29 15 24 Z" fill="#fffbe6"/></g>' +
-    '<path d="M7 18 V48 M15 18 V48 M23 18 V48" stroke="#8a6418" stroke-width="1.3" fill="none"/>' +
-    '<rect x="5" y="48" width="20" height="4" rx="1" fill="#c79a3a"/>' +
-    '<path d="M8 52 L22 52 L19 58 L11 58 Z" fill="#8a6418"/><circle cx="15" cy="60" r="2" fill="#c79a3a"/></svg>';
+  var LANTERN = '<svg viewBox="0 0 40 76" focusable="false">' +
+    '<defs>' +
+    '<linearGradient id="lantBrass§" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#5e3f0e"/><stop offset=".3" stop-color="#f0cf78"/>' +
+      '<stop offset=".55" stop-color="#c79a3a"/><stop offset="1" stop-color="#6b4a12"/></linearGradient>' +
+    '<radialGradient id="lantGlass§" cx="50%" cy="68%" r="62%"><stop offset="0" stop-color="#fff6cf"/><stop offset=".4" stop-color="#ffc45a"/>' +
+      '<stop offset="1" stop-color="#b8571a"/></radialGradient>' +
+    '<linearGradient id="lantDark§" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#4a3418"/><stop offset=".35" stop-color="#2f2110"/>' +
+      '<stop offset="1" stop-color="#1b1208"/></linearGradient>' +
+    '</defs>' +
+    // anneau, tige et toit bombé à lucarne
+    '<circle cx="20" cy="4" r="3.2" fill="none" stroke="url(#lantBrass§)" stroke-width="1.7"/>' +
+    '<path d="M20 7 V10" stroke="#8a6418" stroke-width="1.6"/>' +
+    '<path d="M20 9 C23 9.5 25 12 27.5 15.5 C29.5 18 32 20 34 21.5 H6 C8 20 10.5 18 12.5 15.5 C15 12 17 9.5 20 9 Z" fill="url(#lantBrass§)"/>' +
+    '<path d="M20 11 C21.5 12.5 23 14.5 24 17" stroke="#fff0b0" stroke-opacity=".45" stroke-width=".9" fill="none"/>' +
+    '<rect x="4.5" y="21" width="31" height="3.4" rx="1.7" fill="url(#lantBrass§)"/>' +
+    '<circle cx="9" cy="22.7" r=".8" fill="#5e3f0e"/><circle cx="20" cy="22.7" r=".8" fill="#5e3f0e"/><circle cx="31" cy="22.7" r=".8" fill="#5e3f0e"/>' +
+    // verre éteint (affiché tout le temps), cage évasée vers le haut
+    '<path d="M8 24.4 H32 L29 56 H11 Z" fill="url(#lantDark§)"/>' +
+    // verre allumé : bougie, flamme et lueur, par-dessus (fondu en opacité)
+    '<g class="lant-fire"><path d="M8 24.4 H32 L29 56 H11 Z" fill="url(#lantGlass§)"/>' +
+      '<rect x="17.6" y="46" width="4.8" height="10" rx="1" fill="#fff4d6"/>' +
+      '<path d="M20 31 C24.2 36.5 24 42 20 46.5 C16 42 15.8 36.5 20 31 Z" fill="#ffd36a"/>' +
+      '<path d="M20 35.5 C22 38.5 21.8 42 20 44.8 C18.2 42 18 38.5 20 35.5 Z" fill="#fffdf0"/></g>' +
+    // reflet du verre et armature : montants, anneau de milieu
+    '<path d="M11.5 27 L10.2 50" stroke="#fff" stroke-opacity=".28" stroke-width="1.6" stroke-linecap="round" fill="none"/>' +
+    '<path d="M8 24.4 L11 56 M32 24.4 L29 56 M20 24.4 V56" stroke="url(#lantBrass§)" stroke-width="1.7" fill="none"/>' +
+    '<path d="M9.4 40 H30.6" stroke="url(#lantBrass§)" stroke-width="1.3"/>' +
+    // socle : plateau, coupelle et pointe
+    '<rect x="9.5" y="56" width="21" height="3.2" rx="1.4" fill="url(#lantBrass§)"/>' +
+    '<path d="M11.5 59.2 H28.5 C27.5 63 25.5 66 20 67 C14.5 66 12.5 63 11.5 59.2 Z" fill="url(#lantBrass§)"/>' +
+    '<path d="M20 66.5 V71" stroke="#8a6418" stroke-width="1.6"/><circle cx="20" cy="72.6" r="2.2" fill="url(#lantBrass§)"/></svg>';
   var firstMote = lib.querySelector('.mote');
   ['l', 'r'].forEach(function(side, i){
     var lamp = document.createElement('div');
