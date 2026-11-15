@@ -435,7 +435,7 @@
 
 /* ================= 13. PROFONDEUR ET REFLETS ================= */
 /* Le fond glisse à la souris (décalage posé en JS avec « translate ») */
-.depth .bookcase,.depth .secret-ink,.depth .lib-window,.depth .sunbeam,.depth .sconce,.depth .arch{will-change:translate;}
+.depth .bookcase,.depth .secret-ink,.depth .lib-window,.depth .sunbeam,.depth .sconce,.depth .lantern,.depth .arch{will-change:translate;}
 /* Reflet sur la plaque : sous le texte (la plaque devient un contexte d'empilement), donc sans toucher aux contrastes */
 .plaque{isolation:isolate;}
 .plaque-sheen{position:absolute;inset:0;z-index:-1;border-radius:inherit;overflow:hidden;pointer-events:none;}
@@ -527,3 +527,28 @@
   border:2px solid #c99a3c;box-sizing:border-box;box-shadow:0 1px 2px rgba(0,0,0,.6);
 }
 @media (max-width:640px){ .plaque-board{border-radius:12px;} .chain-anchor{display:none;} }
+
+/* ================= 16. ARRIVÉE EN DOUCEUR ================= */
+/* Lanternes en laiton sous chaque halo d'applique, suspendues au plafond (chaîne comme celle de la plaque) */
+.lantern{position:absolute;top:0;z-index:2;width:30px;height:191px;pointer-events:none;}
+.lantern-l{left:calc(6vw + 75px);}
+.lantern-r{right:calc(6vw + 75px);}
+.lantern-chain{left:11px;top:0;height:131px;}
+.lantern svg{
+  position:absolute;left:0;bottom:0;width:30px;height:62px;overflow:visible;
+  filter:drop-shadow(0 3px 4px rgba(0,0,0,.6));
+}
+/* Verre allumé : suit les mêmes états que le halo (interrupteur : éteint, nuit : baissé) */
+.lant-fire{opacity:1;transition:opacity .7s ease;}
+[data-heure="nuit"] .lant-fire{opacity:.35;}
+.lib.lights-off .lant-fire{opacity:0;}
+/* Arrivée : lumières baissées, puis elles remontent, la gauche d'abord */
+.lib.arriving .sconce,.lib.arriving .lant-fire{opacity:0;transition:opacity .3s ease;}
+.lib.lighting .sconce,.lib.lighting .lant-fire{transition:opacity 1.8s ease-out;}
+.lib.lighting .sconce-r,.lib.lighting .lantern-r .lant-fire{transition-delay:.4s;}
+@media (prefers-reduced-motion:no-preference){
+  .lib.lighting .ambiance{animation:ambRise 2s ease-out;}
+}
+@keyframes ambRise{from{opacity:0;}}
+/* Sous 1100 px la plaque recouvre l'emplacement des lanternes : on ne les affiche pas */
+@media (max-width:1100px){ .lantern{display:none;} }

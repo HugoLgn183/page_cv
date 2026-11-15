@@ -1289,7 +1289,7 @@
   var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   if (!reduce && finePointer) {
     lib.classList.add('depth');
-    var far = ['.bookcase', '.secret-ink', '.lib-window', '.sunbeam', '.sconce', '.arch'];
+    var far = ['.bookcase', '.secret-ink', '.lib-window', '.sunbeam', '.sconce', '.lantern', '.arch'];
     var aim = { x: 0, y: 0 }, at = { x: 0, y: 0 }, depthFrame = 0;
     var depthStep = function(){
       depthFrame = 0;
@@ -1477,6 +1477,41 @@
     if (!lib.bookSpines) hangPlaque();                     // sinon : au déclenchement unique de la fin du fichier
     window.addEventListener('resize', hangPlaque);
     lib.addEventListener('bookcasedrawn', hangPlaque, true);   // avant les mots secrets, qui évitent le panneau
+  }
+
+  // ===================== 16. Arrivée en douceur =====================
+  // Chaque halo d'applique reçoit sa lanterne en laiton, suspendue au plafond par une chaîne. À l'arrivée,
+  // les lumières baissent un instant puis remontent doucement, la gauche puis la droite, et la lueur du jour
+  // monte avec elles. Seul le décor s'allume : plaque, livres et texte restent affichés tout de suite.
+  // Aucun événement « bookcasedrawn » ici : les lanternes se placent en CSS, sans mesure ni recalcul.
+  var LANTERN = '<svg viewBox="0 0 30 62" focusable="false">' +
+    '<defs><radialGradient id="lantGlass§" cx="50%" cy="55%" r="60%">' +
+    '<stop offset="0" stop-color="#fff3c4"/><stop offset=".55" stop-color="#f6b445"/><stop offset="1" stop-color="#b8631a"/>' +
+    '</radialGradient></defs>' +
+    '<circle cx="15" cy="4" r="3" fill="none" stroke="#c99a3c" stroke-width="1.6"/>' +
+    '<path d="M6 16 L15 8 L24 16 Z" fill="#8a6418"/><path d="M9 15 L15 10 L16 15 Z" fill="#c79a3a"/>' +
+    '<rect x="5" y="15" width="20" height="3" rx="1" fill="#c79a3a"/>' +
+    '<rect x="7" y="18" width="16" height="30" fill="#2b1d0d"/>' +
+    '<g class="lant-fire"><rect x="7" y="18" width="16" height="30" fill="url(#lantGlass§)"/>' +
+    '<path d="M15 24 C19 29 19 34 15 40 C11 34 11 29 15 24 Z" fill="#fffbe6"/></g>' +
+    '<path d="M7 18 V48 M15 18 V48 M23 18 V48" stroke="#8a6418" stroke-width="1.3" fill="none"/>' +
+    '<rect x="5" y="48" width="20" height="4" rx="1" fill="#c79a3a"/>' +
+    '<path d="M8 52 L22 52 L19 58 L11 58 Z" fill="#8a6418"/><circle cx="15" cy="60" r="2" fill="#c79a3a"/></svg>';
+  var firstMote = lib.querySelector('.mote');
+  ['l', 'r'].forEach(function(side, i){
+    var lamp = document.createElement('div');
+    lamp.className = 'lantern lantern-' + side;
+    lamp.setAttribute('aria-hidden', 'true');
+    lamp.innerHTML = '<i class="plaque-chain lantern-chain"><i class="chain-anchor"></i></i>' + LANTERN.replace(/§/g, i);
+    lib.insertBefore(lamp, firstMote);
+  });
+  if (!reduce) {
+    lib.classList.add('arriving');                          // lumières baissées (fondu rapide)
+    window.setTimeout(function(){
+      lib.classList.remove('arriving');
+      lib.classList.add('lighting');                        // puis elles remontent doucement
+      window.setTimeout(function(){ lib.classList.remove('lighting'); }, 2800);
+    }, 450);
   }
 
   // Si la bibliothèque du fond est déjà dessinée, on rejoue une seule fois « bookcasedrawn » pour que tout
