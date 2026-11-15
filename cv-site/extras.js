@@ -1251,14 +1251,14 @@
     var z = shelfZone.getBoundingClientRect(), b = board.getBoundingClientRect(), hm = home.getBoundingClientRect();
     var rightEdge = stack && stack.offsetParent ? stack.getBoundingClientRect().right : books[books.length - 1].getBoundingClientRect().right;
     var x = { left: hm.left - 16, right: rightEdge + 18 };
-    var limit = { left: b.left + 10, right: b.right - 10 };
+    var limit = { left: b.left + 2, right: b.right - 2 };
     keepsakes.forEach(function(o){
       var k = o.k, start = k.side === 'left' ? x.left - k.w : x.right;
       var fits = k.side === 'left' ? start >= limit.left : start + k.w <= limit.right;
       o.el.hidden = !fits;
       if (!fits) return;
       o.el.style.left = Math.round(start - z.left) + 'px';
-      if (k.side === 'left') x.left = start - 12; else x.right = start + k.w + 12;
+      if (k.side === 'left') x.left = start - 8; else x.right = start + k.w + 12;
     });
   }
   if (keepsakes.length) {
