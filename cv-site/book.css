@@ -20,11 +20,20 @@
   position:relative;z-index:2;width:min(960px,96vw);height:min(72vh,620px);
   cursor:default;
 }
-.openbook.open{animation:bookArrive .6s cubic-bezier(.2,.72,.28,1) both;}
+.openbook.open{animation:bookArrive .55s cubic-bezier(.2,.72,.28,1) both,bookSlide .95s cubic-bezier(.5,.05,.3,1) .45s both;}
+/* Le livre sort de l'étagère (--ax / --ay : écart avec le livre cliqué, posés en JS), fermé, centré sur l'écran ;
+   puis, en s'ouvrant, il glisse pour que le dos (la reliure) vienne au milieu */
 @keyframes bookArrive{
-  0%{transform:translateY(42px) scale(.68);opacity:0;}
-  60%{transform:translateY(-8px) scale(1.03);opacity:1;}
-  100%{transform:translateY(0) scale(1);opacity:1;}
+  0%{transform:translate(var(--ax,0px),var(--ay,42px)) scale(.12) rotate(-8deg);opacity:0;}
+  30%{opacity:1;}
+  100%{transform:none;opacity:1;}
+}
+@keyframes bookSlide{from{translate:-25% 0;}to{translate:0 0;}}
+.openbook.closing{animation:bookLeave .7s cubic-bezier(.55,.06,.68,.19) both;}
+@keyframes bookLeave{
+  0%{translate:0 0;transform:none;opacity:1;}
+  65%{translate:-25% 0;transform:none;opacity:1;}
+  100%{translate:-25% 0;transform:scale(.9);opacity:0;}
 }
 .openbook .book-base{position:absolute;inset:0;}
 /* --cover / --cover-hi : couleur du cuir du livre cliqué (définies en JS) */
@@ -114,14 +123,69 @@
   background:radial-gradient(closest-side at 50% 50%, rgba(0,0,0,.5), rgba(0,0,0,.14) 70%, transparent);
 }
 
-/* --- Couvertures extérieures --- */
-.cover-l,.cover-r{
+/* --- Couverture : le livre fermé n'a que sa moitié droite ; la couverture pivote autour du dos (au milieu)
+       et vient se poser à gauche, où son envers (le papier) devient la page de gauche --- */
+.cover-r,.cover-in{
   position:absolute;top:0;bottom:0;width:50%;z-index:40;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
+}
+.cover-r{
+  right:0;border-radius:2px 6px 6px 2px;transform:perspective(2600px) rotateY(0);transform-origin:left center;
   background:
+    linear-gradient(90deg, rgba(0,0,0,.5), transparent 9%),
     linear-gradient(170deg, rgba(0,0,0,.05), rgba(0,0,0,.55)),
     linear-gradient(170deg,var(--cover-hi),var(--cover));
-  box-shadow:inset 0 0 44px rgba(0,0,0,.55);
+  box-shadow:inset 0 0 44px rgba(0,0,0,.55),2px 0 0 #e8dab6,4px 1px 0 #b99f72,0 24px 40px -16px rgba(0,0,0,.7);
+}
+.cover-r::before{
+  content:"d’Hugo";position:absolute;inset:12px;border-radius:3px;box-sizing:border-box;
+  border:1px solid rgba(224,182,86,.45);
+  display:flex;align-items:center;justify-content:center;padding-top:clamp(4rem,9vw,5.6rem);   /* sous le titre de la rubrique */
+  font-family:var(--serif);font-style:italic;font-size:clamp(1.1rem,2.2vw,1.45rem);letter-spacing:.06em;
+  color:#d9b55e;text-shadow:0 1px 0 rgba(0,0,0,.6);
+}
+.cover-r::after{
+  content:var(--cover-title,"");position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);width:84%;text-align:center;
+  font-family:var(--serif);font-size:clamp(1.5rem,3.2vw,2.1rem);font-variant-caps:all-small-caps;letter-spacing:.16em;
+  color:#e6c36a;text-shadow:0 1px 0 rgba(0,0,0,.65),0 0 14px rgba(224,182,86,.28);   /* titre gravé et doré */
+}
+.cover-in{ /* envers de la couverture : cuir sur le pourtour, papier au milieu, comme la page de gauche */
+  left:0;border-radius:7px 0 0 7px;z-index:41;
+  transform:perspective(2600px) rotateY(180deg);transform-origin:right center;
+  background:
+    linear-gradient(165deg, rgba(0,0,0,.1), rgba(0,0,0,.5)),
+    linear-gradient(165deg,var(--cover-hi),var(--cover));
+  transition:opacity .35s ease;
+}
+.cover-in::before{
+  content:"";position:absolute;top:14px;bottom:14px;left:18px;right:6px;border-radius:5px 2px 2px 5px;
+  background:linear-gradient(270deg, rgba(60,45,25,.3), transparent 14%),var(--grain),var(--paper);
+  box-shadow:inset 0 0 38px rgba(150,104,40,.2);
+}
+.openbook.open .cover-r{animation:openCoverR .95s cubic-bezier(.5,.05,.3,1) .45s both;}
+.openbook.open .cover-in{animation:openCoverIn .95s cubic-bezier(.5,.05,.3,1) .45s both;}
+.openbook.closing .cover-r{animation:closeCoverR .7s cubic-bezier(.55,.06,.68,.19) both;}
+.openbook.closing .cover-in{animation:closeCoverIn .7s cubic-bezier(.55,.06,.68,.19) both;}
+/* Pendant que le livre est fermé, la moitié gauche n'existe pas encore : elle apparaît quand la couverture passe à la verticale */
+.openbook.open .boards,.openbook.open .gutter,.openbook.open .spine-fold{animation:revealLeft .95s linear .45s backwards;}
+.openbook.open .leaf-l{animation:revealLeaf .95s linear .45s backwards;}
+.openbook.closing .boards,.openbook.closing .gutter,.openbook.closing .spine-fold{animation:hideLeft .7s linear both;}
+.openbook.closing .leaf-l{animation:hideLeaf .7s linear both;}
+@keyframes revealLeft{0%,62%{clip-path:inset(0 0 0 50%);}62.1%,100%{clip-path:inset(-100px);}}
+@keyframes hideLeft{0%,40%{clip-path:inset(-100px);}40.1%,100%{clip-path:inset(0 0 0 50%);}}
+/* (les pourcentages de inset() se rapportent à l'élément : la page de gauche se masque en entier) */
+@keyframes revealLeaf{0%,62%{clip-path:inset(0 0 0 100%);}62.1%,100%{clip-path:inset(-100px);}}
+@keyframes hideLeaf{0%,40%{clip-path:inset(-100px);}40.1%,100%{clip-path:inset(0 0 0 100%);}}
+/* Livre ouvert : la couverture retournée est masquée pour de bon, son envers se fond dans la page */
+.openbook.opened .cover-r{visibility:hidden;}
+.openbook.opened .cover-in{opacity:0;}
+@keyframes openCoverR{from{transform:perspective(2600px) rotateY(0);}to{transform:perspective(2600px) rotateY(-180deg);}}
+@keyframes openCoverIn{from{transform:perspective(2600px) rotateY(180deg);}to{transform:perspective(2600px) rotateY(0);}}
+@keyframes closeCoverR{from{transform:perspective(2600px) rotateY(-180deg);}to{transform:perspective(2600px) rotateY(0);}}
+@keyframes closeCoverIn{
+  0%{transform:perspective(2600px) rotateY(0);opacity:0;}
+  12%{opacity:1;}
+  100%{transform:perspective(2600px) rotateY(180deg);opacity:1;}
 }
 
 /* --- Signet en tissu, de la couleur du livre --- */
@@ -141,27 +205,6 @@
   70%{opacity:1;transform:scaleY(1.06);}
   100%{opacity:1;transform:scaleY(1);}
 }
-.cover-l{left:0;border-radius:6px 2px 2px 6px;transform:rotateY(0);transform-origin:right center;}
-.cover-r{right:0;border-radius:2px 6px 6px 2px;transform:rotateY(0);transform-origin:left center;}
-.cover-l::before,.cover-r::before{
-  content:"";position:absolute;inset:12px;border-radius:3px;
-  border:1px solid rgba(224,182,86,.45);
-}
-.cover-l::after,.cover-r::after{
-  content:"HL";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  font-family:var(--serif);font-size:1.3rem;color:rgba(224,182,86,.5);letter-spacing:.1em;
-}
-.openbook.open .cover-l{animation:openCoverL .95s cubic-bezier(.5,.05,.3,1) forwards;}
-.openbook.open .cover-r{animation:openCoverR .95s cubic-bezier(.5,.05,.3,1) forwards;}
-.openbook.closing .cover-l{animation:closeCoverL .7s cubic-bezier(.55,.06,.68,.19) forwards;}
-.openbook.closing .cover-r{animation:closeCoverR .7s cubic-bezier(.55,.06,.68,.19) forwards;}
-/* Livre ouvert : les couvertures retournées sont masquées pour de bon */
-.openbook.opened .cover-l,.openbook.opened .cover-r{visibility:hidden;}
-@keyframes openCoverL{0%{transform:rotateY(0);}60%{transform:rotateY(-120deg);}100%{transform:rotateY(-172deg);}}
-@keyframes openCoverR{0%{transform:rotateY(0);}60%{transform:rotateY(120deg);}100%{transform:rotateY(172deg);}}
-@keyframes closeCoverL{0%{transform:rotateY(-172deg);}100%{transform:rotateY(0);}}
-@keyframes closeCoverR{0%{transform:rotateY(172deg);}100%{transform:rotateY(0);}}
-
 .openbook .leaf-l{padding:24px;overflow:auto;touch-action:pan-y;}
 .ll-inner{
   height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -221,11 +264,17 @@
 @media (max-width:640px) and (orientation:portrait){
   .viewer{padding:24px 1vw 12px;}
   .openbook{width:98vw;height:100%;max-height:760px;}
-  .openbook .leaf-l,.gutter,.spine-fold{display:none;}
+  .openbook .leaf-l,.gutter,.spine-fold,.cover-in{display:none;}
+  .cover-r{width:100%;}
+  .openbook.open{animation:bookArrive .55s cubic-bezier(.2,.72,.28,1) both;}
+  .openbook.closing{animation:bookFade .5s ease both;}
+  .openbook.open .boards{animation:none;}
   .leaf-r{left:11px;right:11px;width:auto;}
   .leaf-scroll{padding:22px 18px 10px;}
   .viewer-close{right:2px;}
 }
+
+@keyframes bookFade{to{opacity:0;transform:scale(.9);}}
 
 /* Paysage : les deux pages, en version compacte */
 @media (orientation:landscape) and (max-height:500px){

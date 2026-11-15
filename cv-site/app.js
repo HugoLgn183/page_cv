@@ -114,6 +114,8 @@
     var spine = window.getComputedStyle(btn);
     openbook.style.setProperty('--cover', spine.getPropertyValue('--leath').trim());
     openbook.style.setProperty('--cover-hi', spine.getPropertyValue('--leath-hi').trim());
+    var spineTitle = btn.querySelector('.btitle');                      // titre gravé sur la couverture (celui de la tranche)
+    openbook.style.setProperty('--cover-title', '"' + (spineTitle ? spineTitle.textContent : cfg.short) + '"');
 
     books.forEach(function(b){
       b.classList.toggle('lit', b === btn);
@@ -132,12 +134,18 @@
     viewer.hidden = false;
     setBackgroundInert(true);
     openbook.classList.remove('open', 'closing');
+    // Le livre part de sa place sur l'étagère : écart entre le livre cliqué et le centre du livre ouvert
+    var from = lastBook && lastBook.getBoundingClientRect(), to = openbook.getBoundingClientRect();
+    if (from && to.width) {
+      openbook.style.setProperty('--ax', Math.round(from.left + from.width / 2 - (to.left + to.width / 2)) + 'px');
+      openbook.style.setProperty('--ay', Math.round(from.top + from.height / 2 - (to.top + to.height / 2)) + 'px');
+    }
     void viewer.offsetWidth;
     viewer.classList.add('active');
     openbook.classList.add('open');
     // Une fois les couvertures retournées, on les masque pour de bon
     window.clearTimeout(coverTimer);
-    coverTimer = window.setTimeout(function(){ openbook.classList.add('opened'); }, reduce ? 0 : 1000);
+    coverTimer = window.setTimeout(function(){ openbook.classList.add('opened'); }, reduce ? 0 : 1450);
     leafR.focus({preventScroll:true});
   }
 
@@ -208,7 +216,7 @@
       viewer.hidden = true;
       openbook.classList.remove('closing');
       if (lastBook) lastBook.focus();
-    }, reduce ? 0 : 560);
+    }, reduce ? 0 : 700);
   }
 
   books.forEach(function(btn){
