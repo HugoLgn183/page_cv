@@ -10,6 +10,15 @@
 
   function announce(text){ statusEl.textContent = text; }
 
+  // Tout ce qui se place d'après le dessin de la bibliothèque du fond s'abonne à « bookcasedrawn » (redessin à
+  // chaque changement de taille). Les abonnés sont aussi mémorisés ici : au chargement, ils sont lancés l'un
+  // après l'autre dans des tâches séparées, au lieu d'un seul bloc de 200 ms qui retarderait le navigateur.
+  var drawnHandlers = { capture: [], bubble: [] };
+  function onDrawn(fn, capture){
+    (capture ? drawnHandlers.capture : drawnHandlers.bubble).push(fn);
+    lib.addEventListener('bookcasedrawn', fn, !!capture);
+  }
+
   // ===================== 1. Explorer à la lueur de la bougie =====================
   // Un interrupteur éteint la pièce ; seul le halo de la bougie éclaire encore,
   // et révèle des titres écrits à l'encre secrète sur les étagères du fond.
@@ -111,7 +120,7 @@
       return { l: r.left - room.left - 4, t: r.top - room.top - 4, r: r.right - room.left + 4, b: r.bottom - room.top + 4 };
     }
     placeWords();
-    lib.addEventListener('bookcasedrawn', placeWords);
+    onDrawn(placeWords);
 
     // Le halo suit la flamme à chaque image, qu'on déplace la bougie ou qu'elle revienne à sa place ;
     // chaque mot secret ne s'illumine que s'il est assez près de la flamme
@@ -355,7 +364,7 @@
   }, 4000);
 
   // Toujours perché au bon endroit, avant que les mots secrets ne soient replacés (phase de capture)
-  lib.addEventListener('bookcasedrawn', perch, true);
+  onDrawn(perch, true);
   perch();                                                  // les mots secrets l'éviteront (voir la fin du fichier)
 
   // ===================== 3. Le tampon « Bon pour un entretien » =====================
@@ -875,6 +884,7 @@
   // La nuit, la lueur de la bougie perce l'ombre et la suit quand on la déplace
   var glowLoop = 0, candleBox = document.querySelector('.candle');
   function placeGlow(){
+    if (lib.getAttribute('data-heure') !== 'nuit') return;      // la lueur ne sert que la nuit (nightGlow la replace au passage à la nuit) : pas de mesure inutile au chargement
     var f = flame && flame.getBoundingClientRect(), room = lib.getBoundingClientRect();
     if (!f) return;
     ambiance.style.setProperty('--gx', Math.round(f.left - room.left) + 'px');
@@ -891,7 +901,7 @@
   }
   if (candleBox) new MutationObserver(nightGlow).observe(candleBox, { attributes: true, attributeFilter: ['class'] });
   window.addEventListener('resize', placeGlow);
-  lib.addEventListener('bookcasedrawn', placeGlow);
+  onDrawn(placeGlow);
 
   setPeriod();
   window.setInterval(setPeriod, 60000);                    // le soir tombe aussi pendant la visite
@@ -1230,7 +1240,7 @@
     cx.restore();
   }
   window.addEventListener('resize', layoutWindow);
-  lib.addEventListener('bookcasedrawn', layoutWindow, true);  // avant les mots secrets, qui évitent le mur
+  onDrawn(layoutWindow, true);  // avant les mots secrets, qui évitent le mur
 
   // ===================== 12. Les souvenirs du parcours =====================
   // Trois objets posés sur l'étagère racontent le parcours avant même d'ouvrir un livre :
@@ -1370,7 +1380,7 @@
   if (keepsakes.length) {
     if (!lib.bookSpines) placeKeepsakes();                   // sinon : au déclenchement unique de la fin du fichier
     window.addEventListener('resize', placeKeepsakes);
-    lib.addEventListener('bookcasedrawn', placeKeepsakes, true);  // avant les mots secrets, qui les évitent
+    onDrawn(placeKeepsakes, true);  // avant les mots secrets, qui les évitent
   }
 
   // ===================== 13. Profondeur et reflets =====================
@@ -1544,7 +1554,7 @@
   function seeded(seed){ return function(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }; }
   if (!lib.bookSpines) drawFloor();                        // sinon : au déclenchement unique de la fin du fichier
   window.addEventListener('resize', drawFloor);
-  lib.addEventListener('bookcasedrawn', drawFloor, true);   // avant les mots secrets, qui évitent le sol
+  onDrawn(drawFloor, true);   // avant les mots secrets, qui évitent le sol
 
   // ===================== 15. La plaque suspendue =====================
   // La plaque ne flotte plus devant la bibliothèque : ses rivets la fixent sur un panneau de bois sculpté,
@@ -1576,7 +1586,7 @@
     };
     if (!lib.bookSpines) hangPlaque();                     // sinon : au déclenchement unique de la fin du fichier
     window.addEventListener('resize', hangPlaque);
-    lib.addEventListener('bookcasedrawn', hangPlaque, true);   // avant les mots secrets, qui évitent le panneau
+    onDrawn(hangPlaque, true);   // avant les mots secrets, qui évitent le panneau
   }
 
   // ===================== 16. Arrivée en douceur =====================
@@ -1774,10 +1784,17 @@
   }
 
   // Si la bibliothèque du fond est déjà dessinée, on rejoue une seule fois « bookcasedrawn » pour que tout
-  // se recale ensemble (fenêtre, objets, sol, plaque, puis mots secrets). Une seule fois, et dans une tâche
-  // à part quand le navigateur est libre : relancer l'événement à chaque section recalculait tout 5 fois
-  // de suite au chargement (environ 250 ms de blocage mesurés sur ordinateur).
+  // se recale ensemble (fenêtre, objets, sol, plaque, puis mots secrets). Une seule fois, quand le navigateur
+  // est libre : relancer l'événement à chaque section recalculait tout 5 fois de suite au chargement (environ
+  // 250 ms de blocage). Les abonnés sont lancés dans le même ordre que par l'événement (d'abord ceux de la
+  // phase de capture, puis les autres), mais chacun dans sa propre tâche : plus aucun bloc de 200 ms.
   if (lib.bookSpines) (window.requestIdleCallback || function(cb){ return window.setTimeout(cb, 50); })(function(){
-    lib.dispatchEvent(new CustomEvent('bookcasedrawn'));
+    var queue = drawnHandlers.capture.concat(drawnHandlers.bubble);
+    (function next(){
+      var fn = queue.shift();
+      if (!fn) return;
+      fn.call(lib, new CustomEvent('bookcasedrawn'));
+      window.setTimeout(next, 0);
+    })();
   });
 })();
