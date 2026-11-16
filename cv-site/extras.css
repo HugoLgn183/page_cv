@@ -617,3 +617,20 @@
   .owl.looking .lens-pupil{animation:lensScan 2.2s ease-in-out infinite;}
 }
 @keyframes lensScan{0%,100%{translate:-2.2px .4px;}45%{translate:2.4px -.4px;}75%{translate:.4px .8px;}}
+
+/* ================= 9. FINITIONS : MATIÈRE ET LUMIÈRE ================= */
+/* Tout est posé en dégradés, ombres et grain fixes : aucun filtre ni mode de fusion sur de grandes surfaces
+   (ils coûtent cher à dessiner et faisaient chuter la performance mesurée par Lighthouse). */
+/* Grain de pellicule très léger sur toute la pièce (une seule tuile, dessinée une fois) */
+.lib::before{
+  content:"";position:absolute;inset:0;z-index:7;pointer-events:none;opacity:.07;
+  background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>");
+}
+.btitle{text-shadow:0 0 6px rgba(255,215,130,.4),0 1px 0 rgba(0,0,0,.7);}
+.lib-foot{text-shadow:0 0 10px rgba(255,200,120,.3);}
+.lib-window .win-glass{box-shadow:0 0 26px rgba(160,200,255,.28);}
+.plaque-board{box-shadow:0 34px 60px rgba(0,0,0,.85),0 0 90px rgba(255,190,100,.08),inset 0 2px 0 rgba(255,210,150,.22),inset 0 0 30px rgba(0,0,0,.5);}
+.pla-title{text-shadow:0 1px 0 rgba(255,240,190,.65),0 -1px 1px rgba(60,38,4,.5),0 2px 3px rgba(60,38,4,.3);}
+.sun-shaft{stroke-opacity:.4;}
+.sun-pane{fill-opacity:.75;}
+.sunbeam i{width:4px;height:4px;box-shadow:0 0 7px rgba(255,240,200,.9);}

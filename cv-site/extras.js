@@ -1752,7 +1752,7 @@
   function drawIvy(){
     var W = leftPillar ? leftPillar.offsetWidth : 0, H = lib.clientHeight;
     if (!W || !H) { ivySvg.textContent = ''; return; }
-    var bottom = H - 20, top = Math.round(H * .46 + 74), h = bottom - top;   // du haut du socle jusque sous l'interrupteur
+    var bottom = H - 28, top = Math.round(H * .46 + 74), h = bottom - top;   // du haut du socle jusque sous l'interrupteur
     if (h < 120) { ivySvg.textContent = ''; return; }
     var seed = 11, rand = function(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
     var stemX = function(y){ return W - 15 + 6 * Math.sin(y / 23) + 2.5 * Math.sin(y / 8.5); };

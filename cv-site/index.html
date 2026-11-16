@@ -76,7 +76,7 @@ a{color:inherit;}
 }
 .wall::after{
   content:"";position:absolute;inset:0;
-  background:radial-gradient(90% 70% at 50% 38%, transparent 55%, rgba(8,4,1,.55) 100%);
+  background:radial-gradient(115% 92% at 50% 44%, transparent 45%, rgba(6,2,0,.66) 100%),radial-gradient(55% 45% at 50% 100%, rgba(255,170,80,.12), transparent 70%);
 }
 /* Étagères décoratives du fond : livres dessinés en dégradés, sans image */
 .backshelf{
@@ -125,16 +125,20 @@ a{color:inherit;}
 }
 .pillar{
   position:absolute;top:0;bottom:0;width:9vw;min-width:70px;z-index:0;pointer-events:none;
-  background:linear-gradient(90deg,#140b05 0%,#33200f 28%,#4b3117 50%,#33200f 72%,#140b05 100%);
+  background:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.18) 0 2px,transparent 2px 7px,rgba(255,220,160,.05) 7px 8px,transparent 8px 15px),
+    linear-gradient(90deg,#0f0803 0%,#3a2312 18%,#6a4623 42%,#8a5d30 50%,#6a4623 58%,#3a2312 82%,#0f0803 100%);
+  box-shadow:inset 0 0 40px rgba(0,0,0,.6),0 0 40px rgba(0,0,0,.7);
 }
 .pillar::before{
   content:"";position:absolute;left:0;right:0;top:0;height:26px;
-  background:linear-gradient(90deg,#1d1209,#4a2f16 50%,#1d1209);
-  border-bottom:1px solid rgba(240,208,120,.25);
+  height:34px;background:linear-gradient(180deg,#2a190b,#5a3a1c 55%,#2a190b);
+  border-bottom:2px solid rgba(240,208,120,.5);box-shadow:0 6px 12px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,220,160,.25);
 }
 .pillar::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:20px;
-  background:linear-gradient(90deg,#1d1209,#4a2f16 50%,#1d1209);
+  height:30px;background:linear-gradient(180deg,#2a190b,#5a3a1c 45%,#1f1208);
+  border-top:2px solid rgba(240,208,120,.4);box-shadow:inset 0 2px 0 rgba(255,220,160,.2);
 }
 .pillar-l{left:0;}
 .pillar-r{right:0;}
@@ -167,9 +171,11 @@ a{color:inherit;}
     linear-gradient(180deg,#f6dc8e 0%, #d9b25a 30%, #c1932f 60%, #a67b22 100%);
   border:1px solid #5d4412;
   box-shadow:
-    inset 0 2px 4px rgba(255,255,255,.55),
+    inset 0 2px 0 rgba(255,246,200,.8),
     inset 0 -10px 22px rgba(70,45,5,.5),
-    0 22px 44px -14px rgba(0,0,0,.75);
+    inset 0 0 40px rgba(255,236,170,.2),
+    0 0 0 1px rgba(60,38,6,.8),
+    0 22px 44px -14px rgba(0,0,0,.8);
   color:#2c1e08;text-shadow:0 1px 0 rgba(255,240,200,.55);
 }
 .plaque::before{
@@ -228,9 +234,10 @@ a{color:inherit;}
     linear-gradient(180deg, rgba(240,208,120,.22), transparent 16%, transparent 84%, rgba(0,0,0,.42)),
     linear-gradient(90deg,#100903,var(--leath) 16%,var(--leath-hi) 50%,var(--leath) 84%,#100903);
   box-shadow:
+    0 0 0 1px rgba(0,0,0,.5),
     inset -5px 0 8px rgba(0,0,0,.5),
-    inset 3px 0 6px rgba(255,230,170,.12),
-    0 14px 22px -8px rgba(0,0,0,.65);
+    inset 3px 0 6px rgba(255,230,170,.2),
+    0 14px 22px -8px rgba(0,0,0,.75);
   color:var(--gold-2);
   transition:transform .25s ease,box-shadow .25s ease,filter .25s ease;
 }
@@ -306,10 +313,10 @@ a{color:inherit;}
 /* --- Le plateau de bois --- */
 .shelf-board{
   position:relative;height:18px;border-radius:3px;
-  background:linear-gradient(180deg,#57391c,#2c1908 88%);
+  background:linear-gradient(180deg,#8a5d30,#57391c 38%,#2c1908 88%);
   box-shadow:
-    0 16px 26px -4px rgba(0,0,0,.7),
-    inset 0 2px 3px rgba(255,210,140,.25),
+    0 16px 26px -4px rgba(0,0,0,.8),
+    inset 0 2px 3px rgba(255,220,160,.4),
     inset 0 -3px 6px rgba(0,0,0,.4);
 }
 .shelf-board::after{
