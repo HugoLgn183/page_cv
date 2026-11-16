@@ -3,9 +3,12 @@
 
 /* Export PDF : un CV classique et sobre, sur une seule page A4.
    Au moment d'imprimer, app.js range les rubriques en deux colonnes (.print-side / .print-main). */
-@page{size:A4;margin:9.5mm 13mm;}
+/* Marge de page nulle : le navigateur n'a plus de place pour son en-tête (date, titre de la page) ni son
+   pied (adresse), qui ne s'impriment donc plus ; les marges sont reprises par le remplissage du corps. */
+@page{size:A4;margin:0;}
 @media print{
   html,body{background:#fff!important;}
+  body{padding:9.5mm 13mm!important;}
   body{color:#1c1c1c;font-size:9pt;line-height:1.32;}
   .wall,.bookcase,.backshelf,.arch,.pillar,.sconce,.mote,.viewer,.library,.lib-foot,.skip-link,
   .candle,.candle-home,.pla-sub p:last-child,.night,.secret-ink,.light-switch,.owl,.owl-bubble,.terminal,.dust,.shelf-ribbon,.ambiance,.sound-switch,.clock,.lib-window,.keepsake,.plaque-sheen,.floor,.pedestal,.plaque-board,.plaque-chain,.lantern,.cobweb,.ivy{display:none!important;}
@@ -105,11 +108,4 @@
   .kv li{display:flex;justify-content:space-between;gap:3mm;font-size:8.8pt;padding:.5mm 0;border-bottom:.4pt dotted #cdb57d;}
   .kv .v{color:#5d5442;}
   .plaque #rub-contact{break-inside:avoid;}
-
-  /* Pied : adresse du CV en ligne */
-  .print-cols::after{
-    content:"CV en ligne · hugolgn183.github.io/page_cv/cv-site";grid-column:1 / -1;
-    margin-top:2mm;padding-top:1.2mm;border-top:.5pt solid #e6d8b0;text-align:center;
-    font-size:7pt;letter-spacing:.07em;color:#8a7a52;
-  }
 }
