@@ -1543,10 +1543,10 @@
     // verre éteint (affiché tout le temps), cage évasée vers le haut
     '<path d="M8 24.4 H32 L29 56 H11 Z" fill="url(#lantDark§)"/>' +
     // verre allumé : bougie, flamme et lueur, par-dessus (fondu en opacité)
-    '<g class="lant-fire"><path d="M8 24.4 H32 L29 56 H11 Z" fill="url(#lantGlass§)"/>' +
+    '<g class="lant-fire"><path class="lant-glass" d="M8 24.4 H32 L29 56 H11 Z" fill="url(#lantGlass§)"/>' +
       '<rect x="17.6" y="46" width="4.8" height="10" rx="1" fill="#fff4d6"/>' +
-      '<path d="M20 31 C24.2 36.5 24 42 20 46.5 C16 42 15.8 36.5 20 31 Z" fill="#ffd36a"/>' +
-      '<path d="M20 35.5 C22 38.5 21.8 42 20 44.8 C18.2 42 18 38.5 20 35.5 Z" fill="#fffdf0"/></g>' +
+      '<g class="lant-flame"><path d="M20 31 C24.2 36.5 24 42 20 46.5 C16 42 15.8 36.5 20 31 Z" fill="#ffd36a"/>' +
+      '<path d="M20 35.5 C22 38.5 21.8 42 20 44.8 C18.2 42 18 38.5 20 35.5 Z" fill="#fffdf0"/></g></g>' +
     // reflet du verre et armature : montants, anneau de milieu
     '<path d="M11.5 27 L10.2 50" stroke="#fff" stroke-opacity=".28" stroke-width="1.6" stroke-linecap="round" fill="none"/>' +
     '<path d="M8 24.4 L11 56 M32 24.4 L29 56 M20 24.4 V56" stroke="url(#lantBrass§)" stroke-width="1.7" fill="none"/>' +
