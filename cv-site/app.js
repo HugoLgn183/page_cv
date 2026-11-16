@@ -6,7 +6,7 @@
   // Styles du livre ouvert : inutiles au premier affichage, chargés après coup
   var bookCss = document.createElement('link');
   bookCss.rel = 'stylesheet';
-  bookCss.href = 'book.css?v=20261116';
+  bookCss.href = 'book.css?v=20261116b';
   document.head.appendChild(bookCss);
 
   var books = Array.prototype.slice.call(document.querySelectorAll('.book'));
@@ -643,10 +643,10 @@
   function loadExtras(){
     var css = document.createElement('link');
     css.rel = 'stylesheet';
-    css.href = 'extras.css?v=20261116';
+    css.href = 'extras.css?v=20261116b';
     css.addEventListener('load', function(){
       var script = document.createElement('script');
-      script.src = 'extras.js?v=20261116';
+      script.src = 'extras.js?v=20261116b';
       document.body.appendChild(script);
     });
     document.head.appendChild(css);

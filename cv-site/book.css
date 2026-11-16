@@ -128,6 +128,7 @@
 .cover-r,.cover-in{
   position:absolute;top:0;bottom:0;width:50%;z-index:40;
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  pointer-events:none;   /* décor : ne doit jamais intercepter les clics (sommaire, flèches) */
 }
 .cover-r{
   right:0;border-radius:2px 6px 6px 2px;transform:perspective(2600px) rotateY(0);transform-origin:left center;
