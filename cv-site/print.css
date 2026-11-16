@@ -3,7 +3,7 @@
 
 /* Export PDF : un CV classique et sobre, sur une seule page A4.
    Au moment d'imprimer, app.js range les rubriques en deux colonnes (.print-side / .print-main). */
-@page{size:A4;margin:11mm 13mm;}
+@page{size:A4;margin:9.5mm 13mm;}
 @media print{
   html,body{background:#fff!important;}
   body{color:#1c1c1c;font-size:9pt;line-height:1.32;}
@@ -66,4 +66,50 @@
   .print-stamp .stamp-mark span{font-size:7pt;}
   .print-stamp .stamp-mark strong{font-size:12pt;}
   .print-stamp .stamp-mark small{font-size:5.5pt;}
+
+  /* ---- Mise en forme soignée (par-dessus les règles ci-dessus) ---- */
+  /* En-tête : nom et présentation à gauche, coordonnées alignées à droite */
+  .plaque{display:grid;grid-template-columns:1fr auto;column-gap:9mm;align-items:end;}
+  .plaque > :not(#rub-contact){grid-column:1;}
+  .plaque #rub-contact{grid-column:2;grid-row:1 / span 3;align-self:end;margin:0;}
+  .plaque .contact-list{display:flex;flex-direction:column;align-items:flex-end;gap:.6mm 0;}
+  .plaque .contact-list li:not(.masked) ~ li:not(.masked)::before{display:none;}
+  .plaque .contact-list li{font-size:9.6pt;}
+  .pla-title{font-size:23pt;letter-spacing:.09em;color:#2a1c08;}
+  .pla-kicker{color:#8a6418;}
+  .plaque-wrap{border-bottom:1.6pt solid #b8892b;box-shadow:0 1.1mm 0 -.5mm #fff,0 1.4mm 0 -.4mm #e6cf94;margin-bottom:4mm;padding-bottom:2.5mm;}
+
+  /* Deux colonnes séparées par un filet doré */
+  .print-cols{gap:0;}
+  .print-side{padding-right:6mm;}
+  .print-main{padding-left:6mm;border-left:.6pt solid #dcc588;}
+
+  /* Titres de rubrique : petit losange doré, filet fin */
+  .page-head h2{display:flex;align-items:center;font-size:10.6pt;letter-spacing:.09em;border-bottom:.7pt solid #d9b25a;padding-bottom:.9mm;}
+  .page-head h2::before{content:"";flex:none;width:1.5mm;height:1.5mm;margin-right:2.2mm;border:.7mm solid #c99a3c;transform:rotate(45deg);}
+  .print-side .page-head h2{font-size:9.6pt;letter-spacing:.05em;line-height:1.2;}
+  .rub+.rub{margin-top:3.6mm;}
+  .page-head{margin-bottom:1.6mm;}
+
+  /* Expériences et formations : intitulé à gauche, dates à droite */
+  .block-head{display:flex;flex-direction:row-reverse;justify-content:space-between;align-items:baseline;gap:0 4mm;}
+  .block-date{flex:none;font-size:8.2pt;letter-spacing:.05em;color:#8a6418;white-space:nowrap;}
+  .block-title{font-size:9.7pt;}
+  .block-sub{font-size:8.6pt;color:#5d5442;}
+  .sub-block+.sub-block{margin-top:2mm;}
+  .block-list{font-size:8.7pt;margin-top:.3mm;}
+  .block-list li::marker{color:#c99a3c;}
+  .lead{font-size:9pt;}
+  .goal{font-size:8.8pt;}
+  .chip{font-size:8.7pt;}
+  .kv li{display:flex;justify-content:space-between;gap:3mm;font-size:8.8pt;padding:.5mm 0;border-bottom:.4pt dotted #cdb57d;}
+  .kv .v{color:#5d5442;}
+  .plaque #rub-contact{break-inside:avoid;}
+
+  /* Pied : adresse du CV en ligne */
+  .print-cols::after{
+    content:"CV en ligne · hugolgn183.github.io/page_cv/cv-site";grid-column:1 / -1;
+    margin-top:2mm;padding-top:1.2mm;border-top:.5pt solid #e6d8b0;text-align:center;
+    font-size:7pt;letter-spacing:.07em;color:#8a7a52;
+  }
 }

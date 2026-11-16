@@ -69,7 +69,7 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko u
   - sons coupés par défaut, bouton « Sons » utilisable au clavier et annoncé (`aria-pressed`).
 - **Fonctionne sans JavaScript** : tout le CV est écrit dans le HTML et s'affiche sous forme de page classique. C'est aussi ce que lisent les moteurs de recherche.
 - **SEO** : titre et meta description adaptés, URL canonique, balises Open Graph pour l'aperçu lors d'un partage.
-- **Export PDF** : le bouton « Exporter en PDF » produit un CV classique sur une seule page A4 : en-tête avec le nom, la présentation et le contact, puis deux colonnes (profil, compétences, langues et permis à gauche ; expériences et formations à droite), sans le décor du site, avec le lien GitHub écrit en clair et le tampon « Bon pour un entretien » en bas de la colonne de gauche.
+- **Export PDF** : le bouton « Exporter en PDF » produit un CV classique sur une seule page A4 : en-tête avec le nom, la présentation et le contact, puis deux colonnes (profil, compétences, langues et permis à gauche ; expériences et formations à droite), sans le décor du site, avec le lien GitHub écrit en clair, des titres à losange doré, les dates alignées à droite des intitulés, le tampon « Bon pour un entretien » en bas de la colonne de gauche et l'adresse du CV en ligne en pied de page. Seuls des filets et du texte sont imprimés (aucun fond de couleur, qui disparaîtrait selon les réglages d'impression).
 
 ## Validation
 
