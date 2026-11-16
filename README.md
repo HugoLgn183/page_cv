@@ -77,10 +77,10 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko u
 | Outil | Résultat |
 |---|---|
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement |
-| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 70 / 100 / 100 / 100 |
-| Lighthouse ordinateur | 72 / 100 / 100 / 100 |
+| Lighthouse mobile (Performance / Accessibilité / Bonnes pratiques / SEO) | 74 / 100 / 100 / 100 |
+| Lighthouse ordinateur | 98 / 100 / 100 / 100 |
 
-Scores Lighthouse : médiane de 3 mesures sur le site en ligne, avec tout le décor et les détails d'ambiance, après les optimisations (16/11/2026 ; mobile 64 / 70 / 86, ordinateur 99 / 71 / 72). La performance a baissé (98 et 90 le 22/10) : le temps de blocage dépasse la seconde en laboratoire. Deux causes sont établies : un flou appliqué à tout le rai de lumière (retiré) et le poids des animations et du dessin du décor, chargés pourtant après l'affichage (premier affichage inchangé : 1,8 s sur mobile, 0,4 s sur ordinateur). Les mesures de laboratoire sont très instables sur cette machine : l'ancienne version (22/10), mesurée le même jour, va de 67 à 87 sur ordinateur. Le détail et la discussion sont dans AUTOEVALUATION.md.
+Scores Lighthouse : médiane de 3 mesures sur le site en ligne, version complète avec les finitions (16/11/2026 ; mobile 74 / 64 / 75, ordinateur 89 / 99 / 98). Le premier affichage est de 1,8 s sur mobile et 0,4 s sur ordinateur. Sur mobile, le temps de blocage (environ 1 s) vient du travail fait après l'affichage (dessin du décor, animations) ; les mesures de laboratoire sont instables sur cette machine (voir AUTOEVALUATION.md).
 
 Le détail des mesures, le journal des corrections de la V1 à la version finale et l'auto-évaluation sont dans [AUTOEVALUATION.md](AUTOEVALUATION.md).
 

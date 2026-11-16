@@ -2,7 +2,7 @@
 
 Projet : CV web statique publié sur GitHub Pages — <https://hugolgn183.github.io/page_cv/cv-site/>
 Auteur : Hugo Largeron — BTS SIO SISR, CFAI de Saint-Étienne
-Mesures réalisées le 16/11/2026 sur la version en ligne, avec tout le décor (lanternes, toile d'araignée, lierre, loupe, nouvel export PDF), après le retrait du flou sur le rai de lumière et l'étalement des placements du décor.
+Mesures réalisées le 16/11/2026 sur la version en ligne, avec tout le décor et les finitions de matière et de lumière (lanternes, toile d'araignée, lierre, loupe, colonnes en bois, nouvel export PDF).
 
 ## 1. Les versions du site
 
@@ -18,7 +18,7 @@ Mesures réalisées le 16/11/2026 sur la version en ligne, avec tout le décor (
 | Outil | Mobile | Ordinateur |
 |---|---|---|
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement | — |
-| Lighthouse — Performance | 70 | 72 |
+| Lighthouse — Performance | 74 | 98 |
 | Lighthouse — Accessibilité | 100 | 100 |
 | Lighthouse — Bonnes pratiques | 100 | 100 |
 | Lighthouse — SEO | 100 | 100 |
@@ -26,7 +26,7 @@ Mesures réalisées le 16/11/2026 sur la version en ligne, avec tout le décor (
 
 Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en local (Lighthouse 12.6.1) car l'API PageSpeed était saturée. Chaque score est la médiane de 3 mesures.
 
-**Indicateurs mobile (médiane) :** affichage du premier contenu en 1,8 s, du plus grand élément en 2,4 s, temps de blocage 1 530 ms (3 mesures : 64, 70, 86), aucun décalage de mise en page (CLS = 0). Sur ordinateur : 0,43 s, 0,55 s, CLS = 0, temps de blocage 814 ms (3 mesures : 99, 71, 72). Le premier affichage n'a pas bougé depuis le 22/10 (1,7 s et 0,4 s) : la baisse vient du travail fait **après** l'affichage (dessin du décor, animations, lanternes, toile). Mesures du 22/10 pour comparaison : 98 sur mobile (blocage 62 ms), 90 sur ordinateur (249 ms).
+**Indicateurs mobile (médiane) :** affichage du premier contenu en 1,8 s, du plus grand élément en 2,4 s, temps de blocage 1 012 ms (3 mesures : 74, 64, 75), aucun décalage de mise en page (CLS = 0). Sur ordinateur : 0,44 s, 0,58 s, CLS = 0, temps de blocage 95 ms (3 mesures : 89, 99, 98). Le premier affichage n'a pas bougé depuis le 22/10 (1,7 s et 0,4 s) : la baisse vient du travail fait **après** l'affichage (dessin du décor, animations, lanternes, toile). Mesures du 22/10 pour comparaison : 98 sur mobile (blocage 62 ms), 90 sur ordinateur (249 ms).
 
 **Fiabilité de la mesure.** Sur cette machine, Lighthouse est très instable : la version du 22/10, mesurée aujourd'hui dans les mêmes conditions que la version actuelle (3 mesures alternées, ordinateur), donne 82, 67 et 87 contre 84, 68 et 74 pour la version actuelle. L'écart entre les deux versions est donc du même ordre que le bruit de mesure, et la baisse de 98 à 70 ne doit pas être lue comme une régression de cette ampleur. Elle reste réelle et mesurée (6 mesures en ligne, toutes entre 69 et 71 sauf une à 87), et c'est ce chiffre qu'un correcteur obtiendrait avec le même outil.
 
@@ -119,6 +119,7 @@ Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en l
 | 16/11 | Mesure en ligne après publication des optimisations | — | Aucune modification | Mobile 64 / 70 / 86 (médiane 70), ordinateur 99 / 71 / 72 (médiane 72) ; accessibilité, bonnes pratiques et SEO à 100 partout ; premier affichage 1,8 s et 0,43 s, inchangé. Une mesure à 99 (blocage 0 ms) confirme que la version actuelle peut atteindre le haut score : le résultat varie d'une mesure à l'autre. Note C6 laissée à 3 |
 | 16/11 | Le `footer` était dans le `main` (critère C2) | `<main class="lib">` enveloppait tout, décor, pied de page et livre ouvert | Le conteneur du décor devient une `div` ; un `<main>` n'entoure plus que l'étagère et le texte du CV (`display:contents` : la mise en page ne bouge pas) ; le `header` du nom et le `footer` sont hors du `main` ; deux lignes d'`extras.js` (pause de la bibliothèque pendant le terminal) visent maintenant le conteneur du décor | Position de tous les éléments du décor identique au pixel près (fenêtre, souvenirs, plaque, sol, hibou, appliques, 50 mots secrets…) ; W3C : 0 erreur, 0 avertissement ; Lighthouse local : accessibilité, bonnes pratiques et SEO à 100 ; export PDF sur 1 page (2 sans JavaScript, comme avant). Plan des titres relevé : `h1` Hugo Largeron, puis `h2` (Rubriques du CV, Profil, Expériences professionnelles, Compétences…, Formations & diplômes, Langues, Permis & CACES, Contact) et `h3` (expériences et formations), sans saut de niveau |
 | 16/11 | Pièce correcte mais un peu plate : bois des colonnes uni, ombres douces, lumière peu marquée (demande d'Hugo : améliorer l'esthétique et le réalisme, en vérifiant Lighthouse) | Dégradés simples, vignette légère | Colonnes en bois (fil du bois, reflet central, chapiteaux et bases en relief) ; vignette plus marquée et lueur chaude en bas du mur ; plaque (biseau, reflet, ombre) ; livres (liseré sombre, tranche éclairée) ; planche de l'étagère plus claire ; halo autour de la fenêtre ; grain de pellicule à 7 % ; lueur sur les titres des tranches. Une maquette d'essai utilisait un filtre global, une vignette en `multiply` et un grain en `overlay` : abandonnés au profit de dégradés, ombres et grain fixes, sans filtre ni mode de fusion sur de grandes surfaces (voir le journal sur le flou du rai de lumière). Les colonnes et le mur sont modifiés dans la page, pour qu'ils soient beaux dès le premier affichage ; HTML compressé 11,5 → 11,8 Ko | Lighthouse local, mesures alternées avant / après : ordinateur 99 / 99 / 94 / 92 contre 70 / 77 / 71 / 71 ; mobile (8 mesures chacune) médiane 88 contre 87, avec une dispersion de 68 à 94 dans les deux cas : **aucune dégradation mesurable**. W3C : 0 erreur, 0 avertissement ; export PDF sur 1 page (le grain est masqué à l'impression) ; mesure en ligne à refaire après publication |
+| 16/11 | Mesure en ligne après publication des finitions | — | Aucune modification | Mobile 74 / 64 / 75 (médiane 74), ordinateur 89 / 99 / 98 (médiane 98, blocage 95 ms) ; accessibilité, bonnes pratiques et SEO à 100 partout ; premier affichage 1,8 s et 0,44 s. Mieux que la mesure précédente (70 et 72) sur les deux appareils. Note C6 laissée à 3 : l'ordinateur est très bon, mais le mobile reste à 74 |
 
 ## 4. Analyse
 
@@ -135,7 +136,7 @@ Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en l
 | C3 Responsive | 4 | 15 | 60 | Pas de défilement horizontal, une page pleine hauteur en portrait et deux pages en paysage sur téléphone, glissement du doigt pour tourner les pages, typographie fluide |
 | C4 UX & accessibilité | 4 | 15 | 60 | Lighthouse 100, contrastes ≥ 4,5:1, navigation clavier complète, mouvement réduit |
 | C5 SEO | 4 | 10 | 40 | Lighthouse 100, titre et description pertinents, contenu indexable |
-| C6 Performance | 3 | 10 | 30 | Lighthouse 70 (mobile) et 72 (ordinateur), médiane de 3, 16/11 ; une mesure sur ordinateur est à 99, ce qui montre le caractère bimodal de l'outil sur cette machine : note abaissée de 4 à 3. Points forts : HTML de 11,5 Ko compressé, premier affichage en 1,8 s sur mobile, styles du livre, scripts et décor chargés après l'affichage, aucune image ni dépendance. Point faible : plus d'une seconde de temps de blocage en laboratoire après l'affichage, due au décor animé |
+| C6 Performance | 3 | 10 | 30 | Lighthouse 74 (mobile) et 98 (ordinateur), médiane de 3, 16/11 ; l'outil est bimodal sur cette machine (même version à 99 ou à 70), et le mobile reste dans le « orange » : note abaissée de 4 à 3. Points forts : HTML de 11,5 Ko compressé, premier affichage en 1,8 s sur mobile, styles du livre, scripts et décor chargés après l'affichage, aucune image ni dépendance. Point faible : plus d'une seconde de temps de blocage en laboratoire après l'affichage, due au décor animé |
 | C7 Validation & corrections | 3 | 10 | 30 | W3C sans erreur, Lighthouse, journal ci-dessus ; Outiref reste à passer |
 | C8 Publication | 4 | 5 | 20 | En ligne, testé sur mobile, corrigé après publication |
 | C9 Auto-évaluation | 4 | 5 | 20 | Résultats, causes et impact mesuré (ce document) |
