@@ -274,9 +274,12 @@
   position:absolute;inset:0;pointer-events:none;
   mix-blend-mode:screen;opacity:0;transition:opacity 2s ease;
 }
-.sunbeam svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:blur(2.4px);}
+.sunbeam svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+/* Bords adoucis par un contour translucide (un filtre de flou sur toute la pièce faisait passer
+   le temps de blocage de 16 ms à plus d'une seconde dans Lighthouse) */
+.sun-shaft{stroke:url(#sunShaft);stroke-width:6;stroke-opacity:.3;stroke-linejoin:round;}
 .sun-stop{stop-color:rgb(var(--sun,255,232,176));}
-.sun-pane{fill:rgb(var(--sun,255,232,176));fill-opacity:.62;}
+.sun-pane{fill:rgb(var(--sun,255,232,176));fill-opacity:.62;stroke:rgb(var(--sun,255,232,176));stroke-width:3;stroke-opacity:.2;stroke-linejoin:round;}
 .sunbeam i{
   position:absolute;width:3px;height:3px;border-radius:50%;
   background:rgba(255,244,214,.9);box-shadow:0 0 5px rgba(255,236,190,.8);opacity:0;
