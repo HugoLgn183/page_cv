@@ -590,3 +590,27 @@
   73%{opacity:0;transform:scale(.95);}
   88%{opacity:.45;transform:scale(1.02);}
 }
+
+/* ================= 8. DÉTAILS D'AMBIANCE : TOILE D'ARAIGNÉE ================= */
+/* Dans l'angle haut gauche, sur la colonne ; sous les lanternes, la fenêtre et la lueur de la pièce */
+.cobweb{position:absolute;left:0;top:0;width:118px;height:118px;z-index:1;pointer-events:none;overflow:visible;}
+.web-radials,.web-rings,.web-thread{fill:none;stroke:rgba(236,228,208,.5);stroke-width:.7;stroke-linecap:round;stroke-linejoin:round;}
+.web-rings{stroke:rgba(236,228,208,.38);stroke-width:.55;}
+.spider-body{fill:#1d140d;}
+.spider-abdomen,.spider-head{fill:#2a1d13;stroke:rgba(214,184,128,.7);stroke-width:.5;}
+.spider-legs{fill:none;stroke:rgba(214,184,128,.75);stroke-width:.6;stroke-linecap:round;}
+@media (max-width:640px){ .cobweb{display:none;} }
+
+/* Lierre sur la colonne de gauche (dessiné en JS à la taille de la pièce) */
+.ivy{position:absolute;left:0;z-index:1;pointer-events:none;overflow:visible;filter:drop-shadow(1px 2px 2px rgba(0,0,0,.5));}
+.ivy-stem{fill:none;stroke:#2a3d1d;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;}
+.ivy-stalk{fill:none;stroke:#2a3d1d;stroke-width:1.1;stroke-linecap:round;}
+.ivy-leaf{stroke:rgba(176,214,120,.28);stroke-width:.5;}
+.ivy-vein{fill:none;stroke:rgba(176,214,120,.34);stroke-width:.45;stroke-linecap:round;}
+@media (max-width:640px){ .ivy{display:none;} }
+
+/* La loupe du hibou : l'œil grossi balaie du regard quand elle est levée */
+@media (prefers-reduced-motion:no-preference){
+  .owl.looking .lens-pupil{animation:lensScan 2.2s ease-in-out infinite;}
+}
+@keyframes lensScan{0%,100%{translate:-2.2px .4px;}45%{translate:2.4px -.4px;}75%{translate:.4px .8px;}}

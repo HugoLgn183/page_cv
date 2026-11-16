@@ -165,6 +165,7 @@
     "La pendule, en haut à droite, avance l'heure : aube, jour, soir, nuit… Un tour complet la remet à l'heure.",
     "Sur l'étagère, trois souvenirs du parcours de Hugo : l'haltère de l'ancien coach sportif, le béret de l'ancien militaire et l'ordinateur portable de l'alternant technicien informatique.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
+    "Parfois, je lève ma loupe devant mon œil pour y voir de plus près… patience, ça arrive.",
     'Touchez le bouton rond, sur la colonne de droite, pour entendre la bibliothèque : pages, bougie, hibou…',
     "Besoin d'un CV papier ? Touchez « Exporter en PDF », tout en bas."
   ] : [
@@ -179,6 +180,7 @@
     "La pendule, en haut à droite, avance l'heure : aube, jour, soir, nuit… Un tour complet la remet à l'heure.",
     "Sur l'étagère, trois souvenirs du parcours de Hugo : l'haltère de l'ancien coach sportif, le béret de l'ancien militaire et l'ordinateur portable de l'alternant technicien informatique.",
     'Je tiens un marque-page : à votre prochaine visite, je vous proposerai de reprendre au dernier chapitre lu.',
+    "Parfois, je lève ma loupe devant mon œil pour y voir de plus près… patience, ça arrive.",
     'Cliquez sur le bouton rond, sur la colonne de droite, pour entendre la bibliothèque : pages, bougie, hibou…',
     "Besoin d'un CV papier ? « Exporter en PDF », tout en bas."
   ];
@@ -198,6 +200,26 @@
       '<g class="owl-pupil"><circle cx="39" cy="25" r="3.3"/><circle class="owl-shine" cx="40.2" cy="23.8" r="1"/></g>' +
       '<rect class="owl-lid" x="14" y="18" width="14" height="14" rx="7"/><rect class="owl-lid" x="32" y="18" width="14" height="14" rx="7"/>' +
       '<path class="owl-beak" d="M27 31h6l-3 6Z" fill="#e0a43a"/>' +
+      // La loupe : le hibou la tient à l'horizontale par le manche, dans sa patte gauche, le verre vers la gauche.
+      // De temps en temps il la lève devant son œil (voir plus bas) : l'œil apparaît alors grossi dans le verre.
+      // Dessinée dans le même SVG que le hibou, sous ses orteils : elle suit ses clignements et ses sursauts.
+      '<defs>' + lin('owlLoupeBrass', [[0, '#6b4a12'], [.3, '#f0cf78'], [.6, '#c79a3a'], [1, '#6b4a12']], false) +
+        lin('owlLoupeWood', [[0, '#2a1a0c'], [.4, '#6a4426'], [1, '#2a1a0c']], false) +
+        '<radialGradient id="owlLoupeGlass" cx="38%" cy="32%" r="70%"><stop offset="0" stop-color="#e8f4ff" stop-opacity=".45"/>' +
+        '<stop offset=".6" stop-color="#9cc4dc" stop-opacity=".14"/><stop offset="1" stop-color="#5a8aa8" stop-opacity=".3"/></radialGradient>' +
+        '<clipPath id="owlLensClip"><circle cx="-39.7" cy="0" r="11.3"/></clipPath></defs>' +
+      '<g class="owl-loupe" transform="translate(24.5 64.5)"><g class="owl-loupe-hold">' +
+        '<rect x="-24" y="-2.6" width="24" height="5.2" rx="2.3" fill="url(#owlLoupeWood)"/>' +
+        '<rect x="-27.8" y="-3.4" width="4.4" height="6.8" rx="1.2" fill="url(#owlLoupeBrass)"/>' +
+        '<circle cx="-39.7" cy="0" r="14.6" fill="url(#owlLoupeBrass)"/>' +
+        '<circle cx="-39.7" cy="0" r="11.8" fill="#1a2a33"/>' +
+        '<g clip-path="url(#owlLensClip)"><g class="owl-loupe-eye" transform="translate(-39.7 0)" opacity="0">' +   // l'œil, en gros plan
+          '<circle r="14" fill="#e8d5b0"/><circle r="9.6" fill="#f6e6b0" stroke="#c9a77a" stroke-width="1"/>' +
+          '<g class="lens-pupil"><circle r="4.9" fill="#1b1208"/><circle cx="1.6" cy="-1.7" r="1.4" fill="#fff"/></g></g></g>' +
+        '<circle cx="-39.7" cy="0" r="11.8" fill="url(#owlLoupeGlass)"/>' +
+        '<path d="M-47.4 -4.6 A9.8 9.8 0 0 1 -40.6 -9.6" stroke="#fff" stroke-opacity=".75" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
+        '<path d="M-33 6.4 A10.2 10.2 0 0 0 -30 .8" stroke="#fff" stroke-opacity=".3" stroke-width="1" fill="none" stroke-linecap="round"/>' +
+        '<circle cx="-39.7" cy="0" r="11.8" fill="none" stroke="#5e3f0e" stroke-width=".8"/></g></g>' +
       '<path class="owl-feet" d="M22 64l-2 4M25 64v5M28 64l2 4M32 64l-2 4M35 64v5M38 64l2 4" stroke="#e0a43a" stroke-width="2" stroke-linecap="round"/>' +
     '</svg>';
 
@@ -286,6 +308,44 @@
     window.setTimeout(blink, 2500 + Math.random() * 4000);
   }
   if (!reduce) window.setTimeout(blink, 3000);
+
+  // Il lève parfois la loupe devant son œil gauche : elle pivote autour de sa patte (de l'horizontale à la
+  // verticale), l'œil apparaît grossi dans le verre et balaie du regard, puis la loupe redescend.
+  // Jamais pendant la lecture d'un livre ni onglet caché ; rien en mouvement réduit.
+  var loupeHold = owl.querySelector('.owl-loupe-hold'), loupeEye = owl.querySelector('.owl-loupe-eye');
+  var LOUPE_UP = 84.9, loupeLevel = 0, loupeTimer = 0, loupeFrame = 0, looking = false;
+  function setLoupe(a){                                         // a : 0 (à l'horizontale) → 1 (devant l'œil)
+    var deg = LOUPE_UP * a;
+    loupeHold.setAttribute('transform', 'rotate(' + deg.toFixed(1) + ')');
+    loupeEye.setAttribute('transform', 'translate(-39.7 0) rotate(' + (-deg).toFixed(1) + ')');   // l'œil reste droit
+    loupeEye.setAttribute('opacity', Math.max(0, (a - .55) / .45).toFixed(2));
+  }
+  function loupeTo(target, ms, done){
+    var from = loupeLevel, t0 = performance.now();
+    window.cancelAnimationFrame(loupeFrame);
+    (function step(now){
+      var p = Math.min(1, (now - t0) / ms), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      loupeLevel = from + (target - from) * e;
+      setLoupe(loupeLevel);
+      if (p < 1) loupeFrame = window.requestAnimationFrame(step); else if (done) done();
+    })(t0);
+  }
+  function lookThrough(){
+    window.clearTimeout(loupeTimer);
+    loupeTimer = window.setTimeout(function(){
+      var busy = document.hidden || !document.getElementById('viewer').hidden || lib.classList.contains('lights-off');
+      if (busy || looking) { lookThrough(); return; }
+      looking = true;
+      owl.classList.add('looking');
+      loupeTo(1, 700, function(){
+        window.setTimeout(function(){
+          loupeTo(0, 700, function(){ owl.classList.remove('looking'); looking = false; });
+        }, 3200);
+      });
+      lookThrough();
+    }, 12000 + Math.random() * 14000);
+  }
+  if (!reduce) window.setTimeout(lookThrough, 6000);
 
   // Il se présente une fois, quelques secondes après l'arrivée (si personne ne l'a encore sollicité)
   window.setTimeout(function(){
@@ -1570,6 +1630,147 @@
       lib.classList.add('lighting');                        // puis elles remontent doucement
       window.setTimeout(function(){ lib.classList.remove('lighting'); }, 2800);
     }, 450);
+  }
+
+  // ===================== 17. La toile d'araignée =====================
+  // Dans l'angle du plafond et de la colonne de gauche : fils tendus, arcs qui s'affaissent un peu, et une
+  // araignée au bout de son fil. Quand la souris passe dessus, la toile se déforme dans le sens du mouvement
+  // (ressort amorti, comme la flamme de la bougie) et l'araignée se balance. Les fils posés sur le plafond
+  // et sur la colonne restent fixes ; rien ne bouge en mouvement réduit.
+  var WEB_R = 118;
+  var WEB_ANGLES = [0, 14, 29, 45, 60, 76, 90];               // degrés : 0 le long du plafond, 90 le long de la colonne
+  var WEB_LEN = [1, .92, 1.05, .88, 1, .93, 1];               // fils de longueurs inégales
+  var WEB_RINGS = [.2, .36, .54, .74, .95];
+  var WEB_GAPS = { '0-4': 1, '2-3': 1, '3-4': 1, '4-2': 1, '5-4': 1 };   // quelques fils rompus, pour la vieille toile
+  var webS = { x: 0, y: 0, vx: 0, vy: 0 }, spider = { a: 0, v: 0 }, webRunning = false;
+  var webSvg = svgEl('svg', { 'class': 'cobweb', 'aria-hidden': 'true', focusable: 'false', viewBox: '0 0 ' + WEB_R + ' ' + WEB_R });
+  var webRadials = svgEl('path', { 'class': 'web-radials' }), webRings = svgEl('path', { 'class': 'web-rings' });
+  var spiderG = svgEl('g', { 'class': 'spider' });
+  var spiderThread = svgEl('line', { 'class': 'web-thread' });
+  spiderG.innerHTML =
+    '<g class="spider-body"><path d="M-3.4 -1.2 L-7 -4 M-3.8 0 L-7.6 -0.6 M-3.6 1.4 L-7.2 3.6 M-2.6 2.6 L-5 6 ' +
+    'M3.4 -1.2 L7 -4 M3.8 0 L7.6 -0.6 M3.6 1.4 L7.2 3.6 M2.6 2.6 L5 6" class="spider-legs"/>' +
+    '<ellipse cx="0" cy="3.2" rx="2.9" ry="3.6" class="spider-abdomen"/><circle cx="0" cy="-.4" r="1.9" class="spider-head"/></g>';
+  webSvg.appendChild(webRadials);
+  webSvg.appendChild(webRings);
+  webSvg.appendChild(spiderThread);
+  webSvg.appendChild(spiderG);
+  lib.insertBefore(webSvg, lib.querySelector('.mote'));
+
+  // Point du fil i à la fraction rr de sa longueur, déformé par l'état du ressort
+  // (nul le long des deux bords, où la toile est accrochée ; maximal au milieu et loin du coin)
+  function webPt(i, rr){
+    var a = WEB_ANGLES[i] * Math.PI / 180, r = rr * WEB_LEN[i] * WEB_R, w = Math.pow(r / WEB_R, 1.3) * Math.sin(2 * a);
+    return [r * Math.cos(a) + webS.x * w, r * Math.sin(a) + webS.y * w];
+  }
+  var fix = function(n){ return n.toFixed(1); };
+  function drawWeb(){
+    var rad = '', ring = '', i, j, p, q, c;
+    for (i = 0; i < WEB_ANGLES.length; i++) {
+      rad += 'M0 0';
+      for (j = 0; j < WEB_RINGS.length; j++) { p = webPt(i, WEB_RINGS[j]); rad += 'L' + fix(p[0]) + ' ' + fix(p[1]); }
+      p = webPt(i, 1.02);
+      rad += 'L' + fix(p[0]) + ' ' + fix(p[1]);
+    }
+    for (j = 0; j < WEB_RINGS.length; j++) {
+      for (i = 0; i < WEB_ANGLES.length - 1; i++) {
+        if (WEB_GAPS[i + '-' + j]) continue;
+        p = webPt(i, WEB_RINGS[j]); q = webPt(i + 1, WEB_RINGS[j]);
+        c = [(p[0] + q[0]) / 2 * .9, (p[1] + q[1]) / 2 * .9 + 1.2];    // l'arc s'affaisse vers le coin
+        ring += 'M' + fix(p[0]) + ' ' + fix(p[1]) + 'Q' + fix(c[0]) + ' ' + fix(c[1]) + ' ' + fix(q[0]) + ' ' + fix(q[1]);
+      }
+    }
+    webRadials.setAttribute('d', rad);
+    webRings.setAttribute('d', ring);
+    var top = webPt(3, .74), len = 26;                          // l'araignée pend au nœud central
+    var sx = top[0] + len * Math.sin(spider.a), sy = top[1] + len * Math.cos(spider.a);
+    spiderThread.setAttribute('x1', fix(top[0])); spiderThread.setAttribute('y1', fix(top[1]));
+    spiderThread.setAttribute('x2', fix(sx)); spiderThread.setAttribute('y2', fix(sy - 3));
+    spiderG.setAttribute('transform', 'translate(' + fix(sx) + ' ' + fix(sy) + ') rotate(' + fix(-spider.a * 57.3) + ')');
+  }
+  function webStep(){
+    webS.vx += -.06 * webS.x - .09 * webS.vx;
+    webS.vy += -.06 * webS.y - .09 * webS.vy;
+    webS.x += webS.vx; webS.y += webS.vy;
+    spider.v += -.05 * spider.a - .07 * spider.v - webS.vx * .004;   // le fil suit les à-coups de la toile
+    spider.a = Math.max(-.7, Math.min(.7, spider.a + spider.v));   // au plus environ 40° de chaque côté
+    drawWeb();
+    if (Math.abs(webS.x) + Math.abs(webS.y) + Math.abs(webS.vx) + Math.abs(webS.vy) > .03 || Math.abs(spider.a) > .004 || Math.abs(spider.v) > .004) {
+      window.requestAnimationFrame(webStep);
+    } else {
+      webRunning = false;
+      webS.x = webS.y = webS.vx = webS.vy = spider.a = spider.v = 0;
+      drawWeb();
+    }
+  }
+  function webKick(mx, my, p){
+    var cap = function(n, m){ return Math.max(-m, Math.min(m, n)); };
+    webS.vx = cap(webS.vx + mx * .26 * p, 4); webS.vy = cap(webS.vy + my * .26 * p, 4);
+    spider.v = cap(spider.v - mx * .004 * p, .05);
+    if (!webRunning) { webRunning = true; window.requestAnimationFrame(webStep); }
+  }
+  drawWeb();
+  if (!reduce) {
+    var webPrev = null, webBox = null;
+    window.addEventListener('resize', function(){ webBox = null; });
+    window.addEventListener('pointermove', function(ev){
+      if (ev.pointerType !== 'mouse' || !document.getElementById('viewer').hidden) { webPrev = null; return; }
+      if (!webBox) webBox = webSvg.getBoundingClientRect();
+      if (!webBox.width) return;
+      var k = webBox.width / WEB_R;                              // échelle d'affichage
+      var x = (ev.clientX - webBox.left) / k, y = (ev.clientY - webBox.top) / k;
+      var d = Math.sqrt(Math.pow(x - WEB_R * .45, 2) + Math.pow(y - WEB_R * .45, 2)), reach = WEB_R * .75;
+      if (d < reach) {
+        if (webPrev) {
+          var dt = Math.max(8, Math.min(60, ev.timeStamp - webPrev.t)) / 16;
+          var near = 1 - d / reach;
+          webKick((ev.clientX - webPrev.x) / dt / k, (ev.clientY - webPrev.y) / dt / k, near * near + .15);
+        }
+        webPrev = { x: ev.clientX, y: ev.clientY, t: ev.timeStamp };
+      } else webPrev = null;
+    });
+  }
+
+  // ===================== 18. Le lierre =====================
+  // Une tige de lierre monte du pied de la colonne de gauche, en s'éclaircissant vers le haut, et s'arrête
+  // sous l'interrupteur. Feuilles à trois lobes dessinées en SVG, tirées avec un hasard fixe (même lierre à
+  // chaque visite) et redessinées à la taille de la pièce. Décor immobile.
+  var leftPillar = document.querySelector('.pillar-l');
+  var ivySvg = svgEl('svg', { 'class': 'ivy', 'aria-hidden': 'true', focusable: 'false' });
+  var IVY_LEAF = 'M0 0C-3 -1 -7 -3 -7 -7C-7.6 -9.2 -5.4 -10.4 -4.4 -9.4C-5.6 -12 -3 -14.2 -1 -13C-.6 -15.4 .6 -15.4 1 -13C3 -14.2 5.6 -12 4.4 -9.4C5.4 -10.4 7.6 -9.2 7 -7C7 -3 3 -1 0 0Z';
+  var IVY_GREENS = ['#2b4622', '#355728', '#254020', '#3e6830', '#2f4e25'];
+  function drawIvy(){
+    var W = leftPillar ? leftPillar.offsetWidth : 0, H = lib.clientHeight;
+    if (!W || !H) { ivySvg.textContent = ''; return; }
+    var bottom = H - 20, top = Math.round(H * .46 + 74), h = bottom - top;   // du haut du socle jusque sous l'interrupteur
+    if (h < 120) { ivySvg.textContent = ''; return; }
+    var seed = 11, rand = function(){ seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+    var stemX = function(y){ return W - 15 + 6 * Math.sin(y / 23) + 2.5 * Math.sin(y / 8.5); };
+    var d = 'M' + stemX(h).toFixed(1) + ' ' + h;
+    for (var y = h - 8; y >= 0; y -= 8) d += 'L' + stemX(y).toFixed(1) + ' ' + y;
+    var leaves = '', k = 0;
+    for (var ly = h - 6; ly > 4; ly -= 9, k++) {
+      var t = ly / h;                                           // 1 en bas, 0 en haut
+      if (rand() > .42 + .58 * t) continue;                       // de moins en moins de feuilles vers le haut
+      var side = k % 2 ? -1 : 1, x = stemX(ly), a = side * (28 + rand() * 46), s = (1 + rand() * .6) * (.6 + .5 * t);
+      var fill = IVY_GREENS[Math.floor(rand() * IVY_GREENS.length)];
+      leaves += '<g transform="translate(' + x.toFixed(1) + ' ' + ly + ') rotate(' + a.toFixed(0) + ')">' +
+        '<path d="M0 0L0 -4" class="ivy-stalk"/><g transform="translate(0 -4) scale(' + s.toFixed(2) + ')">' +
+        '<path d="' + IVY_LEAF + '" fill="' + fill + '" class="ivy-leaf"/><path d="M0 -1.5L0 -11M0 -5L-3.6 -8M0 -5L3.6 -8" class="ivy-vein"/></g></g>';
+    }
+    ivySvg.setAttribute('viewBox', '0 0 ' + W + ' ' + h);
+    ivySvg.setAttribute('width', W);
+    ivySvg.setAttribute('height', h);
+    ivySvg.style.top = top + 'px';
+    ivySvg.innerHTML = '<path d="' + d + '" class="ivy-stem"/>' + leaves;
+  }
+  if (leftPillar) {
+    lib.insertBefore(ivySvg, lib.querySelector('.mote'));
+    drawIvy();
+    var ivyFrame = 0;
+    window.addEventListener('resize', function(){
+      if (!ivyFrame) ivyFrame = window.requestAnimationFrame(function(){ ivyFrame = 0; drawIvy(); });
+    });
   }
 
   // Si la bibliothèque du fond est déjà dessinée, on rejoue une seule fois « bookcasedrawn » pour que tout
