@@ -90,7 +90,7 @@ Ancien militaire et coach sportif de 26 ans, je me reconvertis dans l'informatiq
 ### Exploitation et support
 
 * **Gestion de parc informatique** — supervision et gestion des pannes courantes sur PC et serveurs
-* **Support technique**
+* **Support technique utilisateur**
 
 ### Systèmes et identités
 
@@ -111,7 +111,7 @@ Ancien militaire et coach sportif de 26 ans, je me reconvertis dans l'informatiq
 * Utilisation commandes de base (Bash)
 * Apprentissage Python, C++, C#
 * Administration (Active Directory, Microsoft 365)
-* Supervision et dépannage de PC et de serveurs, support technique
+* Supervision et dépannage de PC et de serveurs, support technique utilisateur
 * Messagerie : anti-spam Mail In Black
 * Sensibilisation et développement de compétences en cybersécurité (BitDefender, Hack the Box / TryHackMe)
 
