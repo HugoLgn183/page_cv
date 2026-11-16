@@ -4,7 +4,7 @@ CV en ligne réalisé dans le cadre du BTS SIO SISR (CFAI de Saint-Étienne) : u
 
 **Voir le site : <https://hugolgn183.github.io/page_cv/cv-site/>**
 
-Le CV est présenté comme une bibliothèque ancienne : chaque rubrique (Profil, Parcours, Compétences, Formations, Langues, Permis, Contact) est un livre posé sur une étagère, qui s'ouvre au clic.
+Le CV est présenté comme une bibliothèque ancienne : chaque rubrique (Profil, Parcours, Projets et réalisations, Compétences, Formations, Langues, Permis, Contact) est un livre posé sur une étagère, qui s'ouvre au clic.
 
 ## Structure du dépôt
 
@@ -35,8 +35,9 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko u
 
 ## Fonctionnalités
 
+- **Livre « Projets et réalisations »** (chapitre III, entre Parcours et Compétences) : gestion de parc informatique (supervision et pannes courantes sur PC et serveurs), support technique, Active Directory, Microsoft 365, anti-spam Mail In Black, début d'administration et intervention cybersécurité (BitDefender), regroupés en trois thèmes. Sa couverture porte le titre complet ; il apparaît aussi dans le terminal (`ls`, `cat realisations`), le PDF et la version sans JavaScript. La rubrique Compétences a été complétée en conséquence (administration, supervision et dépannage, messagerie, BitDefender), et quatre mots secrets ont été ajoutés (54 au total).
 - **Livre ouvert** :
-  - sommaire des 7 chapitres sur la page de gauche, chaque ligne mène au chapitre ;
+  - sommaire des 8 chapitres sur la page de gauche, chaque ligne mène au chapitre ;
   - boutons « chapitre précédent / suivant » et flèches ← → du clavier, avec une page qui tourne en 3D ;
   - sur téléphone : glisser le doigt vers la gauche (chapitre suivant) ou vers la droite (chapitre précédent), ou utiliser les grandes flèches en bas de la page ;
   - couverture et signet de la couleur du livre choisi.
@@ -70,7 +71,7 @@ Aucune image, police externe ou dépendance. La page HTML pèse 42 Ko (11,5 Ko u
   - sons coupés par défaut, bouton « Sons » utilisable au clavier et annoncé (`aria-pressed`).
 - **Fonctionne sans JavaScript** : tout le CV est écrit dans le HTML et s'affiche sous forme de page classique. C'est aussi ce que lisent les moteurs de recherche.
 - **SEO** : titre et meta description adaptés, URL canonique, balises Open Graph pour l'aperçu lors d'un partage.
-- **Export PDF** : le bouton « Exporter en PDF » produit un CV classique sur une seule page A4 : en-tête avec le nom, la présentation et le contact, puis deux colonnes (profil, compétences, langues et permis à gauche ; expériences et formations à droite), sans le décor du site, avec le lien GitHub écrit en clair, des titres à losange doré, les dates alignées à droite des intitulés, le tampon « Bon pour un entretien » en bas de la colonne de gauche. Marge de page nulle : le navigateur n'imprime ni sa date, ni le titre de la page, ni l'adresse, même si « En-têtes et pieds de page » est coché. Seuls des filets et du texte sont imprimés (aucun fond de couleur, qui disparaîtrait selon les réglages d'impression).
+- **Export PDF** : le bouton « Exporter en PDF » produit un CV classique sur une seule page A4 : en-tête avec le nom, la présentation et le contact, puis un bandeau pleine largeur en trois colonnes pour les projets et réalisations, puis deux colonnes (profil, compétences, langues et permis à gauche ; expériences et formations à droite), sans le décor du site, avec le lien GitHub écrit en clair, des titres à losange doré, les dates alignées à droite des intitulés, le tampon « Bon pour un entretien » en bas de la colonne de gauche. Marge de page nulle : le navigateur n'imprime ni sa date, ni le titre de la page, ni l'adresse, même si « En-têtes et pieds de page » est coché. Seuls des filets et du texte sont imprimés (aucun fond de couleur, qui disparaîtrait selon les réglages d'impression). Les tailles de texte ont été resserrées pour que le bandeau des réalisations tienne toujours sur la page (réserve d'environ 33 pt en bas).
 
 ## Validation
 

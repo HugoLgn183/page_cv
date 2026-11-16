@@ -37,17 +37,19 @@
     formation:'<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
     langues:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
     permis:'<path d="M5 17H3v-5l2-5h14l2 5v5h-2"/><path d="M3 12h18"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M9.5 17h5"/>',
+    realisations:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
     contact:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/>'
   };
 
   var RUBS = {
     profil:    { num:'I',   chap:'Chapitre I',    page:1, title:'Profil',         short:'Profil' },
     experience:{ num:'II',  chap:'Chapitre II',   page:2, title:'Parcours',       short:'Parcours' },
-    competences:{num:'III', chap:'Chapitre III',  page:3, title:"Compétences techniques en cours d'acquisition", short:'Compétences' },
-    formation: { num:'IV',  chap:'Chapitre IV',   page:4, title:'Formations',     short:'Formations' },
-    langues:   { num:'V',   chap:'Chapitre V',    page:5, title:'Langues',        short:'Langues' },
-    permis:    { num:'VI',  chap:'Chapitre VI',   page:6, title:'Permis & CACES', short:'Permis & CACES' },
-    contact:   { num:'VII', chap:'Chapitre VII',  page:7, title:'Contact',        short:'Contact' }
+    realisations:{num:'III', chap:'Chapitre III',  page:3, title:'Projets et réalisations', short:'Réalisations' },
+    competences:{num:'IV',  chap:'Chapitre IV',   page:4, title:"Compétences techniques en cours d'acquisition", short:'Compétences' },
+    formation: { num:'V',   chap:'Chapitre V',    page:5, title:'Formations',     short:'Formations' },
+    langues:   { num:'VI',  chap:'Chapitre VI',   page:6, title:'Langues',        short:'Langues' },
+    permis:    { num:'VII', chap:'Chapitre VII',  page:7, title:'Permis & CACES', short:'Permis & CACES' },
+    contact:   { num:'VIII',chap:'Chapitre VIII', page:8, title:'Contact',        short:'Contact' }
   };
   var ORDER = Object.keys(RUBS);
   var prevBtn = document.getElementById('prevBtn');
@@ -115,7 +117,7 @@
     openbook.style.setProperty('--cover', spine.getPropertyValue('--leath').trim());
     openbook.style.setProperty('--cover-hi', spine.getPropertyValue('--leath-hi').trim());
     var spineTitle = btn.querySelector('.btitle');                      // titre gravé sur la couverture (celui de la tranche)
-    openbook.style.setProperty('--cover-title', '"' + (spineTitle ? spineTitle.textContent : cfg.short) + '"');
+    openbook.style.setProperty('--cover-title', '"' + (btn.getAttribute('data-cover') || (spineTitle ? spineTitle.textContent : cfg.short)) + '"');
 
     books.forEach(function(b){
       b.classList.toggle('lit', b === btn);
@@ -307,6 +309,11 @@
     ['experience', 'formation'].forEach(function(id){
       main.appendChild(document.getElementById('rub-' + id));
     });
+    // Projets et réalisations : un bandeau sur toute la largeur, en trois colonnes, au-dessus des deux colonnes
+    var wide = document.createElement('div');
+    wide.className = 'print-wide';
+    wide.appendChild(document.getElementById('rub-realisations'));
+    printCols.appendChild(wide);
     printCols.appendChild(side);
     printCols.appendChild(main);
     cvText.appendChild(printCols);

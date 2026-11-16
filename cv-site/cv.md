@@ -85,13 +85,35 @@ Ancien militaire et coach sportif de 26 ans, je me reconvertis dans l'informatiq
 
 
 
+## Projets et réalisations
+
+### Exploitation et support
+
+* **Gestion de parc informatique** — supervision et gestion des pannes courantes sur PC et serveurs
+* **Support technique**
+
+### Systèmes et identités
+
+* Gestion de l'**Active Directory**
+* Mise en place et administration d'environnements **Microsoft 365**
+
+### Messagerie et sécurité
+
+* Mise en place d'un anti-spam — **Mail In Black**
+* Début d'administration et intervention cybersécurité — **BitDefender**
+
+
+
 ## Compétences techniques
 
 * Gestion de réseaux sous Windows et Linux (Ubuntu) en machine virtuelle
 * Bases des réseaux (modèle OSI, TCP/IP)
 * Utilisation commandes de base (Bash)
 * Apprentissage Python, C++, C#
-* Sensibilisation et développement de compétences en cybersécurité (Hack the Box / TryHackMe)
+* Administration (Active Directory, Microsoft 365)
+* Supervision et dépannage de PC et de serveurs, support technique
+* Messagerie : anti-spam Mail In Black
+* Sensibilisation et développement de compétences en cybersécurité (BitDefender, Hack the Box / TryHackMe)
 
 
 

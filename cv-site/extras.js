@@ -26,7 +26,7 @@
   var SECRETS = [
     // compétences
     'Linux', 'Ubuntu', 'Windows', 'Bash', 'Python', 'C++', 'C#', 'TCP/IP', 'OSI', 'Réseaux',
-    'Hack The Box', 'TryHackMe', 'Cybersécurité',
+    'Hack The Box', 'TryHackMe', 'Cybersécurité', 'Active Directory', 'Microsoft 365', 'BitDefender', 'Mail In Black',
     // formations et diplômes
     'BTS SIO', 'SISR', 'CFAI', 'Alternance', 'STAPS', 'APAS', 'Haltérophilie', 'Jean Monnet',
     'BNSSA', 'PSE1', 'Sauvetage', 'Bac S', 'SVT',
@@ -451,7 +451,7 @@
   // ===================== 4. Le mode terminal secret =====================
   // S'ouvre en tapant « sudo » (ou le code Konami) sur ordinateur, ou en touchant 5 fois le hibou.
   // Le contenu affiché est lu dans le CV de la page : il reste toujours à jour.
-  var FILES = { 'profil.txt': 'profil', 'parcours.txt': 'experience', 'competences.txt': 'competences',
+  var FILES = { 'profil.txt': 'profil', 'parcours.txt': 'experience', 'realisations.txt': 'realisations', 'competences.txt': 'competences',
                 'formations.txt': 'formation', 'langues.txt': 'langues', 'permis.txt': 'permis', 'contact.txt': 'contact' };
   var COMMANDS = ['help', 'ls', 'cat', 'whoami', 'neofetch', 'date', 'history', 'clear', 'exit'];
   var term = null, termOut, termInput, termHistory = [], historyPos = 0, termOpener = null;

@@ -8,7 +8,7 @@
 @page{size:A4;margin:0;}
 @media print{
   html,body{background:#fff!important;}
-  body{padding:9.5mm 13mm!important;}
+  body{padding:8mm 13mm!important;}
   body{color:#1c1c1c;font-size:9pt;line-height:1.32;}
   .wall,.bookcase,.backshelf,.arch,.pillar,.sconce,.mote,.viewer,.library,.lib-foot,.skip-link,
   .candle,.candle-home,.pla-sub p:last-child,.night,.secret-ink,.light-switch,.owl,.owl-bubble,.terminal,.dust,.shelf-ribbon,.ambiance,.sound-switch,.clock,.lib-window,.keepsake,.plaque-sheen,.floor,.pedestal,.plaque-board,.plaque-chain,.lantern,.cobweb,.ivy{display:none!important;}
@@ -109,4 +109,32 @@
   .kv li{display:flex;justify-content:space-between;gap:3mm;font-size:8.8pt;padding:.5mm 0;border-bottom:.4pt dotted #cdb57d;}
   .kv .v{color:#5d5442;}
   .plaque #rub-contact{break-inside:avoid;}
+
+  /* Projets et réalisations : bandeau sur toute la largeur, en trois colonnes (un groupe par colonne) */
+  .print-wide{grid-column:1 / -1;margin-bottom:3.4mm;padding-bottom:2.4mm;border-bottom:.6pt solid #dcc588;}
+  .print-wide .rub{display:grid;grid-template-columns:repeat(3,1fr);gap:0 6mm;break-inside:avoid;}
+  .print-wide .page-head{grid-column:1 / -1;}
+  .print-wide .lead{display:none;}
+  .print-wide .sub-block+.sub-block{margin-top:0;}
+  .print-wide .block-title{font-size:9.4pt;}
+  .print-wide .block-list{font-size:8.4pt;}
+
+  /* Resserrement : deux rubriques de plus tiennent toujours sur une seule page */
+  .print-wide .block-head{justify-content:flex-end;}   /* (ligne inversée : « fin » = à gauche) */
+  .pla-title{font-size:21pt;margin-bottom:.6mm;}
+  .plaque-wrap{margin-bottom:3mm;padding-bottom:2mm;}
+  .rub+.rub{margin-top:2.8mm;}
+  .page-head{margin-bottom:1.2mm;}
+  .page-head h2{padding-bottom:.6mm;}
+  .sub-block+.sub-block{margin-top:1.3mm;}
+  .block-title{font-size:9.3pt;}
+  .block-sub{font-size:8.1pt;}
+  .block-list{font-size:8.2pt;margin-top:.1mm;}
+  .block-date{font-size:7.8pt;}
+  .lead{font-size:8.5pt;}
+  .goal{font-size:8.3pt;margin-top:1.2mm;}
+  .chip{font-size:8.2pt;margin-bottom:.3mm;}
+  .kv li{font-size:8.4pt;padding:.3mm 0;}
+  .print-wide{margin-bottom:2.6mm;padding-bottom:1.8mm;}
+  .print-wide .block-list{font-size:8.2pt;}
 }
