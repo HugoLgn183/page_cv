@@ -2,7 +2,7 @@
 
 Projet : CV web statique publié sur GitHub Pages — <https://hugolgn183.github.io/page_cv/cv-site/>
 Auteur : Hugo Largeron — BTS SIO SISR, CFAI de Saint-Étienne
-Mesures réalisées le 16/11/2026 sur la version en ligne, avec tout le décor (lanternes, toile d'araignée, lierre, loupe, nouvel export PDF, après le retrait du flou sur le rai de lumière).
+Mesures réalisées le 16/11/2026 sur la version en ligne, avec tout le décor (lanternes, toile d'araignée, lierre, loupe, nouvel export PDF), après le retrait du flou sur le rai de lumière et l'étalement des placements du décor.
 
 ## 1. Les versions du site
 
@@ -18,15 +18,15 @@ Mesures réalisées le 16/11/2026 sur la version en ligne, avec tout le décor (
 | Outil | Mobile | Ordinateur |
 |---|---|---|
 | [Validateur W3C](https://validator.w3.org/nu/?doc=https%3A%2F%2Fhugolgn183.github.io%2Fpage_cv%2Fcv-site%2F) | 0 erreur, 0 avertissement | — |
-| Lighthouse — Performance | 70 | 70 |
+| Lighthouse — Performance | 70 | 72 |
 | Lighthouse — Accessibilité | 100 | 100 |
 | Lighthouse — Bonnes pratiques | 100 | 100 |
 | Lighthouse — SEO | 100 | 100 |
-| Outiref (structure des titres) | *à compléter* | — |
+| Outiref (structure des titres) | *à passer sur le site* (relevé par script : 1 `h1`, 4 `h2` de premier niveau puis des `h3`, aucun saut de niveau) | — |
 
 Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en local (Lighthouse 12.6.1) car l'API PageSpeed était saturée. Chaque score est la médiane de 3 mesures.
 
-**Indicateurs mobile (médiane) :** affichage du premier contenu en 1,8 s, du plus grand élément en 2,4 s, temps de blocage 1 452 ms, aucun décalage de mise en page (CLS = 0). Sur ordinateur : 0,43 s, 0,59 s, CLS = 0, temps de blocage 968 ms. Le premier affichage n'a pas bougé depuis le 22/10 (1,7 s et 0,4 s) : la baisse vient du travail fait **après** l'affichage (dessin du décor, animations, lanternes, toile). Mesures du 22/10 pour comparaison : 98 sur mobile (blocage 62 ms), 90 sur ordinateur (249 ms).
+**Indicateurs mobile (médiane) :** affichage du premier contenu en 1,8 s, du plus grand élément en 2,4 s, temps de blocage 1 530 ms (3 mesures : 64, 70, 86), aucun décalage de mise en page (CLS = 0). Sur ordinateur : 0,43 s, 0,55 s, CLS = 0, temps de blocage 814 ms (3 mesures : 99, 71, 72). Le premier affichage n'a pas bougé depuis le 22/10 (1,7 s et 0,4 s) : la baisse vient du travail fait **après** l'affichage (dessin du décor, animations, lanternes, toile). Mesures du 22/10 pour comparaison : 98 sur mobile (blocage 62 ms), 90 sur ordinateur (249 ms).
 
 **Fiabilité de la mesure.** Sur cette machine, Lighthouse est très instable : la version du 22/10, mesurée aujourd'hui dans les mêmes conditions que la version actuelle (3 mesures alternées, ordinateur), donne 82, 67 et 87 contre 84, 68 et 74 pour la version actuelle. L'écart entre les deux versions est donc du même ordre que le bruit de mesure, et la baisse de 98 à 70 ne doit pas être lue comme une régression de cette ampleur. Elle reste réelle et mesurée (6 mesures en ligne, toutes entre 69 et 71 sauf une à 87), et c'est ce chiffre qu'un correcteur obtiendrait avec le même outil.
 
@@ -116,6 +116,8 @@ Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en l
 | 16/11 | Date et heure, titre de la page et adresse imprimés dans les marges du PDF (demande d'Hugo : les enlever) ; la ligne « CV en ligne · … » était la mienne | Les deux premiers viennent du navigateur (en-tête et pied de page d'impression), la troisième d'un pied de page que j'avais ajouté | Ligne « CV en ligne » supprimée ; `@page` passé à une marge de 0 : sans marge, le navigateur n'a plus de place pour ses en-têtes et pieds, et les marges réelles (9,5 mm en haut et en bas, 13 mm sur les côtés) sont reprises par le remplissage du corps | Export réel du navigateur de test : 1 page, texte entre 29 pt et 769 pt sur 842 pt, la ligne « CV en ligne » a disparu. Le navigateur de test n'affiche jamais ses en-têtes : **à contrôler dans l'aperçu avant impression de Chrome / Edge** |
 | 16/11 | Performance en ligne toujours à 70 après le retrait du flou (6 mesures : 87 / 70 / 70 sur mobile, 70 / 69 / 71 sur ordinateur) | Le flou n'était pas la seule cause. Trace Lighthouse : tâches de 204 ms (rappel du placement du décor quand le navigateur est libre), 164 ms, 124 ms (évaluation d'`extras.js`, 142 Ko) et 95 ms (mise en page), et 1,5 s de travail du processus graphique, présent aussi sans la plupart des ajouts. Mesuré avec une trace du chargement : désactiver les animations divise par deux le travail du fil principal (1,6 s → 0,8 s) | Aucune modification de plus : les variantes testées (sans rai de lumière, sans toile ni lierre ni lanternes, sans ombres portées, sans animations des lanternes) n'améliorent pas le score de façon fiable, car la mesure varie de 67 à 87 sur une même version. Note C6 abaissée de 4 à 3 dans la grille ci-dessous | Version du 22/10 mesurée le 16/11 : 82 / 67 / 87 ; version actuelle : 84 / 68 / 74 (ordinateur, mesures alternées). Pistes si l'on veut regagner des points : charger `extras.js` en plusieurs morceaux (le décor d'abord, les détails ensuite), réduire le nombre d'animations (une seule pour les deux lanternes), ou ne lancer les effets qu'à la première interaction |
 | 16/11 | Optimisation du travail après l'affichage, sans rien changer à l'apparence ni aux fonctions (demande d'Hugo) | Au chargement, un seul bloc de 204 ms (rappel de « bookcasedrawn » : fenêtre, objets, sol, plaque, mots secrets, lueur) et une mesure de position inutile de la lueur de nuit en plein jour (38 ms) | Les sept abonnés à « bookcasedrawn » sont maintenant mémorisés et lancés l'un après l'autre, chacun dans sa propre tâche, dans le même ordre qu'avant ; la lueur de nuit n'est mesurée que la nuit (elle l'est au passage à la nuit, pendule comprise). Aucune fonction retirée | Position de la fenêtre, des souvenirs, du panneau, des chaînes, du sol, du buffet, du hibou, des appliques et des lanternes, 50 mots secrets (positions comprises) et 184 livres du fond : état **strictement identique** avant et après ; lueur de nuit vérifiée avec la pendule ; export PDF sur 1 page. Effet sur le score : **non démontrable** : 12 mesures alternées (ordinateur) montrent que le résultat de Lighthouse est bimodal sur cette machine, soit 99-100 (blocage de 25-45 ms), soit 67-82 (blocage de 300 à 1 200 ms), pour une même version : ancienne version du 22/10 : 72 / 100 / 71 / 77 ; version précédente : 68 / 99 / 67 / 99 ; version optimisée : 82 / 70 / 72 / 71 |
+| 16/11 | Mesure en ligne après publication des optimisations | — | Aucune modification | Mobile 64 / 70 / 86 (médiane 70), ordinateur 99 / 71 / 72 (médiane 72) ; accessibilité, bonnes pratiques et SEO à 100 partout ; premier affichage 1,8 s et 0,43 s, inchangé. Une mesure à 99 (blocage 0 ms) confirme que la version actuelle peut atteindre le haut score : le résultat varie d'une mesure à l'autre. Note C6 laissée à 3 |
+| 16/11 | Le `footer` était dans le `main` (critère C2) | `<main class="lib">` enveloppait tout, décor, pied de page et livre ouvert | Le conteneur du décor devient une `div` ; un `<main>` n'entoure plus que l'étagère et le texte du CV (`display:contents` : la mise en page ne bouge pas) ; le `header` du nom et le `footer` sont hors du `main` ; deux lignes d'`extras.js` (pause de la bibliothèque pendant le terminal) visent maintenant le conteneur du décor | Position de tous les éléments du décor identique au pixel près (fenêtre, souvenirs, plaque, sol, hibou, appliques, 50 mots secrets…) ; W3C : 0 erreur, 0 avertissement ; Lighthouse local : accessibilité, bonnes pratiques et SEO à 100 ; export PDF sur 1 page (2 sans JavaScript, comme avant). Plan des titres relevé : `h1` Hugo Largeron, puis `h2` (Rubriques du CV, Profil, Expériences professionnelles, Compétences…, Formations & diplômes, Langues, Permis & CACES, Contact) et `h3` (expériences et formations), sans saut de niveau |
 
 ## 4. Analyse
 
@@ -128,25 +130,24 @@ Lighthouse est le moteur d'analyse de PageSpeed Insights. Il a été lancé en l
 | Critère | Note (0–4) | Coef | Pondéré | Justification |
 |---|---:|---:|---:|---|
 | C1 Contenu | 3 | 10 | 30 | Clair, cohérent, objectif indiqué ; pas encore de réalisations chiffrées |
-| C2 HTML sémantique | 3 | 10 | 30 | Un seul `h1`, hiérarchie `h2`/`h3`, balises structurelles ; le `footer` est encore dans le `main` |
+| C2 HTML sémantique | 4 | 10 | 40 | Un seul `h1`, hiérarchie `h1` → `h2` → `h3` sans saut de niveau, `header`, `nav`, `main`, `section` nommées (`aria-labelledby`), `footer` hors du `main`, lien d'évitement et ancres explicites ; W3C sans erreur |
 | C3 Responsive | 4 | 15 | 60 | Pas de défilement horizontal, une page pleine hauteur en portrait et deux pages en paysage sur téléphone, glissement du doigt pour tourner les pages, typographie fluide |
 | C4 UX & accessibilité | 4 | 15 | 60 | Lighthouse 100, contrastes ≥ 4,5:1, navigation clavier complète, mouvement réduit |
 | C5 SEO | 4 | 10 | 40 | Lighthouse 100, titre et description pertinents, contenu indexable |
-| C6 Performance | 3 | 10 | 30 | Lighthouse 70 (mobile et ordinateur, médiane de 3, 16/11) : note abaissée de 4 à 3. Points forts : HTML de 11,5 Ko compressé, premier affichage en 1,8 s sur mobile, styles du livre, scripts et décor chargés après l'affichage, aucune image ni dépendance. Point faible : plus d'une seconde de temps de blocage en laboratoire après l'affichage, due au décor animé |
+| C6 Performance | 3 | 10 | 30 | Lighthouse 70 (mobile) et 72 (ordinateur), médiane de 3, 16/11 ; une mesure sur ordinateur est à 99, ce qui montre le caractère bimodal de l'outil sur cette machine : note abaissée de 4 à 3. Points forts : HTML de 11,5 Ko compressé, premier affichage en 1,8 s sur mobile, styles du livre, scripts et décor chargés après l'affichage, aucune image ni dépendance. Point faible : plus d'une seconde de temps de blocage en laboratoire après l'affichage, due au décor animé |
 | C7 Validation & corrections | 3 | 10 | 30 | W3C sans erreur, Lighthouse, journal ci-dessus ; Outiref reste à passer |
 | C8 Publication | 4 | 5 | 20 | En ligne, testé sur mobile, corrigé après publication |
 | C9 Auto-évaluation | 4 | 5 | 20 | Résultats, causes et impact mesuré (ce document) |
 | C10 Confidentialité | 3 | 5 | 15 | Aucune donnée personnelle réelle, contact par GitHub |
 | C11 Qualité du dépôt | 3 | 5 | 15 | Arborescence claire, README ; certains messages de commit peu précis |
-| **Total** | | **100** | **350 / 400** | **Note estimée : 17,5 / 20** |
+| **Total** | | **100** | **360 / 400** | **Note estimée : 18 / 20** |
 
-Calcul : 350 / (4 × 100) × 20 = 17,5. (Avant le 16/11 : 360 / 400, soit 18 / 20, avec une performance notée 4.)
+Calcul : 360 / (4 × 100) × 20 = 18. (Le 16/11, C6 passe de 4 à 3 et C2 de 3 à 4 : le total reste de 360 / 400.)
 
 ## 6. Pistes d'amélioration restantes
 
 - Vérifier le livre sur un vrai iPhone (Safari) : les corrections visent des défauts connus de Safari, mais n'ont été testées qu'en émulation dans Edge.
 - Permettre de déplacer la bougie au clavier (aujourd'hui, cet élément décoratif ne se manipule qu'à la souris ou au doigt).
 - Passer Outiref et compléter le tableau des résultats.
-- Placer le `footer` en dehors du `main`.
 - Ajouter des réalisations chiffrées dans le parcours et les compétences.
 - Écrire des messages de commit plus précis (éviter « Update cv.md », « Delete cv »).

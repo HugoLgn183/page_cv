@@ -65,6 +65,7 @@ a{color:inherit;}
   position:relative;min-height:100vh;overflow:hidden;
   display:flex;flex-direction:column;
 }
+.lib > main{display:contents;}   /* le contenu garde sa place dans la mise en page ; le pied de page reste hors de main */
 .wall{
   position:absolute;inset:0;z-index:0;pointer-events:none;
   contain:paint;
@@ -510,7 +511,7 @@ a{color:inherit;}
 <a class="skip-link" href="#shelf">Aller à l'étagère</a>
 <p class="sr-only" id="status" aria-live="polite"></p>
 
-<main class="lib">
+<div class="lib">
   <div class="wall" aria-hidden="true"></div>
   <canvas class="bookcase" id="bookcase" aria-hidden="true"></canvas>
   <div class="backshelf backshelf-1" aria-hidden="true"></div>
@@ -540,6 +541,7 @@ a{color:inherit;}
     </div>
   </header>
 
+  <main>
   <section class="library" id="shelf" aria-labelledby="shelf-title">
 
     <h2 class="sr-only" id="shelf-title">Rubriques du CV</h2>
@@ -773,6 +775,7 @@ a{color:inherit;}
       </ul>
     </section>
   </div>
+  </main>
 
   <footer class="lib-foot">
     Édition 2026 · Saint-Étienne
@@ -804,7 +807,7 @@ a{color:inherit;}
       <button class="viewer-close" id="viewerClose" type="button" aria-label="Fermer le livre">×</button>
     </div>
   </div>
-</main>
+</div>
 
 <script src="app.js" defer></script>
 

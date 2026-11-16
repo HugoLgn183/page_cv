@@ -602,14 +602,14 @@
     term.classList.remove('booting');
     void term.offsetWidth;
     if (!reduce) term.classList.add('booting');
-    document.querySelector('main').inert = true;               // la bibliothèque est mise en pause
+    lib.inert = true;               // la bibliothèque est mise en pause
     termInput.focus();
     announce('Terminal ouvert. Tapez help pour la liste des commandes.');
   }
   function closeTerminal(){
     if (!term || term.hidden) return;
     term.hidden = true;
-    document.querySelector('main').inert = false;
+    lib.inert = false;
     if (termOpener && termOpener.focus) termOpener.focus();
     announce('Terminal fermé.');
   }
